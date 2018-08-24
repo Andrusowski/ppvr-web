@@ -11,6 +11,12 @@
 |
 */
 
-Route::get('/', function () {
+/* Route::get('/', function () {
     return view('welcome');
-});
+}); */
+
+Route::get('/{sort?}', 'SumRankingController@getIndex')->name('ranking');
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

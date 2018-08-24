@@ -5,6 +5,9 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
+import 'particles.js/particles';
+const particlesJS = window.particlesJS;
+
 require('./bootstrap');
 
 window.Vue = require('vue');
@@ -19,4 +22,8 @@ Vue.component('example-component', require('./components/ExampleComponent.vue'))
 
 const app = new Vue({
     el: '#app'
+});
+
+particlesJS.load('particles-js', 'js/particles/particlesjs-config.json', function() {
+  console.log('callback - particles.js config loaded');
 });
