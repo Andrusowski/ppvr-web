@@ -23,6 +23,7 @@
           <th>Rank</th>
     			<th>Name</th>
           <th>posts</th>
+          <th>controversy</th>
     			<th>total pp</th>
           <th>avg pp</th>
     		</tr>
@@ -34,6 +35,7 @@
           <td>{{ ++$rank }}</td>
           <td>{{ $post->name }}</td>
           <td>{{ $post->posts }}</td>
+          <td>{{ number_format($post->controversy, 2) }}%</td>
           <td>{{ round($post->score) }}</td>
           <td>{{ round($post->score_avg) }}</td>
         </tr>

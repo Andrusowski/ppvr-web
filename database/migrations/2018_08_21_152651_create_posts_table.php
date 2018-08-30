@@ -21,8 +21,7 @@ class CreatePostsTable extends Migration
             $table->string('map_diff', 255);
             $table->string('author', 20);
             $table->integer('score');
-            $table->integer('ups')->unsigned();
-            $table->integer('downs')->unsigned();
+            $table->decimal('upvote_ratio', 2, 2);
             $table->integer('gilded')->unsigned();
             $table->integer('created_utc')->unsigned();
             $table->boolean('final');

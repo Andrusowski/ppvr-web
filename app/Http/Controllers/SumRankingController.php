@@ -20,9 +20,9 @@ class SumRankingController extends Controller
         if ($sort = 'score') {
           $posts = DB::table('posts')->select(DB::raw('posts.player_id,
                                                        players.name,
+                                                       (1-AVG(posts.upvote_ratio))*100 as controversy,
                                                        SUM(posts.score*(1+((posts.gilded)*0.1))) as score,
                                                        AVG(posts.score*(1+((posts.gilded)*0.1))) as score_avg,
-                                                       (SUM(posts.downs)/SUM(posts.ups))*100 as controversy,
                                                        COUNT(posts.id) as posts'))
                                      ->join('players', 'posts.player_id', '=', 'players.id')
                                      ->groupBy('posts.player_id', 'players.name')

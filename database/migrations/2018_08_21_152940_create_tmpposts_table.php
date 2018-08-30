@@ -17,6 +17,7 @@ class CreateTmppostsTable extends Migration
             $table->string('id', 8);
             $table->string('title', 300);
             $table->string('author', 20);
+            $table->integer('score');
 
             $table->primary('id');
         });
