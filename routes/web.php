@@ -15,8 +15,16 @@
     return view('welcome');
 }); */
 
-Route::get('/{sort?}', 'SumRankingController@getIndex')->name('ranking');
+Route::get('/', 'RankingSelectController@getIndex');
+Route::get('/ranking/{sort?}', 'SumRankingController@getIndex');
+Route::get('/post', 'PostController@getIndex');
+Route::get('/player', 'PlayerController@getIndex');
+Route::get('/author', 'AuthorController@getIndex');
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/review', 'ReviewController@getIndex')->name('review');
+Route::get('/review/add/{id}', 'ReviewController@getAdd')->name('review');
+Route::get('/review/add/{id}', 'ReviewController@getAdd')->name('review');
+Route::post('/review/add/{id}', 'ReviewController@postAdd')->name('review');
+Route::get('/review/delete/{id}', 'ReviewController@getDelete')->name('review');
