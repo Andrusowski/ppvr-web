@@ -15,11 +15,14 @@
     return view('welcome');
 }); */
 
-Route::get('/', 'RankingSelectController@getIndex');
-Route::get('/ranking/{sort?}', 'SumRankingController@getIndex');
+Route::get('/', 'IndexController@getIndex');
+Route::get('/ranking', 'RawRankingController@getIndex');
+Route::get('/ranking/raw/{sort?}', 'RawRankingController@getIndex')->where('sort', 'score|score_avg|controversy|posts');
+Route::get('/ranking/weighted/{sort?}', 'WeightedRankingController@getIndex');
+Route::get('/ranking/author/{sort?}', 'AuthorRankingController@getIndex');
 Route::get('/post', 'PostController@getIndex');
-Route::get('/player', 'PlayerController@getIndex');
-Route::get('/author', 'AuthorController@getIndex');
+Route::get('/player/{id}', 'PlayerController@getIndex');
+Route::get('/author/{name}', 'AuthorController@getIndex');
 
 Auth::routes();
 

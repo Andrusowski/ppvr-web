@@ -37,10 +37,10 @@ class ReviewController extends Controller
 		{
             //try to parse the post-title
             $tmppostParsed = array(
-              "player" => "**error**",
-              "artist" => "**error**",
-              "title" => "**error**",
-              "diff" => "**error**",
+              "player" => "",
+              "artist" => "",
+              "title" => "",
+              "diff" => "",
             );
 
             $matches = array();
@@ -77,9 +77,17 @@ class ReviewController extends Controller
               $tmppostParsed["diff"] = $matches[3];
             }
 
-            $apiUser = file_get_contents (
-                       "https://osu.ppy.sh/api/get_user?k=".env('OSU_API_KEY', 0).
-                       "&u=".$tmppostParsed["player"]."&type=string");
+            $apiUser;
+            if (old('player')) {
+                $apiUser = file_get_contents (
+                           "https://osu.ppy.sh/api/get_user?k=".env('OSU_API_KEY', 0).
+                           "&u=".old('player')."&type=string");
+            }
+            else {
+                $apiUser = file_get_contents (
+                           "https://osu.ppy.sh/api/get_user?k=".env('OSU_API_KEY', 0).
+                           "&u=".$tmppostParsed["player"]."&type=string");
+            }
             $user = json_decode($apiUser);
 
 			return view('review.add')->with('tmppost', $tmppost)
@@ -109,7 +117,7 @@ class ReviewController extends Controller
 
         if ($user != null) {
             //check if player exists in Database
-            $player = Player::find($id);
+            $player = Player::where('name', Request::input('player'))->first();
             if (!$player) {
                 $player = new Player();
                 $player->id = $user[0]->user_id;

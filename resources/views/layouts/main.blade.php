@@ -29,13 +29,13 @@
     <div id="app">
       <div class="container">
         <nav class="navbar">
-          <a class="navbar-brand" href="/">PPVR</a>
+          <a class="navbar-brand text-body" href="{{url('/')}}">PPV<span style="color: #ff4500;">R</span></a>
           <form class="form-inline">
             <div class="input-group">
               <div class="input-group-prepend">
                 <div class="input-group-text" id="btnGroupAddon2">@</div>
               </div>
-              <input type="text" class="form-control" placeholder="Player Search" aria-label="Input group example" aria-describedby="btnGroupAddon2">
+              <input type="text" class="form-control" placeholder="Player Search" aria-describedby="btnGroupAddon2">
             </div>
           </form>
         </nav>
@@ -44,6 +44,9 @@
       </div>
     </div>
 
+    <script type="text/javascript">
+        var base_url = {!! json_encode(url('/')) !!}
+    </script>
     <script type="text/javascript" src="{!! asset('js/app.js') !!}" defer></script>
   </body>
 </html>

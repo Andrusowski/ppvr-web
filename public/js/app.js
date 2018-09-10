@@ -13916,9 +13916,7 @@ var app = new Vue({
   el: '#app'
 });
 
-particlesJS.load('particles-js', 'js/particles/particlesjs-config.json', function () {
-  console.log('callback - particles.js config loaded');
-});
+particlesJS.load('particles-js', base_url + '/js/particles/particlesjs-config.json');
 
 /***/ }),
 /* 13 */
