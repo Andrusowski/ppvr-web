@@ -17,7 +17,8 @@ class CreatePlayersTable extends Migration
             $table->integer('id')->unsigned();
             $table->string('name', 15);
             $table->string('alias', 15)->nullable();
-            $table->timestamps()->useCurrent();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
 
             $table->primary('id');
         });

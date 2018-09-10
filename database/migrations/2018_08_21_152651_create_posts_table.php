@@ -26,7 +26,8 @@ class CreatePostsTable extends Migration
             $table->integer('gilded')->unsigned();
             $table->integer('created_utc')->unsigned();
             $table->boolean('final');
-            $table->timestamps()->useCurrent();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
 
             $table->primary('id');
 
