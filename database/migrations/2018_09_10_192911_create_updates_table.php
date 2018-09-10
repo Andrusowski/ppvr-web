@@ -16,7 +16,7 @@ class CreateUpdatesTable extends Migration
         Schema::create('updates', function (Blueprint $table) {
             $table->string('id', 8);
             $table->integer('score');
-            $table->timestamps();
+            $table->timestamps()->useCurrent();
         });
     }
 

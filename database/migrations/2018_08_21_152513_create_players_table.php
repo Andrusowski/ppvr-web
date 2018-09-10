@@ -17,7 +17,7 @@ class CreatePlayersTable extends Migration
             $table->integer('id')->unsigned();
             $table->string('name', 15);
             $table->string('alias', 15)->nullable();
-            $table->timestamps();
+            $table->timestamps()->useCurrent();
 
             $table->primary('id');
         });
