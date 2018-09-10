@@ -18,6 +18,7 @@ class CreateTmppostsTable extends Migration
             $table->string('title', 300);
             $table->string('author', 20);
             $table->integer('score');
+            $table->timestamps();
 
             $table->primary('id');
         });

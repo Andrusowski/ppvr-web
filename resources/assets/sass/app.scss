@@ -8,21 +8,9 @@
 // Variables
 @import 'variables';
 
-.navbar {
-  background-color: transparent;
-  background: transparent;
-  border-color: transparent;
-}
+.reddit { color: #ff4500; }
 
-.navbar li { color: #000 }
-
-.center-div {
-  border-radius: 5px;
-  width: 50%;
-  margin: 0px auto;
-  float: none;
-}
-
+//particle bg
 #particles-js canvas {
     display: block;
     vertical-align: bottom;

@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="https://bootswatch.com/4/litera/bootstrap.min.css">
 
     <!-- my CSS -->
-    <link rel="stylesheet" href="{!! asset('css/app.css') !!}">
+    <link rel="stylesheet" href="{!! asset('css/app.css') !!}" type="text/css">
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="https://fonts.gstatic.com">

@@ -26,6 +26,7 @@ class CreatePostsTable extends Migration
             $table->integer('gilded')->unsigned();
             $table->integer('created_utc')->unsigned();
             $table->boolean('final');
+            $table->timestamps();
 
             $table->primary('id');
 

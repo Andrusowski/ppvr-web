@@ -18,16 +18,7 @@
   </div>
 
   <div class="col-md-3">
-      <div class="dropdown">
-          <a class="btn btn-primary btn-lg btn-block dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Player
-          </a>
-
-          <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-              <a class="dropdown-item" href="{{ url('/ranking/raw/') }}">raw</a>
-              <a class="dropdown-item" href="{{ url('/ranking/weighted/') }}">weighted</a>
-          </div>
-      </div>
+      <a class="btn btn-primary btn-lg btn-block" href="{{ url('/ranking/player/') }}">Player</a>
   </div>
 
   <div class="col-md-3">

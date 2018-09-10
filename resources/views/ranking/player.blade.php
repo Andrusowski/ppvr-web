@@ -3,9 +3,9 @@
 @section('content')
 
 <div class="text-center welcometext">
-  <h1 class="display-3">PPV<span style="color: #ff4500;">R</span></h1>
+  <h1 class="display-4">player Score Ranking</h1>
   <p class="lead">
-    The only pp system where peppy is in the top 50
+    Total scores of all posts about each player, without any weighting.
   </p>
 </div>
 <br><br>
@@ -16,7 +16,6 @@
   </div>
 
   <div class="col-md-6">
-    <h1 class="display-5 text-center">top pp</h1>
     <table class="table table-sm table-hover">
     	<thead>
             <tr>
@@ -25,33 +24,33 @@
                 <th class="text-nowrap">
                     posts
                     @if ($sort == "posts")
-                    <a href="{{ url('/ranking/raw/posts') }}" class="fas fa-sort-down text-active" alt="sort descending" style="text-decoration: none"></a>
+                    <a href="{{ url('/ranking/player/posts') }}" class="fas fa-sort-down text-body" alt="sort descending" style="text-decoration: none"></a>
                     @else
-                    <a href="{{ url('/ranking/raw/posts') }}" class="fas fa-sort-down text-body" alt="sort descending" style="text-decoration: none"></a>
+                    <a href="{{ url('/ranking/player/posts') }}" class="fas fa-sort-down text-muted" alt="sort descending" style="text-decoration: none"></a>
                     @endif
                 </th>
                 <th class="text-nowrap">
                     controversy
                     @if ($sort == "controversy")
-                    <a href="{{ url('/ranking/raw/controversy') }}" class="fas fa-sort-down text-active" alt="sort descending" style="text-decoration: none"></a>
+                    <a href="{{ url('/ranking/player/controversy') }}" class="fas fa-sort-down text-body" alt="sort descending" style="text-decoration: none"></a>
                     @else
-                    <a href="{{ url('/ranking/raw/controversy') }}" class="fas fa-sort-down text-body" alt="sort descending" style="text-decoration: none"></a>
+                    <a href="{{ url('/ranking/player/controversy') }}" class="fas fa-sort-down text-muted" alt="sort descending" style="text-decoration: none"></a>
                     @endif
                 </th>
         		<th class="text-nowrap">
                     total pp
                     @if ($sort == "score")
-                    <a href="{{ url('/ranking/raw/score') }}" class="fas fa-sort-down text-active" alt="sort descending" style="text-decoration: none"></a>
+                    <a href="{{ url('/ranking/player/score') }}" class="fas fa-sort-down text-body" alt="sort descending" style="text-decoration: none"></a>
                     @else
-                    <a href="{{ url('/ranking/raw/score') }}" class="fas fa-sort-down text-body" alt="sort descending" style="text-decoration: none"></a>
+                    <a href="{{ url('/ranking/player/score') }}" class="fas fa-sort-down text-muted" alt="sort descending" style="text-decoration: none"></a>
                     @endif
                 </th>
                 <th class="text-nowrap">
                     avg pp
                     @if ($sort == "score_avg")
-                    <a href="{{ url('/ranking/raw/score_avg') }}" class="fas fa-sort-down text-active" alt="sort descending" style="text-decoration: none"></a>
+                    <a href="{{ url('/ranking/player/score_avg') }}" class="fas fa-sort-down text-body" alt="sort descending" style="text-decoration: none"></a>
                     @else
-                    <a href="{{ url('/ranking/raw/score_avg') }}" class="fas fa-sort-down text-body" alt="sort descending" style="text-decoration: none"></a>
+                    <a href="{{ url('/ranking/player/score_avg') }}" class="fas fa-sort-down text-muted" alt="sort descending" style="text-decoration: none"></a>
                     @endif
                 </th>
     		</tr>

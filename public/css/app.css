@@ -10471,21 +10471,8 @@ a.text-dark:focus {
   }
 }
 
-.navbar {
-  background-color: transparent;
-  background: transparent;
-  border-color: transparent;
-}
-
-.navbar li {
-  color: #000;
-}
-
-.center-div {
-  border-radius: 5px;
-  width: 50%;
-  margin: 0px auto;
-  float: none;
+.reddit {
+  color: #ff4500;
 }
 
 #particles-js canvas {
