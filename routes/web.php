@@ -20,7 +20,7 @@ Route::get('/ranking', 'RawRankingController@getIndex');
 Route::get('/ranking/player/{sort?}', 'RankingController@getIndexPlayer')->where('sort', 'score|score_avg|controversy|posts');
 Route::get('/ranking/weighted/{sort?}', 'WeightedRankingController@getIndex');
 Route::get('/ranking/author/{sort?}', 'RankingController@getIndexAuthor')->where('sort', 'score|score_avg|controversy|posts');
-Route::get('/post', 'PostController@getIndex');
+Route::get('/post/{id}', 'PostController@getIndex');
 Route::get('/player/{id}', 'PlayerController@getIndex');
 Route::get('/author/{name}', 'AuthorController@getIndex');
 

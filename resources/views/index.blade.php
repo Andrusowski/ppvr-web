@@ -17,11 +17,11 @@
   <div class="col-md-3">
   </div>
 
-  <div class="col-md-3">
+  <div class="col-md-3 pt-2 pb-2">
       <a class="btn btn-primary btn-lg btn-block" href="{{ url('/ranking/player/') }}">Player</a>
   </div>
 
-  <div class="col-md-3">
+  <div class="col-md-3 pt-2 pb-2">
       <a class="btn btn-primary btn-lg btn-block" href="{{ url('/ranking/author/') }}">Author</a>
   </div>
 

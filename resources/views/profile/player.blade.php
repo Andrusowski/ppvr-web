@@ -8,14 +8,11 @@
 
     <!-- Badges -->
     <h5 class="d-inline-block pt-3 align-top">
-        @if ($player_stats->controversy >= 0)
+        @if ((time() - strtotime($player_stats->created_at)) < 48*60*60)
             <span class="badge badge-primary">new</span>
         @endif
-        @if ($player_stats->controversy >= 0)
+        @if ((time() - $posts_new[0]->created_utc) < 48*60*60)
             <span class="badge badge-success">recent activity</span>
-        @endif
-        @if ($player_stats->controversy >= 0)
-            <span class="badge badge-danger">controversial</span>
         @endif
     </h5>
 

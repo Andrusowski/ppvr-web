@@ -43,6 +43,7 @@ class RankingController extends Controller
                                                      AVG(score*(1+((gilded)*0.1))) as score_avg,
                                                      COUNT(id) as posts'))
                                    ->where('author', '!=', '[deleted]')
+                                   ->having(DB::raw('SUM(score*(1+((gilded)*0.1)))'), '>=', 100)
                                    ->groupBy('author')
                                    ->orderBy($sort, 'desc')
                                    ->paginate(15);

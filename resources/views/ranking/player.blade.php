@@ -19,7 +19,7 @@
     <table class="table table-sm table-hover">
     	<thead>
             <tr>
-                <th>Rank</th>
+                <th>#</th>
         		<th>Name</th>
                 <th class="text-nowrap">
                     posts
@@ -30,7 +30,7 @@
                     @endif
                 </th>
                 <th class="text-nowrap">
-                    controversy
+                    ratio
                     @if ($sort == "controversy")
                     <a href="{{ url('/ranking/player/controversy') }}" class="fas fa-sort-down text-body" alt="sort descending" style="text-decoration: none"></a>
                     @else
@@ -38,7 +38,7 @@
                     @endif
                 </th>
         		<th class="text-nowrap">
-                    total pp
+                    score
                     @if ($sort == "score")
                     <a href="{{ url('/ranking/player/score') }}" class="fas fa-sort-down text-body" alt="sort descending" style="text-decoration: none"></a>
                     @else
@@ -46,7 +46,7 @@
                     @endif
                 </th>
                 <th class="text-nowrap">
-                    avg pp
+                    avg
                     @if ($sort == "score_avg")
                     <a href="{{ url('/ranking/player/score_avg') }}" class="fas fa-sort-down text-body" alt="sort descending" style="text-decoration: none"></a>
                     @else

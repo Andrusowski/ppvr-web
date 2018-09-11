@@ -30,10 +30,10 @@
       <div class="container">
         <nav class="navbar">
           <a class="navbar-brand text-body" href="{{url('/')}}">PPV<span class="reddit">R</span></a>
-          <form class="form-inline">
+          <form class="form-inline searchbar">
             <div class="input-group">
               <div class="input-group-prepend">
-                <div class="input-group-text" id="btnGroupAddon2">@</div>
+                <div class="input-group-text" id="btnGroupAddon2"><i class="fas fa-user"></i></div>
               </div>
               <input type="text" class="form-control" placeholder="Player Search" aria-describedby="btnGroupAddon2">
             </div>

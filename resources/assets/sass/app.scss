@@ -8,9 +8,17 @@
 // Variables
 @import 'variables';
 
+$reddit: #ff4500;
 .reddit { color: #ff4500; }
+.btn-info {
+    @include button-variant($reddit, darken($reddit, 7.5%), darken($reddit, 10%), lighten($reddit,5%), lighten($reddit, 10%), darken($reddit,30%));
+}
 
 .table-width { width: 100%; }
+
+.searchbar {
+    width: 15em;
+}
 
 //particle bg
 #particles-js canvas {
