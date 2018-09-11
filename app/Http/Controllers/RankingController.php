@@ -23,6 +23,7 @@ class RankingController extends Controller
                                                      AVG(posts.score*(1+((posts.gilded)*0.1))) as score_avg,
                                                      COUNT(posts.id) as posts'))
                                    ->join('players', 'posts.player_id', '=', 'players.id')
+                                   ->having(DB::raw('SUM(posts.score*(1+((posts.gilded)*0.1)))'), '>=', 100)
                                    ->groupBy('posts.player_id', 'players.name')
                                    ->orderBy($sort, 'desc')
                                    ->paginate(15);

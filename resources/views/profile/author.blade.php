@@ -25,9 +25,22 @@
                 <div class="card-body">
                     <h5 class="card-title">Stats</h5>
 
-                    <p class="card-text">total score: {{ round($author_stats->score) }}</p>
-                    <p class="card-text">average score: {{ round($author_stats->score_avg) }}</p>
-                    <p class="card-text">controversy: {{ round($author_stats->controversy) }}%</p>
+                    <table class="table table-borderless">
+                      <tbody>
+                        <tr>
+                          <td>total score:</td>
+                          <td>{{ round($author_stats->score) }}</td>
+                        </tr>
+                        <tr>
+                          <td>average score:</td>
+                          <td>{{ round($author_stats->score_avg) }}</td>
+                        </tr>
+                        <tr>
+                          <td>controversy:</td>
+                          <td>{{ round($author_stats->controversy) }}%</td>
+                        </tr>
+                      </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -36,7 +49,7 @@
             <table class="table table-sm table-hover">
                 <thead>
                     <tr>
-                        <th>Map</th>
+                        <th class="table-width">Map</th>
                         <th>Score</th>
                         <th>Controversy</th>
                     </tr>
@@ -63,7 +76,7 @@
                 <table class="table table-sm table-hover">
                     <thead>
                         <tr>
-                            <th>Map</th>
+                            <th class="table-width">Map</th>
                             <th>Score</th>
                             <th>Controversy</th>
                         </tr>

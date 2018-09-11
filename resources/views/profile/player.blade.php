@@ -58,7 +58,7 @@
             <table class="table table-sm table-hover">
                 <thead>
                     <tr>
-                        <th>Map</th>
+                        <th class="table-width">Map</th>
                         <th>Score</th>
                         <th>Controversy</th>
                     </tr>
@@ -85,7 +85,7 @@
                 <table class="table table-sm table-hover">
                     <thead>
                         <tr>
-                            <th>Map</th>
+                            <th class="table-width">Map</th>
                             <th>Score</th>
                             <th>Controversy</th>
                         </tr>

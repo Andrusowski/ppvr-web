@@ -10475,6 +10475,10 @@ a.text-dark:focus {
   color: #ff4500;
 }
 
+.table-width {
+  width: 100%;
+}
+
 #particles-js canvas {
   display: block;
   vertical-align: bottom;

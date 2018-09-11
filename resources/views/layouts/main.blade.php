@@ -29,7 +29,7 @@
     <div id="app">
       <div class="container">
         <nav class="navbar">
-          <a class="navbar-brand text-body" href="{{url('/')}}">PPV<span style="color: #ff4500;">R</span></a>
+          <a class="navbar-brand text-body" href="{{url('/')}}">PPV<span class="reddit">R</span></a>
           <form class="form-inline">
             <div class="input-group">
               <div class="input-group-prepend">
