@@ -13918,6 +13918,11 @@ var app = new Vue({
 
 particlesJS.load('particles-js', base_url + '/js/particles/particlesjs-config.json');
 
+function search() {
+  var name = document.getElementById('search').value;
+  window.location = "http://localhost/ppvr-web/public/search/" + name;
+}
+
 /***/ }),
 /* 13 */
 /***/ (function(module, exports) {

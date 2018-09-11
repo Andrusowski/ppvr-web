@@ -38,20 +38,17 @@ class PlayerController extends Controller
                                    ->take(10)
                                    ->get();
 
-        $posts_new = [];
-        if(count($posts) >= 10) {
-            $posts_new = DB::table('posts')->select(DB::raw('id,
-                                                             map_artist,
-                                                             map_title,
-                                                             map_diff,
-                                                             score*(1+((gilded)*0.1)) as score,
-                                                             (downs/ups)*100 as controversy,
-                                                             created_utc'))
-                                           ->where('player_id', $id)
-                                           ->orderBy('created_utc', 'desc')
-                                           ->take(10)
-                                           ->get();
-        }
+        $posts_new = DB::table('posts')->select(DB::raw('id,
+                                                         map_artist,
+                                                         map_title,
+                                                         map_diff,
+                                                         score*(1+((gilded)*0.1)) as score,
+                                                         (downs/ups)*100 as controversy,
+                                                         created_utc'))
+                                       ->where('player_id', $id)
+                                       ->orderBy('created_utc', 'desc')
+                                       ->take(10)
+                                       ->get();
 
         return view('profile.player')->with('posts', $posts)
                                      ->with('player', $player)

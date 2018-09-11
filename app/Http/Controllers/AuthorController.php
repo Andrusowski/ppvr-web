@@ -37,20 +37,17 @@ class AuthorController extends Controller
                                    ->take(10)
                                    ->get();
 
-       $posts_new = [];
-       if(count($posts) >= 10) {
-           $posts_new = DB::table('posts')->select(DB::raw('id,
-                                                            map_artist,
-                                                            map_title,
-                                                            map_diff,
-                                                            score*(1+((gilded)*0.1)) as score,
-                                                            (downs/ups)*100 as controversy,
-                                                            created_utc'))
-                                          ->where('author', $name)
-                                          ->orderBy('created_utc', 'desc')
-                                          ->take(10)
-                                          ->get();
-       }
+       $posts_new = DB::table('posts')->select(DB::raw('id,
+                                                        map_artist,
+                                                        map_title,
+                                                        map_diff,
+                                                        score*(1+((gilded)*0.1)) as score,
+                                                        (downs/ups)*100 as controversy,
+                                                        created_utc'))
+                                      ->where('author', $name)
+                                      ->orderBy('created_utc', 'desc')
+                                      ->take(10)
+                                      ->get();
 
         return view('profile.author')->with('posts', $posts)
                                      ->with('posts_new', $posts_new)
