@@ -19,9 +19,7 @@ class AuthorController extends Controller
                                                             (SUM(downs)/SUM(ups))*100 as controversy,
                                                             SUM(score*(1+((gilded)*0.1))) as score,
                                                             AVG(score*(1+((gilded)*0.1))) as score_avg,
-                                                            COUNT(posts.id) as posts,
-                                                            created_at'))
-                                   ->groupBy('created_at')
+                                                            COUNT(posts.id) as posts'))
                                    ->where('author', $name)
                                    ->groupBy('author')
                                    ->first();

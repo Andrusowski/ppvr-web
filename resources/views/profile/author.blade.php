@@ -8,9 +8,6 @@
 
     <!-- Badges -->
     <h5 class="d-inline-block pt-3 align-top">
-        @if ((time() - strtotime($author_stats->created_at)) < 48*60*60)
-            <span class="badge badge-primary">new</span>
-        @endif
         @if ((time() - $posts_new[0]->created_utc) < 48*60*60)
             <span class="badge badge-success">recent activity</span>
         @endif
