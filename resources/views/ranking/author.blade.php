@@ -30,7 +30,7 @@
                     @endif
                 </th>
                 <th class="text-nowrap">
-                    controversy
+                    ratio
                     @if ($sort == "controversy")
                     <a href="{{ url('/ranking/author/controversy') }}" class="fas fa-sort-down text-body" alt="sort descending" style="text-decoration: none"></a>
                     @else

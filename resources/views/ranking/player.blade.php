@@ -3,9 +3,9 @@
 @section('content')
 
 <div class="text-center welcometext">
-  <h1 class="display-4">player Score Ranking</h1>
+  <h1 class="display-4">Player Score Ranking</h1>
   <p class="lead">
-    Total scores of all posts about each player, without any weighting.
+    Top Players
   </p>
 </div>
 <br><br>

@@ -21,6 +21,10 @@
 
                     <table class="table table-borderless">
                       <tbody>
+                          <tr>
+                            <td>score ranking:</td>
+                            <td>#{{ $rank }}</td>
+                          </tr>
                         <tr>
                           <td>total score:</td>
                           <td>{{ round($author_stats->score) }}</td>

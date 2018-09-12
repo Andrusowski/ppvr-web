@@ -31,18 +31,22 @@
 
                     <table class="table table-borderless">
                       <tbody>
-                        <tr>
-                          <td>total score:</td>
-                          <td>{{ round($player_stats->score) }}</td>
-                        </tr>
-                        <tr>
-                          <td>average score:</td>
-                          <td>{{ round($player_stats->score_avg) }}</td>
-                        </tr>
-                        <tr>
-                          <td>controversy:</td>
-                          <td>{{ round($player_stats->controversy) }}%</td>
-                        </tr>
+                          <tr>
+                            <td>score ranking:</td>
+                            <td>#{{ $rank }}</td>
+                          </tr>
+                            <tr>
+                              <td>total score:</td>
+                              <td>{{ round($player_stats->score) }}</td>
+                            </tr>
+                            <tr>
+                              <td>average score:</td>
+                              <td>{{ round($player_stats->score_avg) }}</td>
+                            </tr>
+                            <tr>
+                              <td>controversy:</td>
+                              <td>{{ round($player_stats->controversy) }}%</td>
+                            </tr>
                       </tbody>
                     </table>
 

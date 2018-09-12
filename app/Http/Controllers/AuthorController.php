@@ -24,6 +24,23 @@ class AuthorController extends Controller
                                    ->groupBy('author')
                                    ->first();
 
+        $ranking = DB::table('posts')->select(DB::raw('author,
+                                                       SUM(score*(1+((gilded)*0.1))) as score'))
+                                     ->where('author', '!=', '[deleted]')
+                                     ->groupBy('author')
+                                     ->orderBy('score', 'desc')
+                                     ->get();
+
+        $rank = 1;
+        foreach ($ranking as $rankingAuthor) {
+           if ($rankingAuthor->author != $author_stats->author) {
+               $rank++;
+           }
+           else {
+               break;
+           }
+        }
+
         $posts = DB::table('posts')->select(DB::raw('id,
                                                      map_artist,
                                                      map_title,
@@ -47,7 +64,8 @@ class AuthorController extends Controller
                                       ->take(10)
                                       ->get();
 
-        return view('profile.author')->with('posts', $posts)
+        return view('profile.author')->with('rank', $rank)
+                                     ->with('posts', $posts)
                                      ->with('posts_new', $posts_new)
                                      ->with('author_stats', $author_stats);
     }

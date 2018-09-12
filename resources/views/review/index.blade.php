@@ -42,7 +42,7 @@
                 	<tbody>
                         @foreach($tmpposts as $tmppost)
                         <tr>
-                            <td>{{ $tmppost->title }}</td>
+                            <td @if((time() - strtotime($tmppost->created_at)) < 48*60*60) class="text-muted" @endif>{{ $tmppost->title }}</td>
                             <td>
                                 <a href="{{ url('review/add/'.$tmppost->id) }}" class="btn btn-outline-primary btn-sm"><i class="fas fa-pencil-alt"></i></a>
                                 <a href="{{ url('review/delete/'.$tmppost->id) }}" class="btn btn-outline-danger btn-sm"><i class="far fa-trash-alt"></i></a>

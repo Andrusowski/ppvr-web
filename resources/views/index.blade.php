@@ -5,7 +5,7 @@
 <div class="text-center welcometext">
   <h1 class="display-3">PPV<span style="color: #ff4500;">R</span></h1>
   <p class="lead">
-    The only pp system where peppy is in the top 50
+    Alternative osu! ranking based on posts from /r/osugame
   </p>
 </div>
 <br><br>
