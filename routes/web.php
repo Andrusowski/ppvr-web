@@ -27,7 +27,7 @@ Route::get('/search', 'SearchController@postSearch');
 Auth::routes();
 
 Route::get('/review', 'ReviewController@getIndex')->name('review');
-Route::get('/review/add/{id}', 'ReviewController@getAdd')->name('review');
-Route::get('/review/add/{id}', 'ReviewController@getAdd')->name('review');
-Route::post('/review/add/{id}', 'ReviewController@postAdd')->name('review');
-Route::get('/review/delete/{id}', 'ReviewController@getDelete')->name('review');
+Route::get('/review/add/{id}', 'ReviewController@getAdd');
+Route::get('/review/add/{id}', 'ReviewController@getAdd');
+Route::post('/review/add/{id}', 'ReviewController@postAdd');
+Route::get('/review/delete/{id}', 'ReviewController@getDelete');

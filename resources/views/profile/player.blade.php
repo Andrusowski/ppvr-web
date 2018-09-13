@@ -2,7 +2,7 @@
 
 @section('content')
 
-    <h1 class="display-3 d-inline-block">
+    <h1 class="display-4 d-inline-block">
         {{ $player->name }}
     </h1>
 
@@ -30,24 +30,24 @@
                     <h5 class="card-title">Stats</h5>
 
                     <table class="table table-borderless">
-                      <tbody>
-                          <tr>
-                            <td>score ranking:</td>
-                            <td>#{{ $rank }}</td>
-                          </tr>
+                        <tbody>
                             <tr>
-                              <td>total score:</td>
-                              <td>{{ round($player_stats->score) }}</td>
+                                <td>score ranking:</td>
+                                <td>#{{ $rank }}</td>
                             </tr>
                             <tr>
-                              <td>average score:</td>
-                              <td>{{ round($player_stats->score_avg) }}</td>
+                                <td>total score:</td>
+                                <td>{{ round($player_stats->score) }}</td>
                             </tr>
                             <tr>
-                              <td>controversy:</td>
-                              <td>{{ round($player_stats->controversy) }}%</td>
+                                <td>average score:</td>
+                                <td>{{ round($player_stats->score_avg) }}</td>
                             </tr>
-                      </tbody>
+                            <tr>
+                                <td>controversy:</td>
+                                <td>{{ round($player_stats->controversy) }}%</td>
+                            </tr>
+                        </tbody>
                     </table>
 
                     <a class="btn btn-primary btn-lg btn-block" href="{{ 'https://osu.ppy.sh/users/'.$player->id }}">osu! Profile</a>
@@ -61,7 +61,7 @@
                     <tr>
                         <th class="table-width">Map</th>
                         <th>Score</th>
-                        <th>Controversy</th>
+                        <th>Ratio</th>
                     </tr>
                 </thead>
 
@@ -88,7 +88,7 @@
                         <tr>
                             <th class="table-width">Map</th>
                             <th>Score</th>
-                            <th>Controversy</th>
+                            <th>Ratio</th>
                         </tr>
                     </thead>
 
@@ -110,6 +110,4 @@
             @endif
         </div>
     </div>
-
-
 @endsection

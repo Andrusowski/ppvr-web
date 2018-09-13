@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en">
-  <head>
+<head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -23,30 +23,30 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
 
     <title>PPVR</title>
-  </head>
-  <body>
+</head>
+<body>
     <div id="particles-js"></div>
     <div id="app">
-      <div class="container">
-        <nav class="navbar">
-          <a class="navbar-brand text-body" href="{{url('/')}}">PPV<span class="reddit">R</span></a>
-          <form class="form-inline searchbar" action="{{url('search/')}}">
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <div class="input-group-text" id="btnGroupAddon2"><i class="fas fa-user"></i></div>
-              </div>
-              <input type="text" class="form-control" name="name" placeholder="Player Search" aria-describedby="btnGroupAddon2">
-            </div>
-          </form>
-        </nav>
-        <br><br>
-        @yield('content')
-      </div>
+        <div class="container">
+            <nav class="navbar">
+                <a class="navbar-brand text-body" href="{{url('/')}}">PPV<span class="reddit">R</span></a>
+                <form class="form-inline searchbar" action="{{url('search/')}}">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text" id="btnGroupAddon2"><i class="fas fa-user"></i></div>
+                        </div>
+                        <input type="text" class="form-control" name="name" placeholder="Player Search" aria-describedby="btnGroupAddon2">
+                    </div>
+                </form>
+            </nav>
+            <br><br>
+            @yield('content')
+        </div>
     </div>
 
     <script type="text/javascript">
-        var base_url = {!! json_encode(url('/')) !!}
+    var base_url = {!! json_encode(url('/')) !!}
     </script>
     <script type="text/javascript" src="{!! asset('js/app.js') !!}" defer></script>
-  </body>
+</body>
 </html>

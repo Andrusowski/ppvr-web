@@ -14,27 +14,27 @@
                     <h5 class="card-title">Stats</h5>
 
                     <table class="table table-borderless">
-                      <tbody>
-                        <tr>
-                          <td>Score:</td>
-                          <td>{{ $post->score }}</td>
-                        </tr>
-                        <tr>
-                          <td>Upvotes:</td>
-                          <td>{{ $post->ups }}</td>
-                        </tr>
-                        <tr>
-                          <td>Downvotes:</td>
-                          <td>{{ $post->downs }}</td>
-                        </tr>
-                        <tr>
-                          <td>Gold:</td>
-                          <td>{{ $post->gilded }}</td>
-                        </tr>
-                      </tbody>
+                        <tbody>
+                            <tr>
+                                <td>Score:</td>
+                                <td>{{ $post->score }}</td>
+                            </tr>
+                            <tr>
+                                <td>Upvotes:</td>
+                                <td>{{ $post->ups }}</td>
+                            </tr>
+                            <tr>
+                                <td>Downvotes:</td>
+                                <td>{{ $post->downs }}</td>
+                            </tr>
+                            <tr>
+                                <td>Gold:</td>
+                                <td>{{ $post->gilded }}</td>
+                            </tr>
+                        </tbody>
                     </table>
 
-                    <a class="btn btn-info btn-lg btn-block" href="{{ 'https://www.reddit.com/r/redditdev/comments/'.$post->id }}">view on Reddit</a>
+                    <a class="btn btn-info btn-lg btn-block" href="{{ 'https://www.reddit.com/r/osugame/comments/'.$post->id }}">view on Reddit</a>
                 </div>
             </div>
         </div>
@@ -47,7 +47,7 @@
                         <th>Played by</th>
                         <th>Posted by</th>
                         <th>Score</th>
-                        <th>Controversy</th>
+                        <th>Ratio</th>
                     </tr>
                 </thead>
 
@@ -83,7 +83,7 @@
                             <th>Played by</th>
                             <th>Posted by</th>
                             <th>Score</th>
-                            <th>Controversy</th>
+                            <th>Ratio</th>
                         </tr>
                     </thead>
 
@@ -114,6 +114,4 @@
             @endif
         </div>
     </div>
-
-
 @endsection

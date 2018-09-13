@@ -20,24 +20,24 @@
                     <h5 class="card-title">Stats</h5>
 
                     <table class="table table-borderless">
-                      <tbody>
-                          <tr>
-                            <td>score ranking:</td>
-                            <td>#{{ $rank }}</td>
-                          </tr>
-                        <tr>
-                          <td>total score:</td>
-                          <td>{{ round($author_stats->score) }}</td>
-                        </tr>
-                        <tr>
-                          <td>average score:</td>
-                          <td>{{ round($author_stats->score_avg) }}</td>
-                        </tr>
-                        <tr>
-                          <td>controversy:</td>
-                          <td>{{ round($author_stats->controversy) }}%</td>
-                        </tr>
-                      </tbody>
+                        <tbody>
+                            <tr>
+                                <td>score ranking:</td>
+                                <td>#{{ $rank }}</td>
+                            </tr>
+                            <tr>
+                                <td>total score:</td>
+                                <td>{{ round($author_stats->score) }}</td>
+                            </tr>
+                            <tr>
+                                <td>average score:</td>
+                                <td>{{ round($author_stats->score_avg) }}</td>
+                            </tr>
+                            <tr>
+                                <td>controversy:</td>
+                                <td>{{ round($author_stats->controversy) }}%</td>
+                            </tr>
+                        </tbody>
                     </table>
 
                     <a class="btn btn-info btn-lg btn-block" href="{{ 'https://www.reddit.com/u/'.$author_stats->author }}">view on Reddit</a>
@@ -51,7 +51,7 @@
                     <tr>
                         <th class="table-width">Map</th>
                         <th>Score</th>
-                        <th>Controversy</th>
+                        <th>Ratio</th>
                     </tr>
                 </thead>
 
@@ -78,7 +78,7 @@
                         <tr>
                             <th class="table-width">Map</th>
                             <th>Score</th>
-                            <th>Controversy</th>
+                            <th>Ratio</th>
                         </tr>
                     </thead>
 
@@ -100,6 +100,4 @@
             @endif
         </div>
     </div>
-
-
 @endsection

@@ -37,22 +37,22 @@ class ReviewController extends Controller
 		{
             //try to parse the post-title
             $tmppostParsed = array(
-              "player" => "",
-              "artist" => "",
-              "title" => "",
-              "diff" => "",
+                "player" => "",
+                "artist" => "",
+                "title" => "",
+                "diff" => "",
             );
 
             $matches = array();
             //player
             $match = preg_match("/(.+)\s+[\|丨].+-.+?\[.+?\]/", $tmppost->title, $matches);
             if ($match != FALSE && count($matches) == 2) {
-              $tmppostParsed["player"] = $matches[1];
+                $tmppostParsed["player"] = $matches[1];
             }
             else {
                 $match = preg_match("/(.+)\s*[\|丨].+-.+?\[.+?\]/", $tmppost->title, $matches);
                 if ($match != FALSE && count($matches) == 2) {
-                  $tmppostParsed["player"] = $matches[1];
+                    $tmppostParsed["player"] = $matches[1];
                 }
             }
 
@@ -60,39 +60,40 @@ class ReviewController extends Controller
             $tmpMap = "";
             $match = preg_match("/.+[\|丨]\s+(.+-.+\[.+\])/", $tmppost->title, $matches);
             if ($match != FALSE && count($matches) == 2) {
-              $tmpMap = $matches[1];
+                $tmpMap = $matches[1];
             }
             else {
                 $match = preg_match("/.+[\|丨]\s*(.+-.+\[.+\])/", $tmppost->title, $matches);
                 if ($match != FALSE && count($matches) == 2) {
-                  $tmpMap = $matches[1];
+                    $tmpMap = $matches[1];
                 }
             }
 
             //split map data
             $match = preg_match("/(.+)\s-\s(.+?)\s\[(.+?)\]/", $tmpMap, $matches);
             if ($match != FALSE && count($matches) == 4) {
-              $tmppostParsed["artist"] = $matches[1];
-              $tmppostParsed["title"] = $matches[2];
-              $tmppostParsed["diff"] = $matches[3];
+                $tmppostParsed["artist"] = $matches[1];
+                $tmppostParsed["title"] = $matches[2];
+                $tmppostParsed["diff"] = $matches[3];
             }
 
             $apiUser;
             if (old('player')) {
                 $apiUser = file_get_contents (
-                           "https://osu.ppy.sh/api/get_user?k=".env('OSU_API_KEY', 0).
-                           "&u=".old('player')."&type=string");
+                    "https://osu.ppy.sh/api/get_user?k=".env('OSU_API_KEY', 0).
+                    "&u=".old('player')."&type=string");
             }
             else {
                 $apiUser = file_get_contents (
-                           "https://osu.ppy.sh/api/get_user?k=".env('OSU_API_KEY', 0).
-                           "&u=".$tmppostParsed["player"]."&type=string");
+                    "https://osu.ppy.sh/api/get_user?k=".env('OSU_API_KEY', 0).
+                    "&u=".$tmppostParsed["player"]."&type=string");
             }
             $user = json_decode($apiUser);
 
-			return view('review.add')->with('tmppost', $tmppost)
-                                      ->with('tmppostParsed', $tmppostParsed)
-                                      ->with('user', $user);
+			return view('review.add')
+                ->with('tmppost', $tmppost)
+                ->with('tmppostParsed', $tmppostParsed)
+                ->with('user', $user);
 		}
 
         return redirect('review');
