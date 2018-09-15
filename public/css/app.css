@@ -10563,6 +10563,10 @@ a.text-dark:focus {
   width: 15em;
 }
 
+.link {
+  text-decoration: none;
+}
+
 #particles-js canvas {
   display: block;
   vertical-align: bottom;

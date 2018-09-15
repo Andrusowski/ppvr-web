@@ -34,7 +34,7 @@
                                 <td>{{ round($author_stats->score_avg) }}</td>
                             </tr>
                             <tr>
-                                <td>controversy:</td>
+                                <td>spicy:</td>
                                 <td>{{ round($author_stats->controversy) }}%</td>
                             </tr>
                         </tbody>
@@ -51,7 +51,7 @@
                     <tr>
                         <th class="table-width">Map</th>
                         <th>Score</th>
-                        <th>Ratio</th>
+                        <th>spicy</th>
                     </tr>
                 </thead>
 
@@ -78,7 +78,7 @@
                         <tr>
                             <th class="table-width">Map</th>
                             <th>Score</th>
-                            <th>Ratio</th>
+                            <th>spicy</th>
                         </tr>
                     </thead>
 

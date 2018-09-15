@@ -25,7 +25,7 @@
     <div class="row pt-4">
         <div class="col-md-3">
             <div class="card">
-                <img class="card-img-top" src="{{ 'https://a.ppy.sh/'.$player->id }}" alt="Card image cap" style="background-color:#333333;">
+                <img class="card-img-top" src="{{ 'https://a.ppy.sh/'.$player->id }}" alt="osu! profile picture" style="background-color:#333333;">
                 <div class="card-body">
                     <h5 class="card-title">Stats</h5>
 
@@ -44,7 +44,7 @@
                                 <td>{{ round($player_stats->score_avg) }}</td>
                             </tr>
                             <tr>
-                                <td>controversy:</td>
+                                <td>spicy:</td>
                                 <td>{{ round($player_stats->controversy) }}%</td>
                             </tr>
                         </tbody>
@@ -61,7 +61,7 @@
                     <tr>
                         <th class="table-width">Map</th>
                         <th>Score</th>
-                        <th>Ratio</th>
+                        <th>spicy</th>
                     </tr>
                 </thead>
 
@@ -88,7 +88,7 @@
                         <tr>
                             <th class="table-width">Map</th>
                             <th>Score</th>
-                            <th>Ratio</th>
+                            <th>spicy</th>
                         </tr>
                     </thead>
 

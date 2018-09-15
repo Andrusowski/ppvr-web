@@ -64,10 +64,11 @@ class IndexController extends Controller
                 $posts_new_top_score = $posts_new[$i]->score;
             }
         }
+
+        //get top comment from top post
         $content = file_get_contents("https://www.reddit.com/r/osugame/comments/".$posts_new[$posts_new_top]->id.".json");
         $post_reddit = json_decode($content);
 
-        //get top comment from top post
         $top_comment = '';
         $top_comment_author = '';
         $top_score = 0;

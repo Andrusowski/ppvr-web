@@ -82,7 +82,7 @@
 
     </div>
 
-    <div class="row pt-5">
+    <div class="row pt-5 pb-5">
         <div class="col-md-2">
         </div>
 
@@ -100,7 +100,7 @@
                     @foreach($posts_new as $post)
                         <tr>
                             <td>
-                                <a href="{{ url('/post/'.$post->id) }}" class="text-body" style="text-decoration: none">
+                                <a href="{{ url('/post/'.$post->id) }}" class="text-body link">
                                     {{ $post->name.' | '.$post->map_artist.' - '.$post->map_title.' ['.$post->map_diff.']' }}
                                 </a>
                             </td>
@@ -119,6 +119,12 @@
 
         <div class="col-md-2">
         </div>
+    </div>
+
+    <div class="text-center text-secondary small pt-5">
+        made by Andrus
+        <a href="https://discordapp.com/users/86760014068355072"><i class="fab fa-discord link text-secondary"></i></a>
+        <a href="https://discordapp.com/users/86760014068355072"><i class="fab fa-github link text-secondary"></i></a>
     </div>
 
 @endsection
