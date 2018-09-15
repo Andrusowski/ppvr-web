@@ -3,8 +3,7 @@
 [PPVR](https://ppvr.andrus.io/) is an alternative osu! ranking system based on the scores of scoreposts on the game's subreddit [/r/osugame](https://www.reddit.com/r/osugame/).
 
 https://twitter.com/bahamete/status/919625209619079170
-
-this is why
+ this is why
 
 This was originally a university project, and consists of two parts. The first one is this Laravel-based ranking website and the [other](https://github.com/Andrusowski/ppvr-bot) is a vanilla PHP skript which parses new reddit posts and puts them in a database.
 
