@@ -25,7 +25,7 @@
     <div class="row pt-4">
         <div class="col-md-3">
             <div class="card">
-                <img class="card-img-top" src="{{ 'https://a.ppy.sh/'.$player->id }}" alt="Card image cap">
+                <img class="card-img-top" src="{{ 'https://a.ppy.sh/'.$player->id }}" alt="Card image cap" style="background-color:#333333;">
                 <div class="card-body">
                     <h5 class="card-title">Stats</h5>
 
@@ -50,7 +50,7 @@
                         </tbody>
                     </table>
 
-                    <a class="btn btn-primary btn-lg btn-block" href="{{ 'https://osu.ppy.sh/users/'.$player->id }}">osu! Profile</a>
+                    <a class="btn btn-osu btn-lg btn-block" href="{{ 'https://osu.ppy.sh/users/'.$player->id }}">osu! Profile</a>
                 </div>
             </div>
         </div>

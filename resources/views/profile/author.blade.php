@@ -40,7 +40,7 @@
                         </tbody>
                     </table>
 
-                    <a class="btn btn-info btn-lg btn-block" href="{{ 'https://www.reddit.com/u/'.$author_stats->author }}">view on Reddit</a>
+                    <a class="btn btn-reddit btn-lg btn-block" href="{{ 'https://www.reddit.com/u/'.$author_stats->author }}">view on Reddit</a>
                 </div>
             </div>
         </div>

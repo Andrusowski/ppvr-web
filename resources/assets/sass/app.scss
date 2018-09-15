@@ -9,9 +9,13 @@
 @import 'variables';
 
 $reddit: #ff4500;
+$osu: #FF66AB;
 .reddit { color: #ff4500; }
-.btn-info {
+.btn-reddit {
     @include button-variant($reddit, darken($reddit, 7.5%), darken($reddit, 10%), lighten($reddit,5%), lighten($reddit, 10%), darken($reddit,30%));
+}
+.btn-osu {
+    @include button-variant($osu, darken($osu, 7.5%), darken($osu, 10%), lighten($osu,5%), lighten($osu, 10%), darken($osu,30%));
 }
 
 .table-width { width: 100%; }

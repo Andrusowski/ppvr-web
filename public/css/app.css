@@ -10475,44 +10475,84 @@ a.text-dark:focus {
   color: #ff4500;
 }
 
-.btn-info {
+.btn-reddit {
   color: #fff;
   background-color: #ff4500;
   border-color: #d93b00;
 }
 
-.btn-info:hover {
+.btn-reddit:hover {
   color: #fff;
   background-color: #cc3700;
   border-color: #ff581a;
 }
 
-.btn-info:focus,
-.btn-info.focus {
+.btn-reddit:focus,
+.btn-reddit.focus {
   -webkit-box-shadow: 0 0 0 0.2rem rgba(217, 59, 0, 0.5);
           box-shadow: 0 0 0 0.2rem rgba(217, 59, 0, 0.5);
 }
 
-.btn-info.disabled,
-.btn-info:disabled {
+.btn-reddit.disabled,
+.btn-reddit:disabled {
   color: #fff;
   background-color: #ff4500;
   border-color: #d93b00;
 }
 
-.btn-info:not(:disabled):not(.disabled):active,
-.btn-info:not(:disabled):not(.disabled).active,
-.show > .btn-info.dropdown-toggle {
+.btn-reddit:not(:disabled):not(.disabled):active,
+.btn-reddit:not(:disabled):not(.disabled).active,
+.show > .btn-reddit.dropdown-toggle {
   color: #fff;
   background-color: #ff6a33;
   border-color: #661c00;
 }
 
-.btn-info:not(:disabled):not(.disabled):active:focus,
-.btn-info:not(:disabled):not(.disabled).active:focus,
-.show > .btn-info.dropdown-toggle:focus {
+.btn-reddit:not(:disabled):not(.disabled):active:focus,
+.btn-reddit:not(:disabled):not(.disabled).active:focus,
+.show > .btn-reddit.dropdown-toggle:focus {
   -webkit-box-shadow: 0 0 0 0.2rem rgba(217, 59, 0, 0.5);
           box-shadow: 0 0 0 0.2rem rgba(217, 59, 0, 0.5);
+}
+
+.btn-osu {
+  color: #212529;
+  background-color: #FF66AB;
+  border-color: #ff4096;
+}
+
+.btn-osu:hover {
+  color: #fff;
+  background-color: #ff338f;
+  border-color: #ff80b9;
+}
+
+.btn-osu:focus,
+.btn-osu.focus {
+  -webkit-box-shadow: 0 0 0 0.2rem rgba(255, 64, 150, 0.5);
+          box-shadow: 0 0 0 0.2rem rgba(255, 64, 150, 0.5);
+}
+
+.btn-osu.disabled,
+.btn-osu:disabled {
+  color: #212529;
+  background-color: #FF66AB;
+  border-color: #ff4096;
+}
+
+.btn-osu:not(:disabled):not(.disabled):active,
+.btn-osu:not(:disabled):not(.disabled).active,
+.show > .btn-osu.dropdown-toggle {
+  color: #212529;
+  background-color: #ff99c7;
+  border-color: #cc005c;
+}
+
+.btn-osu:not(:disabled):not(.disabled):active:focus,
+.btn-osu:not(:disabled):not(.disabled).active:focus,
+.show > .btn-osu.dropdown-toggle:focus {
+  -webkit-box-shadow: 0 0 0 0.2rem rgba(255, 64, 150, 0.5);
+          box-shadow: 0 0 0 0.2rem rgba(255, 64, 150, 0.5);
 }
 
 .table-width {
