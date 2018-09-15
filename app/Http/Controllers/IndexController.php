@@ -55,9 +55,19 @@ class IndexController extends Controller
             ->take(5)
             ->get();
 
-        $content = file_get_contents("https://www.reddit.com/r/osugame/comments/".$posts_new[4]->id.".json");
+        //find top new post
+        $posts_new_top = 0;
+        $posts_new_top_score = 0;
+        for ($i = 0; $i < count($posts_new); $i++) {
+            if ($posts_new[$i]->score > $posts_new_top_score) {
+                $posts_new_top = $i;
+                $posts_new_top_score = $posts_new[$i]->score;
+            }
+        }
+        $content = file_get_contents("https://www.reddit.com/r/osugame/comments/".$posts_new[$posts_new_top]->id.".json");
         $post_reddit = json_decode($content);
 
+        //get top comment from top post
         $top_comment = '';
         $top_comment_author = '';
         $top_score = 0;
