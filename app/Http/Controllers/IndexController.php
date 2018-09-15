@@ -11,9 +11,10 @@ class IndexController extends Controller
     *
     * @return \Illuminate\Http\Response
     */
-    public function getIndex($sort = 'score')
+    public function getIndex()
     {
-        $posts = DB::table('posts')
+        $rank_players = 0;
+        $posts_players = DB::table('posts')
             ->select(DB::raw('posts.player_id,
                               players.name,
                               (SUM(posts.downs)/SUM(posts.ups))*100 as controversy,
@@ -22,14 +23,60 @@ class IndexController extends Controller
                               COUNT(posts.id) as posts'))
             ->join('players', 'posts.player_id', '=', 'players.id')
             ->groupBy('posts.player_id', 'players.name')
-            ->orderBy($sort, 'desc')
-            ->paginate(15);
+            ->orderBy('score', 'desc')
+            ->take(5)
+            ->get();
 
-        $rank = 15 * ($posts->currentPage()-1);
+        $rank_authors = 0;
+        $posts_authors = DB::table('posts')
+            ->select(DB::raw('author,
+                              (SUM(downs)/SUM(ups))*100 as controversy,
+                              SUM(score*(1+((gilded)*0.1))) as score,
+                              AVG(score*(1+((gilded)*0.1))) as score_avg,
+                              COUNT(id) as posts'))
+            ->where('author', '!=', '[deleted]')
+            ->having(DB::raw('SUM(score*(1+((gilded)*0.1)))'), '>=', 100)
+            ->groupBy('author')
+            ->orderBy('score', 'desc')
+            ->take(5)
+            ->get();
+
+        $posts_new = DB::table('posts')
+            ->select(DB::raw('posts.id,
+                              players.name,
+                              posts.map_artist,
+                              posts.map_title,
+                              posts.map_diff,
+                              posts.score*(1+((posts.gilded)*0.1)) as score,
+                              (posts.downs/posts.ups)*100 as controversy,
+                              posts.created_utc'))
+            ->join('players', 'posts.player_id', '=', 'players.id')
+            ->orderBy('posts.created_utc', 'desc')
+            ->take(5)
+            ->get();
+
+        $content = file_get_contents("https://www.reddit.com/r/osugame/comments/".$posts_new[4]->id.".json");
+        $post_reddit = json_decode($content);
+
+        $top_comment = '';
+        $top_comment_author = '';
+        $top_score = 0;
+        $comments = $post_reddit[1]->data->children;
+        for ($i = 0; $i < count($comments) - 1; $i++) {
+            if ($comments[$i]->data->score > $top_score && !$comments[$i]->data->stickied) {
+                $top_comment = $comments[$i]->data->body_html;
+                $top_comment_author = $comments[$i]->data->author;
+                $top_score = $comments[$i]->data->score;
+            }
+        }
 
         return view('index')
-            ->with('posts', $posts)
-            ->with('rank', $rank)
-            ->with('sort', $sort);
+            ->with('rank_players', $rank_players)
+            ->with('posts_players', $posts_players)
+            ->with('rank_authors', $rank_authors)
+            ->with('posts_authors', $posts_authors)
+            ->with('posts_new', $posts_new)
+            ->with('top_comment', $top_comment)
+            ->with('top_comment_author', $top_comment_author);
     }
 }
