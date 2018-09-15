@@ -9,7 +9,9 @@
     <div class="row pt-4">
         <div class="col-md-3">
             <div class="card">
-                <img class="card-img-top" src="{{ $img }}" alt="Card image cap">
+                @if ($img != '')
+                    <img class="card-img-top" src="{{ $img }}" alt="Card image cap">
+                @endif
                 <div class="card-body">
                     <h5 class="card-title">Stats</h5>
 
@@ -39,6 +41,12 @@
             </div>
         </div>
         <div class="col-md-9">
+            @if ($top_comment != '')
+                <blockquote class="blockquote text-center mt-5 mb-5">
+                  <p class="mb-0">{!! html_entity_decode($top_comment) !!}</p>
+                  <footer class="blockquote-footer"><cite title="Source Title">{{ $top_comment_author }}</cite></footer>
+                </blockquote>
+            @endif
             <h4 class="pt-2 pb-2">Top posts for the same map</h4>
             <table class="table table-sm table-hover">
                 <thead>

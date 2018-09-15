@@ -34,13 +34,32 @@ class PostController extends Controller
         $player = Player::find($post->player_id);
 
         $content = file_get_contents("https://www.reddit.com/r/osugame/comments/".$post->id.".json");
-        $img = json_decode($content)[0]->data->children[0]->data->preview->images[0]->source->url;
+        $post_reddit = json_decode($content);
+        
+        $img = '';
+        if (isset($post_reddit[0]->data->children[0]->data->preview)) {
+            $img = $post_reddit[0]->data->children[0]->data->preview->images[0]->source->url;
+        }
+
+        $top_comment = '';
+        $top_comment_author = '';
+        $top_score = 0;
+        $comments = $post_reddit[1]->data->children;
+        for ($i = 0; $i < count($comments) - 1; $i++) {
+            if ($comments[$i]->data->score > $top_score && !$comments[$i]->data->stickied) {
+                $top_comment = $comments[$i]->data->body_html;
+                $top_comment_author = $comments[$i]->data->author;
+                $top_score = $comments[$i]->data->score;
+            }
+        }
 
         return view('profile.post')
             ->with('post', $post)
             ->with('posts_other', $posts_other)
             ->with('posts_other_new', $posts_other_new)
             ->with('player', $player)
-            ->with('img', $img);
+            ->with('img', $img)
+            ->with('top_comment', $top_comment)
+            ->with('top_comment_author', $top_comment_author);
     }
 }
