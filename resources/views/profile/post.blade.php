@@ -10,7 +10,7 @@
         <div class="col-md-3">
             <div class="card">
                 @if ($img != '')
-                    <img class="card-img-top" src="{{ $img }}" alt="Card image cap">
+                    <img class="card-img-top" src="{{ $img }}" alt="screenshot">
                 @endif
                 <div class="card-body">
                     <h5 class="card-title">Stats</h5>

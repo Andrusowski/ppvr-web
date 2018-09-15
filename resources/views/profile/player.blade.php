@@ -25,7 +25,7 @@
     <div class="row pt-4">
         <div class="col-md-3">
             <div class="card">
-                <img class="card-img-top" src="{{ 'https://a.ppy.sh/'.$player->id }}" alt="Card image cap" style="background-color:#333333;">
+                <img class="card-img-top" src="{{ 'https://a.ppy.sh/'.$player->id }}" alt="osu! profile picture" style="background-color:#333333;">
                 <div class="card-body">
                     <h5 class="card-title">Stats</h5>
 
