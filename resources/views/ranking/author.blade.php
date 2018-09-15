@@ -29,6 +29,7 @@
                                 <a href="{{ url('/ranking/author/posts') }}" class="fas fa-sort-down text-muted" alt="sort descending" style="text-decoration: none"></a>
                             @endif
                         </th>
+                        <!--
                         <th class="text-nowrap">
                             spicy
                             @if ($sort == "controversy")
@@ -37,6 +38,7 @@
                                 <a href="{{ url('/ranking/author/controversy') }}" class="fas fa-sort-down text-muted" alt="sort descending" style="text-decoration: none"></a>
                             @endif
                         </th>
+                        -->
                         <th class="text-nowrap">
                             total pp
                             @if ($sort == "score")
@@ -62,7 +64,7 @@
                             <td>{{ ++$rank }}</td>
                             <td><a href="{{ url('/author/'.$post->author) }}" class="text-body" style="text-decoration: none">{{ $post->author }}</a></td>
                             <td>{{ $post->posts }}</td>
-                            <td>{{ number_format($post->controversy, 2) }}%</td>
+                            <!--<td>{{ number_format($post->controversy, 2) }}%</td>-->
                             <td>{{ round($post->score) }}</td>
                             <td>{{ round($post->score_avg) }}</td>
                         </tr>
@@ -88,6 +90,6 @@
         </div>
 
         <div class="col-md-3">
-        </div>    
+        </div>
     </div>
 @endsection

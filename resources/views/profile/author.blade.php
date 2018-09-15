@@ -33,10 +33,12 @@
                                 <td>average score:</td>
                                 <td>{{ round($author_stats->score_avg) }}</td>
                             </tr>
+                            <!--
                             <tr>
                                 <td>spicy:</td>
                                 <td>{{ round($author_stats->controversy) }}%</td>
                             </tr>
+                            -->
                         </tbody>
                     </table>
 
