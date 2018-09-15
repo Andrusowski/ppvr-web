@@ -5,7 +5,7 @@
 https://twitter.com/bahamete/status/919625209619079170
 this is why
 
-This was originally a university project, and consists of two parts. The first one is this Laravel-based Ranking website and the [other](https://github.com/Andrusowski/ppvr-bot) is a vanilla PHP skript which parses new reddit posts and puts them in a database.
+This was originally a university project, and consists of two parts. The first one is this Laravel-based ranking website and the [other](https://github.com/Andrusowski/ppvr-bot) is a vanilla PHP skript which parses new reddit posts and puts them in a database.
 
 Everything should be in a usable state, but there are still some minor features like more stats and graphs that I still have to implement.
 
