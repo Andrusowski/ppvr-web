@@ -97,7 +97,9 @@
 
             <table class="table table-sm table-hover">
                 <tbody>
+                    @php ($i = 0)
                     @foreach($posts_new as $post)
+                        @if ($i < 5)
                         <tr>
                             <td>
                                 <a href="{{ url('/post/'.$post->id) }}" class="text-body link">
@@ -112,6 +114,9 @@
                                 <td>{{ round((time() - $post->created_utc) / 60 / 60) }} hours ago</td>
                             @endif
                         </tr>
+                        @endif
+                        
+                        @php ($i++)
                     @endforeach
                 </tbody>
             </table>
