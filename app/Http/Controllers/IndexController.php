@@ -52,7 +52,7 @@ class IndexController extends Controller
                               posts.created_utc'))
             ->join('players', 'posts.player_id', '=', 'players.id')
             ->orderBy('posts.created_utc', 'desc')
-            ->take(5)
+            ->take(10)
             ->get();
 
         //find top new post

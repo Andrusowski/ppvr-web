@@ -124,7 +124,7 @@
     <div class="text-center text-secondary small pt-5">
         made by Andrus
         <a href="https://discordapp.com/users/86760014068355072"><i class="fab fa-discord link text-secondary"></i></a>
-        <a href="https://discordapp.com/users/86760014068355072"><i class="fab fa-github link text-secondary"></i></a>
+        <a href="https://github.com/Andrusowski"><i class="fab fa-github link text-secondary"></i></a>
     </div>
 
 @endsection
