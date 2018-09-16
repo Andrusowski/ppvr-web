@@ -6,6 +6,10 @@
         {{ $player->name.' | '.$post->map_artist.' - '.$post->map_title.' ['.$post->map_diff.']' }}
     </h4>
 
+    <p class="lead">
+        posted by {{ $post->author }}
+    </p>
+
     <div class="row pt-4">
         <div class="col-md-3">
             <div class="card">

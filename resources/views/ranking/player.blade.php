@@ -20,7 +20,7 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Name</th>
+                        <th>name</th>
                         <th class="text-nowrap">
                             posts
                             @if ($sort == "posts")

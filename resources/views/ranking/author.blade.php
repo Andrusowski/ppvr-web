@@ -19,8 +19,8 @@
             <table class="table table-sm table-hover">
                 <thead>
                     <tr>
-                        <th>Rank</th>
-                        <th>Name</th>
+                        <th>#</th>
+                        <th>name</th>
                         <th class="text-nowrap">
                             posts
                             @if ($sort == "posts")

@@ -65,19 +65,22 @@ class IndexController extends Controller
             }
         }
 
-        //get top comment from top post
-        $content = file_get_contents("https://www.reddit.com/r/osugame/comments/".$posts_new[$posts_new_top]->id.".json");
-        $post_reddit = json_decode($content);
-
         $top_comment = '';
         $top_comment_author = '';
-        $top_score = 0;
-        $comments = $post_reddit[1]->data->children;
-        for ($i = 0; $i < count($comments) - 1; $i++) {
-            if ($comments[$i]->data->score > $top_score && !$comments[$i]->data->stickied) {
-                $top_comment = $comments[$i]->data->body_html;
-                $top_comment_author = $comments[$i]->data->author;
-                $top_score = $comments[$i]->data->score;
+
+        if ($posts_new_top_score >= 100) {
+            //get top comment from top post
+            $content = file_get_contents("https://www.reddit.com/r/osugame/comments/".$posts_new[$posts_new_top]->id.".json");
+            $post_reddit = json_decode($content);
+
+            $top_score = 0;
+            $comments = $post_reddit[1]->data->children;
+            for ($i = 0; $i < count($comments) - 1; $i++) {
+                if ($comments[$i]->data->score > $top_score && !$comments[$i]->data->stickied) {
+                    $top_comment = $comments[$i]->data->body_html;
+                    $top_comment_author = $comments[$i]->data->author;
+                    $top_score = $comments[$i]->data->score;
+                }
             }
         }
 

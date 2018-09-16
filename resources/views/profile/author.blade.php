@@ -2,7 +2,7 @@
 
 @section('content')
 
-    <h1 class="display-3 d-inline-block">
+    <h1>
         {{ $author_stats->author }}
     </h1>
 
@@ -32,6 +32,10 @@
                             <tr>
                                 <td>average score:</td>
                                 <td>{{ round($author_stats->score_avg) }}</td>
+                            </tr>
+                            <tr>
+                                <td>posts created:</td>
+                                <td>{{ $author_stats->posts }}</td>
                             </tr>
                             <!--
                             <tr>
