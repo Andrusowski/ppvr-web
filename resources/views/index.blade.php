@@ -115,7 +115,7 @@
                             @endif
                         </tr>
                         @endif
-                        
+
                         @php ($i++)
                     @endforeach
                 </tbody>
@@ -126,7 +126,7 @@
         </div>
     </div>
 
-    <div class="text-center text-secondary small pt-5">
+    <div class="text-center text-secondary small pt-5 pb-2">
         made by Andrus
         <a href="https://discordapp.com/users/86760014068355072"><i class="fab fa-discord link text-secondary"></i></a>
         <a href="https://github.com/Andrusowski"><i class="fab fa-github link text-secondary"></i></a>
