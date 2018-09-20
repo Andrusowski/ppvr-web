@@ -7,7 +7,23 @@
     </h4>
 
     <p class="lead">
-        posted by {{ $post->author }}
+        posted
+        @if (time() - $post->created_utc < (60 * 60))
+            {{ round((time() - $post->created_utc) / 60) }} minutes ago
+        @elseif (time() - $post->created_utc < (119 * 60))
+            1 hour ago
+        @elseif (time() - $post->created_utc < (24 * 60 * 60))
+            {{ round((time() - $post->created_utc) / 60 / 60) }} hours ago
+        @elseif (time() - $post->created_utc < (2 * 24 * 60 * 60))
+            1 day ago
+        @elseif (time() - $post->created_utc < (365 * 24 * 60 * 60))
+            {{ round((time() - $post->created_utc) / 24 / 60 / 60) }} days ago
+        @elseif (time() - $post->created_utc < (730 * 24 * 60 * 60))
+            1 year ago
+        @else
+            {{ round((time() - $post->created_utc) / 365 / 24 / 60 / 60) }} years ago
+        @endif
+        by {{ $post->author }}
     </p>
 
     <div class="row pt-4">
