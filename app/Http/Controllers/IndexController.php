@@ -76,7 +76,11 @@ class IndexController extends Controller
             $top_score = 0;
             $comments = $post_reddit[1]->data->children;
             for ($i = 0; $i < count($comments) - 1; $i++) {
-                if ($comments[$i]->data->score > $top_score && !$comments[$i]->data->stickied) {
+                if ($comments[$i]->data->score > $top_score
+                    && !$comments[$i]->data->stickied
+                    && strlen($comments[$i]->data->body) < 500
+                    && !stripos($comments[$i]->data->body_html, 'http')
+                    && !stripos($comments[$i]->data->body_html, 'https')) {
                     $top_comment = $comments[$i]->data->body_html;
                     $top_comment_author = $comments[$i]->data->author;
                     $top_score = $comments[$i]->data->score;
