@@ -14,6 +14,7 @@ If you can't find certain scoreposts, then there are severeal reasons why:
 - The Player had a namechange before the launchdate of ppvr (17.09.2018)
 - The Player got banned on osu! before the launchdate
 - The title of the scorepost is badly formatted
+- The player's total score is <100
 - My script did something wrong
 
 Most scoreposts that are missing are still saved in the database but in another table, so I can review them manually over time. If you want certain scorepost to be visible sooner, you can contact me through the methods mentioned down below and I will prioritize your request.
