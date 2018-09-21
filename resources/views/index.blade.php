@@ -26,7 +26,7 @@
                         <th>#</th>
                         <th>Name</th>
                         <th class="text-nowrap">
-                            posts
+                            Posts
                         </th>
                         <th class="text-nowrap">
                             Score
@@ -56,7 +56,7 @@
                         <th>#</th>
                         <th>Name</th>
                         <th class="text-nowrap">
-                            posts
+                            Posts
                         </th>
                         <th class="text-nowrap">
                             Score
