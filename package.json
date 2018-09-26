@@ -18,7 +18,7 @@
     "vue": "^2.5.7"
   },
   "dependencies": {
-    "particles.js": "^2.0.0",
+    "particles.js": "mmacheerpuppy/particles.js",
     "popper.js": "^1.14.4"
   }
 }

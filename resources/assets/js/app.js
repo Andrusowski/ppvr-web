@@ -24,7 +24,7 @@ const app = new Vue({
     el: '#app'
 });
 
-particlesJS.load('particles-js', base_url+'/js/particles/particlesjs-config.json');
+particlesJS.load('particles-js', base_url+'/js/particles/particlesjs-config-cpufix.json');
 
 function search() {
     var name = document.getElementById('search').value;
