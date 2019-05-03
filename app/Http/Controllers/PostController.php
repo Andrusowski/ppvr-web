@@ -33,7 +33,7 @@ class PostController extends Controller
 
         $player = Player::find($post->player_id);
 
-        $content = file_get_contents("https://www.reddit.com/r/osugame/comments/".$post->id.".json");
+        $content = file_get_contents("https://www.reddit.com/r/osugame/comments/".$post->id.".json?raw_json=1");
         $post_reddit = json_decode($content);
 
         $img = '';
