@@ -30,7 +30,7 @@
         <div class="col-md-3">
             <div class="card">
                 @if ($img != '')
-                    <img class="card-img-top" src="{{ $img }}" alt="screenshot">
+                    <a href="{{ $img }}"><img class="card-img-top" src="{{ $img }}" alt="screenshot" /></a>
                 @endif
                 <div class="card-body">
                     <h5 class="card-title">Stats</h5>

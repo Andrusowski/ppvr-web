@@ -6,6 +6,9 @@ use Illuminate\Support\Facades\DB;
 
 class RankingController extends Controller
 {
+    private $scoreSumQuery = 'SUM(posts.ups*(1+((posts.gilded)*0.1)))-SUM(posts.downs)';
+    private $scoreAvgQuery = 'AVG(posts.ups*(1+((posts.gilded)*0.1)))-AVG(posts.downs)';
+
     /**
      * Show the application dashboard.
      *
@@ -16,15 +19,15 @@ class RankingController extends Controller
         $posts = DB::table('posts')
             ->select(DB::raw('posts.player_id,
                               players.name,
-                              (SUM(posts.downs)/SUM(posts.ups))*100 as controversy,
-                              SUM(posts.score*(1+((posts.gilded)*0.1))) as score,
-                              AVG(posts.score*(1+((posts.gilded)*0.1))) as score_avg,
+                              (SUM(posts.downs)/SUM(posts.ups))*100 as controversy,'
+                              .$this->scoreSumQuery.' as score,'
+                              .$this->scoreAvgQuery.' as score_avg,
                               COUNT(posts.id) as posts'))
             ->join('players', 'posts.player_id', '=', 'players.id')
-            ->having(DB::raw('SUM(posts.score*(1+((posts.gilded)*0.1)))'), '>=', 100)
+            ->having(DB::raw($this->scoreSumQuery), '>=', 100)
             ->groupBy('posts.player_id', 'players.name')
             ->orderBy($sort, 'desc')
-            ->paginate(15);
+            ->paginate(50);
 
         $rank = 15 * ($posts->currentPage()-1);
 
@@ -38,12 +41,12 @@ class RankingController extends Controller
     {
         $posts = DB::table('posts')
             ->select(DB::raw('author,
-                              (SUM(downs)/SUM(ups))*100 as controversy,
-                              SUM(score*(1+((gilded)*0.1))) as score,
-                              AVG(score*(1+((gilded)*0.1))) as score_avg,
+                              (SUM(downs)/SUM(ups))*100 as controversy,'
+                              .$this->scoreSumQuery.' as score,'
+                              .$this->scoreAvgQuery.' as score_avg,
                               COUNT(id) as posts'))
             ->where('author', '!=', '[deleted]')
-            ->having(DB::raw('SUM(score*(1+((gilded)*0.1)))'), '>=', 100)
+            ->having(DB::raw($this->scoreSumQuery), '>=', 100)
             ->groupBy('author')
             ->orderBy($sort, 'desc')
             ->paginate(15);

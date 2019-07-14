@@ -23,6 +23,7 @@ Route::get('/post/{id}', 'PostController@getIndex');
 Route::get('/player/{id}', 'PlayerController@getIndex')->name('profile.player');
 Route::get('/author/{name}', 'AuthorController@getIndex');
 Route::get('/search', 'SearchController@postSearch');
+Route::get('/changelog', 'ChangelogController@getIndex');
 
 Auth::routes();
 

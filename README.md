@@ -21,6 +21,8 @@ Most scoreposts that are missing are still saved in the database but in another 
 
 ## Acknowledgements
 Big thanks to pushshift.io, which made it possible to archive old scoreposts. Also thanks to [christopher-dG](https://github.com/christopher-dG) for making osu-bot, where I took some regular expressions and constants from.
+### Resources:
+- [Eva Icons](https://akveo.github.io/eva-icons/)
 
 ## Contact
 You can contact me on [Discord](https://discordapp.com/users/86760014068355072), [Reddit](https://www.reddit.com/message/compose?to=Andruz) or [osu!](https://osu.ppy.sh/home/messages/users/2924006)
