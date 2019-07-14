@@ -18,12 +18,16 @@ class SearchController extends Controller
         $name = Request::input('name');
 
         if ($name) {
-            $player_id = Player::where('name', 'LIKE', $name)->first()->id;
+            $player = Player::where('name', 'LIKE', $name)->first();
 
-            return redirect('player/'.$player_id);
+            if ($player != null) {
+                $player_id = $player->id;
+
+                return redirect('player/' . $player_id);
+            }
         }
-        else {
-            return back();
-        }
+
+        return back()->withErrors(['The requested user does not exist or has no Reddit posts yet.']);
+
     }
 }

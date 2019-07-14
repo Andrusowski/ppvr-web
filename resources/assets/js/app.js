@@ -5,12 +5,10 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-import 'particles.js/particles';
-const particlesJS = window.particlesJS;
-
-require('./bootstrap');
+//require('./bootstrap');
 
 window.Vue = require('vue');
+const eva = require('eva-icons');
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -24,9 +22,9 @@ const app = new Vue({
     el: '#app'
 });
 
-particlesJS.load('particles-js', base_url+'/js/particles/particlesjs-config-cpufix.json');
-
 function search() {
     var name = document.getElementById('search').value;
     window.location = "http://localhost/ppvr-web/public/search/" + name;
 }
+
+eva.replace()
