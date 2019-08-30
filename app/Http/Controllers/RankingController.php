@@ -6,8 +6,8 @@ use Illuminate\Support\Facades\DB;
 
 class RankingController extends Controller
 {
-    private $scoreSumQuery = 'SUM(posts.ups*(1+((posts.gilded)*0.1)))-SUM(posts.downs)';
-    private $scoreAvgQuery = 'AVG(posts.ups*(1+((posts.gilded)*0.1)))-AVG(posts.downs)';
+    private $scoreSumQuery = 'SUM(posts.score*(1+((posts.gilded)*0.1)))';
+    private $scoreAvgQuery = 'AVG(posts.score*(1+((posts.gilded)*0.1)))';
 
     /**
      * Show the application dashboard.

@@ -39,7 +39,7 @@
                         <tbody>
                             <tr>
                                 <td>Score:</td>
-                                <td>{{ $post->score }}</td>
+                                <td>{{ $post->ups - $post->downs }}</td>
                             </tr>
                             <tr>
                                 <td>Upvotes:</td>
@@ -95,7 +95,7 @@
                                     {{ $post->author }}
                                 </a>
                             </td>
-                            <td>{{ round($post->score) }}</td>
+                            <td>{{ round($post->ups - $post->downs) }}</td>
                             <td>{{ ($post->downs == 0) ? 0 : round(($post->downs / $post->ups) * 100) }}%</td>
                         </tr>
                     @endforeach
