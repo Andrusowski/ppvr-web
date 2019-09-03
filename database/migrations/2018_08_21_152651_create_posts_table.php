@@ -23,7 +23,9 @@ class CreatePostsTable extends Migration
             $table->integer('score');
             $table->integer('ups')->unsigned();
             $table->integer('downs')->unsigned();
-            $table->integer('gilded')->unsigned();
+            $table->integer('silver')->unsigned();
+            $table->integer('gold')->unsigned();
+            $table->integer('platinum')->unsigned();
             $table->integer('created_utc')->unsigned();
             $table->boolean('final');
             $table->timestamp('created_at')->useCurrent();
