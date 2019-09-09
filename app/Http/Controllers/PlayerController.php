@@ -7,6 +7,7 @@ use App\Player;
 
 class PlayerController extends Controller
 {
+    //'.config('ranking.scoreSumQuery').'
     /**
      * Show the application dashboard.
      *
@@ -18,15 +19,15 @@ class PlayerController extends Controller
 
         $player_stats = DB::table('posts')
             ->select(DB::raw('(SUM(downs)/SUM(ups))*100 as controversy,
-                               SUM(score*(1+((gilded)*0.1))) as score,
-                               AVG(score*(1+((gilded)*0.1))) as score_avg,
+                               '.config('ranking.scoreSumQuery').' as score,
+                               '.config('ranking.scoreAvgQuery').' as score_avg,
                                COUNT(posts.id) as posts'))
             ->where('player_id', $id)
             ->first();
 
         $ranking = DB::table('posts')
             ->select(DB::raw('player_id,
-                              SUM(posts.score*(1+((posts.gilded)*0.1))) as score'))
+                              '.config('ranking.scoreSumQuery').' as score'))
             ->groupBy('player_id')
             ->orderBy('score', 'desc')
             ->get();
@@ -46,9 +47,10 @@ class PlayerController extends Controller
                               map_artist,
                               map_title,
                               map_diff,
-                              score*(1+((gilded)*0.1)) as score,
+                              '.config('ranking.scoreSumQuery').' as score,
                               (downs/ups)*100 as controversy'))
             ->where('player_id', $id)
+            ->groupBy('posts.id')
             ->orderBy('score', 'desc')
             ->take(10)
             ->get();
@@ -58,10 +60,11 @@ class PlayerController extends Controller
                               map_artist,
                               map_title,
                               map_diff,
-                              score*(1+((gilded)*0.1)) as score,
+                              '.config('ranking.scoreSumQuery').' as score,
                               (downs/ups)*100 as controversy,
                               created_utc'))
             ->where('player_id', $id)
+            ->groupBy('posts.id')
             ->orderBy('created_utc', 'desc')
             ->take(10)
             ->get();

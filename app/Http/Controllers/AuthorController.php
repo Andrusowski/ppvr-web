@@ -16,8 +16,8 @@ class AuthorController extends Controller
         $author_stats = DB::table('posts')
             ->select(DB::raw('author,
                              (SUM(downs)/SUM(ups))*100 as controversy,
-                             SUM(score*(1+((gilded)*0.1))) as score,
-                             AVG(score*(1+((gilded)*0.1))) as score_avg,
+                             '.config('ranking.scoreSumQuery').' as score,
+                             '.config('ranking.scoreAvgQuery').' as score_avg,
                              COUNT(posts.id) as posts'))
             ->where('author', $name)
             ->groupBy('author')
@@ -25,7 +25,7 @@ class AuthorController extends Controller
 
         $ranking = DB::table('posts')
             ->select(DB::raw('author,
-                              SUM(score*(1+((gilded)*0.1))) as score'))
+                              '.config('ranking.scoreSumQuery').' as score'))
             ->where('author', '!=', '[deleted]')
             ->groupBy('author')
             ->orderBy('score', 'desc')
@@ -46,7 +46,7 @@ class AuthorController extends Controller
                               map_artist,
                               map_title,
                               map_diff,
-                              score*(1+((gilded)*0.1)) as score,
+                              '.config('ranking.scoreSumQuery').' as score,
                               (downs/ups)*100 as controversy'))
             ->where('author', $name)
             ->orderBy('score', 'desc')
@@ -58,7 +58,7 @@ class AuthorController extends Controller
                               map_artist,
                               map_title,
                               map_diff,
-                              score*(1+((gilded)*0.1)) as score,
+                              '.config('ranking.scoreSumQuery').' as score,
                               (downs/ups)*100 as controversy,
                               created_utc'))
             ->where('author', $name)

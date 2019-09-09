@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\DB;
 
 class IndexController extends Controller
 {
-    private $scoreSumQuery = 'SUM(posts.score*(1+((posts.gold)*0.1)))';
-    private $scoreAvgQuery = 'AVG(posts.score*(1+((posts.gold)*0.1)))';
-
     /**
     * Show the application dashboard.
     *
@@ -20,9 +17,9 @@ class IndexController extends Controller
         $posts_players = DB::table('posts')
             ->select(DB::raw('posts.player_id,
                               players.name,
-                              (SUM(posts.downs)/SUM(posts.ups))*100 as controversy,'
-                              .$this->scoreSumQuery.' as score,'
-                              .$this->scoreAvgQuery.' as score_avg,
+                              (SUM(posts.downs)/SUM(posts.ups))*100 as controversy,
+                              '.config('ranking.scoreSumQuery').' as score,
+                              '.config('ranking.scoreAvgQuery').' as score_avg,
                               COUNT(posts.id) as posts'))
             ->join('players', 'posts.player_id', '=', 'players.id')
             ->groupBy('posts.player_id', 'players.name')
@@ -33,12 +30,12 @@ class IndexController extends Controller
         $rank_authors = 0;
         $posts_authors = DB::table('posts')
             ->select(DB::raw('author,
-                              (SUM(downs)/SUM(ups))*100 as controversy,'
-                              .$this->scoreSumQuery.' as score,'
-                              .$this->scoreAvgQuery.' as score_avg,
+                              (SUM(downs)/SUM(ups))*100 as controversy,
+                              '.config('ranking.scoreSumQuery').' as score,
+                              '.config('ranking.scoreAvgQuery').' as score_avg,
                               COUNT(id) as posts'))
             ->where('author', '!=', '[deleted]')
-            ->having(DB::raw($this->scoreSumQuery), '>=', 100)
+            ->having(DB::raw(config('ranking.scoreSumQuery')), '>=', 100)
             ->groupBy('author')
             ->orderBy('score', 'desc')
             ->take(5)
@@ -50,10 +47,11 @@ class IndexController extends Controller
                               posts.map_artist,
                               posts.map_title,
                               posts.map_diff,
-                              (posts.score)*(1+((posts.gold)*0.1)) as score,
+                              '.config('ranking.scoreSumQuery').' as score,
                               (posts.downs/posts.ups)*100 as controversy,
                               posts.created_utc'))
             ->join('players', 'posts.player_id', '=', 'players.id')
+            ->groupBy('posts.id')
             ->orderBy('posts.created_utc', 'desc')
             ->take(20)
             ->get();
