@@ -6,8 +6,8 @@ use Illuminate\Support\Facades\DB;
 
 class IndexController extends Controller
 {
-    private $scoreSumQuery = 'SUM(posts.score*(1+((posts.gilded)*0.1)))';
-    private $scoreAvgQuery = 'AVG(posts.score*(1+((posts.gilded)*0.1)))';
+    private $scoreSumQuery = 'SUM(posts.score*(1+((posts.gold)*0.1)))';
+    private $scoreAvgQuery = 'AVG(posts.score*(1+((posts.gold)*0.1)))';
 
     /**
     * Show the application dashboard.
@@ -50,7 +50,7 @@ class IndexController extends Controller
                               posts.map_artist,
                               posts.map_title,
                               posts.map_diff,
-                              (posts.score)*(1+((posts.gilded)*0.1)) as score,
+                              (posts.score)*(1+((posts.gold)*0.1)) as score,
                               (posts.downs/posts.ups)*100 as controversy,
                               posts.created_utc'))
             ->join('players', 'posts.player_id', '=', 'players.id')

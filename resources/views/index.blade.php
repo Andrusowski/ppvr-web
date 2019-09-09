@@ -17,7 +17,7 @@
         <div class="col-md-3">
         </div>
 
-        <div class="col-md-3 pt-2 pb-2">
+        <div class="col-xl-3 pt-2 pb-2">
             <a class="btn btn-primary btn-lg btn-block" href="{{ url('/ranking/player/') }}">Player</a>
 
             <table class="table table-sm table-hover mt-4">
@@ -47,7 +47,7 @@
             </table>
         </div>
 
-        <div class="col-md-3 pt-2 pb-2">
+        <div class="col-xl-3 pt-2 pb-2">
             <a class="btn btn-primary btn-lg btn-block" href="{{ url('/ranking/author/') }}">Author</a>
 
             <table class="table table-sm table-hover mt-4">

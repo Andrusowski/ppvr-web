@@ -2,10 +2,12 @@
 
 namespace App\Console\Commands;
 
+use App\Alias;
 use App\Player;
 use App\Post;
 use App\Tmppost;
 use Illuminate\Console\Command;
+use phpDocumentor\Reflection\Types\Boolean;
 
 class ParseRedditPosts extends Command
 {
@@ -92,8 +94,16 @@ class ParseRedditPosts extends Command
     }
 
     private function archive() {
-        $after = 1426668291;  //time of first scorepost posted
+        $firstPost = Post::orderBy('created_at', 'DESC')->first();
+        $first = 1426668291;
+        if ($firstPost != null) {
+            $first = $firstPost->created_utc;
+        }
+        $after = $first;  //time of first scorepost posted
+
         self::$lastParse = time();
+
+        $bar = $this->output->createProgressBar(time() - 1426668291);
 
         while ($after < time() - 60*60) { //stop archiving, when posts are younger than an hour
             $jsonContent = file_get_contents('https://api.pushshift.io/reddit/submission/search?subreddit=osugame&sort=asc&limit=100&after='.$after);
@@ -102,8 +112,12 @@ class ParseRedditPosts extends Command
             for ($i = 0; $i < sizeof($jsonPosts->data); ++$i) {
                 $jsonPost = $jsonPosts->data[$i];
                 $this->prepareParse($jsonPost, true);
+                $bar->setProgress($jsonPost->created_utc - 1426668291);
+                $after = $jsonPost->created_utc;
             }
         }
+
+        $bar->finish();
     }
 
     private function new() {
@@ -117,11 +131,9 @@ class ParseRedditPosts extends Command
     }
 
     private function prepareParse($jsonPost, $archive) {
-        $this->line($jsonPost->title);
-
         //check if post already exists
-        $tmpPost = Tmppost::where('id', '==', $jsonPost->id)->first();
-        $post = Post::where('id', '==', $jsonPost->id)->first();
+        $tmpPost = Tmppost::where('id', '=', $jsonPost->id)->first();
+        $post = Post::where('id', '=', $jsonPost->id)->first();
 
         $age = time() - $jsonPost->created_utc;
 
@@ -147,10 +159,10 @@ class ParseRedditPosts extends Command
         }
     }
 
-    private function parsePost($post, $final, $archive) {
+    private function parsePost($jsonPost, $final, $archive) {
         /* check for characteristic characters from the already established format
         Player Name | Song Artist - Song Title [Diff Name] +Mods */
-        $postTitle = $post->title;
+        $postTitle = $jsonPost->title;
         if (preg_match('/.*\|.*\-.*\[.*\].*/', $postTitle))
         {
             //clean up posttitle from various annotations
@@ -168,7 +180,7 @@ class ParseRedditPosts extends Command
             $parseError = false;
             $matches = array();
             //Player
-            $match = preg_match("/(.+)\s*[\|丨].+-.+?\[.+?\]/", $postTitle, $matches);
+            $match = preg_match("/(?:\(.+?\)\s)*(.+?)\s*(?:\(.+\))*\s*[\|丨].+-.+?\[.+?\]/", $postTitle, $matches);
             if ($match != FALSE && count($matches) == 2) {
                 $playerName = trim($matches[1]);
             }
@@ -195,99 +207,140 @@ class ParseRedditPosts extends Command
                 $parseError = true;
             }
             if ($parseError == false) {
-                echo("\nOriginal: ".$post->title."\n"); //Debug
+                $this->line($jsonPost->permalink);
+                $this->line("Original: ".$jsonPost->title); //Debug
                 //check some additional stuff before marking as final
-                echo('Parsed: '.$playerName.' | '.
+                $this->line('Parsed: '.$playerName.' | '.
                     $parsedPost->map_artist. ' - '.
                     $parsedPost->map_title. ' [' .
-                    $parsedPost->map_diff."]\n");
+                    $parsedPost->map_diff."]");
                 //take a break to prevent osu!api spam
                 while (self::$lastParse == time()) {
                     //wait
+                    usleep(100000);
                 }
                 self::$lastParse = time();
-                $content = file_get_contents('https://www.reddit.com/r/osugame/comments/'.$post->id.'.json');
-                $jsonPost = json_decode($content)[0]->data->children[0]->data;
-                $this->preparePost($jsonPost, $parsedPost, $final);
+                $content = file_get_contents('https://www.reddit.com/r/osugame/comments/'.$jsonPost->id.'.json');
+                $jsonPostDetail = json_decode($content)[0]->data->children[0]->data;
+                $this->preparePost($jsonPostDetail, $parsedPost, $playerName, $final);
                 return true;
             }
             else {
-                Database::insertNewPostTmp($post, $parsedPost);
+                $this->addTmpPost($jsonPost);
             }
         }
     }
 
-    private function preparePost($jsonPost, $parsedPost, $final) {
+    private function preparePost($jsonPost, $parsedPost, $playerName, $final) {
         $apiUser = file_get_contents (
             "https://osu.ppy.sh/api/get_user?k=".env('OSU_API_KEY').
-            "&u=".$parsedPost["player"]."&type=string"
+            "&u=".urlencode($playerName)."&type=string"
         );
         $user = json_decode($apiUser);
 
         //if the api can find the username, check if its in the DB and insert
-        if ($user != null) {
-            $dbUser = Player::where('id', '==', $user[0]->user_id)->first();
-            if ($dbUser->num_rows == 0) {
-                $this->addPlayer($user, $dbUser);
+        if (isset($user[0]->user_id)) {
+            $dbUser = Player::where('id', '=', $user[0]->user_id)->first();
+            if ($dbUser === null) {
+                $this->addPlayer($user[0]);
+                $dbUser = Player::where('id', '=', $user[0]->user_id)->first();
             }
-            if ($dbUser->num_rows <= 1) {
-                $this->updatePlayer($user);
-                $this->addPost($jsonPost, $parsedPost, $user, $final);
-            }
-            else {
-                $this->error('Somehow the user "'.$user[0]->user_id.'" exists multiple times?!');
-            }
+
+            $this->updatePlayer($user[0], $dbUser);
+            $this->addPost($jsonPost, $parsedPost, $user, $final);
         }
         /* else check if the username exists in the DB as an alias and retry
         the osu!api call using the alias */
         else {
-            $dbUserAlias = "SELECT id, name, alias
-            FROM ppvr.players
-            WHERE alias='".$parsedPost["player"]."';";
-            $resultAlias = $db->query($dbUserAlias);
-            if ($resultAlias->num_rows == 1) {
-                $resultUserAlias = $resultAlias->fetch_assoc();
+            $alias = Alias::where('alias', '=', $playerName)->orderBy('created_at', 'DESC')->first();
+            if ($alias != null) {
                 $apiUserAlias = file_get_contents (
-                    "https://osu.ppy.sh/api/get_user?k=".API_KEY.
-                    "&u=".$resultUserAlias["name"]."&type=string"
+                    "https://osu.ppy.sh/api/get_user?k=".env('OSU_API_KEY').
+                    "&u=".urlencode($alias->alias)."&type=string"
                 );
+
                 $userAlias = json_decode($apiUserAlias);
                 if ($userAlias != null)
                 {
-                    Database::insertNewPost($post, $parsedPost, $userAlias, $resultAlias, $final);
+                    $this->addPost($jsonPost, $parsedPost, $userAlias, $final);
                 }
             }
             else {
-                Database::insertNewPostTmp($post, $parsedPost);
+                $this->addTmpPost($jsonPost);
+                $this->error('tmp');
             }
         }
     }
 
-    private function addPlayer($user) {
+    private function addPlayer($user){
         $newPlayer = new Player();
-        $newPlayer->id = $user[0]->user_id;
-        $newPlayer->name = $user[0]->username;
+        $newPlayer->id = $user->user_id;
+        $newPlayer->name = $user->username;
         $newPlayer->save();
     }
 
     private function updatePlayer($user, $dbUser) {
-        if ($dbUser->name !=  $user[0]->username
+        if ($dbUser->name !=  $user->username
             && $dbUser->name != ''
             && $dbUser->name != null
         ) {
-            $dbUser->alias = $dbUser->name;
-            $dbUser->name = $user[0]->username;
+            $alias = new Alias();
+            $alias->player_id = $user->user_id;
+            $alias->alias = $dbUser->name;
+            $alias->save();
+
+            $dbUser->name = $user->username;
             if($dbUser->save()) {
-                $this->info("Player \"".$dbUser->alias."\" updated successfully! New name:".$dbUser->name);
+                $this->info("Player \"".$alias->alias."\" updated successfully! New name:".$dbUser->name);
             }
         }
     }
 
     private function addPost($jsonPost, $parsedPost, $user, $final) {
         $post = $parsedPost;
+
         $post->id = $jsonPost->id;
         $post->player_id = $user[0]->user_id;
         $post->author = $jsonPost->author;
+        $post->ups = round($jsonPost->score * $jsonPost->upvote_ratio);
+        $post->downs = round($jsonPost->score * (1 - $jsonPost->upvote_ratio));
+        $post->score = $post->ups - $post->downs;
+        $post->final = $final;
+        $post->created_utc = $jsonPost->created_utc;
+
+        //post platin and silver update
+        if (isset($jsonPost->gilding)) {
+            $post->silver = $jsonPost->gildings->gid_1;
+            $post->gold = $jsonPost->gildings->gid_2;
+            $post->platinum = $jsonPost->gildings->gid_3;
+        }
+        //pre
+        else {
+            $post->gold = $jsonPost->gilded;
+        }
+
+        if($post->save()) {
+            $this->info('added');
+        }
+    }
+
+    private function addTmpPost($jsonPost) {
+        $post = new Tmppost();
+
+        $post->id = $jsonPost->id;
+        $post->title = $jsonPost->title;
+        $post->author = $jsonPost->author;
+
+        //$ups = round($jsonPost->score * $jsonPost->upvote_ratio);
+        //$downs = round($jsonPost->score * (1 - $jsonPost->upvote_ratio));
+        $post->score = $jsonPost->score;
+
+        $post->save();
+    }
+
+    private function updatePost($jsonPost, $final) {
+        $post = Post::where('id', '=', $jsonPost->id)->first();
+
         $post->ups = round($jsonPost->score * $jsonPost->upvote_ratio);
         $post->downs = round($jsonPost->score * (1 - $jsonPost->upvote_ratio));
         $post->score = $post->ups - $post->downs;
@@ -295,12 +348,5 @@ class ParseRedditPosts extends Command
         $post->gold = $jsonPost->gildings->gid_2;
         $post->platinum = $jsonPost->gildings->gid_3;
         $post->final = $final;
-        $post->created_utc = $jsonPost->created_utc;
-
-        $post->save();
-    }
-
-    private function updatePost($post, $final) {
-
     }
 }

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateRankHistoryTable extends Migration
+class CreateRanksTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,13 @@ class CreateRankHistoryTable extends Migration
      */
     public function up()
     {
-        Schema::create('rank_history', function (Blueprint $table) {
+        Schema::create('ranks', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->integer('player_id')->unsigned()->index();
+            $table->integer('rank')->unsigned();
             $table->timestamps();
+
+            $table->foreign('player_id')->references('id')->on('players');
         });
     }
 
@@ -26,6 +30,6 @@ class CreateRankHistoryTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('rank_history');
+        Schema::dropIfExists('ranks');
     }
 }

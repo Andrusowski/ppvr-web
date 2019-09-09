@@ -14,13 +14,10 @@ class CreatePlayersTable extends Migration
     public function up()
     {
         Schema::create('players', function (Blueprint $table) {
-            $table->integer('id')->unsigned();
-            $table->string('name', 15);
-            $table->string('alias', 15)->nullable();
+            $table->integer('id')->unsigned()->primary();
+            $table->string('name', 16);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
-
-            $table->primary('id');
         });
     }
 
