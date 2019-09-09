@@ -3,7 +3,7 @@
 @import url('https://fonts.googleapis.com/css?family=Nunito');
 
 // Bootstrap
-@import '~bootstrap/scss/bootstrap';
+// @import '~bootstrap/scss/bootstrap';
 
 // Variables
 @import 'variables';
@@ -21,19 +21,13 @@ body {
     color: #ff4500;
 }
 
-.btn-reddit {
+/*.btn-reddit {
     @include button-variant($reddit, darken($reddit, 7.5%), darken($reddit, 10%), lighten($reddit,5%), lighten($reddit, 10%), darken($reddit,30%));
 }
 
 .btn-osu {
     @include button-variant($osu, darken($osu, 7.5%), darken($osu, 10%), lighten($osu,5%), lighten($osu, 10%), darken($osu,30%));
-}
-
-.table-width { width: 100%; }
-
-.searchbar {
-    width: 15em;
-}
+}*/
 
 .link {
     text-decoration: none;
