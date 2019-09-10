@@ -7,7 +7,7 @@ use App\Player;
 use App\Post;
 use App\Tmppost;
 use Illuminate\Console\Command;
-use phpDocumentor\Reflection\Types\Boolean;
+use Illuminate\Support\Facades\DB;
 
 class ParseRedditPosts extends Command
 {
@@ -85,7 +85,7 @@ class ParseRedditPosts extends Command
     {
         $archiveFirstPost = $this->option('archive');
 
-        if (isset($archiveFirstPost)) {
+        if ($archiveFirstPost) {
             $this->archive();
         }
         else {
@@ -321,6 +321,7 @@ class ParseRedditPosts extends Command
 
         if($post->save()) {
             $this->info('added');
+            $this->updatePlayerScore($post->player_id);
         }
     }
 
@@ -348,5 +349,24 @@ class ParseRedditPosts extends Command
         $post->gold = $jsonPost->gildings->gid_2;
         $post->platinum = $jsonPost->gildings->gid_3;
         $post->final = $final;
+    }
+
+    private function updatePlayerScore($playerId) {
+        $this->line($playerId);
+        $this->line(DB::statement('
+            UPDATE players
+            JOIN (
+                SELECT player_id, SUM(round((score+(platinum*180)+(gold*50)+(silver*10)) * POWER(0.95, row_num - 1))) AS weighted
+                FROM (
+                    SELECT row_number() over (partition BY player_id ORDER BY score DESC) row_num, score, player_id
+                    FROM posts
+                    ORDER BY score DESC
+                ) AS ranking
+                GROUP BY player_id
+                ORDER BY weighted DESC
+            ) weighted ON players.id=weighted.player_id
+            SET score=weighted.weighted
+            WHERE players.id='.$playerId
+        ));
     }
 }
