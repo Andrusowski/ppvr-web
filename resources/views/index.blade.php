@@ -10,7 +10,7 @@
 
     <br><br>
 
-    <h5 class="uk-text-center">Select Ranking</h5>
+    <p class="uk-text-center uk-text-lead">Select Ranking</p>
 
     <div class="uk-column-1-2@m">
         <a class="uk-button uk-button-primary uk-width-1-1 uk-margin-small-bottom" href="{{ url('/ranking/player/') }}">Player</a>
@@ -66,13 +66,13 @@
 
     @if ($top_comment != '')
         <blockquote class="uk-text-center">
-          <p class="mb-0">{!! html_entity_decode($top_comment) !!}</p>
-          <footer class="blockquote-footer"><cite title="Source Title">{{ $top_comment_author }}</cite></footer>
+          <p>{!! html_entity_decode($top_comment) !!}</p>
+          <footer><cite>{{ $top_comment_author }}</cite></footer>
         </blockquote>
         <br><br>
     @endif
 
-    <h5 class="uk-text-center">Newest Posts</h5>
+    <p class="uk-text-center">Newest Posts</p>
 
     <table class="uk-table uk-table-small uk-table-divider uk-table-middle">
         <tbody>
@@ -101,10 +101,10 @@
     </table>
     <br>
 
-    <div class="uk-text-center">
+    <p class="uk-text-center uk-text-meta">
         made by Andrus
         <a href="https://discordapp.com/users/86760014068355072"><i class="fab fa-discord link text-secondary"></i></a>
         <a href="https://github.com/Andrusowski"><i class="fab fa-github link text-secondary"></i></a>
-    </div>
+    </p>
 
 @endsection
