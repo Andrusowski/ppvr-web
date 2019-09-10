@@ -59,7 +59,7 @@
                     </ul>
                 </div>
 
-                <a class="uk-navbar-item uk-logo" href="{{url('/')}}">
+                <a class="uk-navbar-item uk-logo nunito" href="{{url('/')}}">
                     PPV<span class="reddit">R</span>
                 </a>
 

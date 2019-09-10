@@ -18,7 +18,7 @@ class IndexController extends Controller
             ->select(DB::raw('posts.player_id,
                               players.name,
                               (SUM(posts.downs)/SUM(posts.ups))*100 as controversy,
-                              '.config('ranking.scoreSumQuery').' as score,
+                              players.score as score,
                               '.config('ranking.scoreAvgQuery').' as score_avg,
                               COUNT(posts.id) as posts'))
             ->join('players', 'posts.player_id', '=', 'players.id')
@@ -47,7 +47,7 @@ class IndexController extends Controller
                               posts.map_artist,
                               posts.map_title,
                               posts.map_diff,
-                              '.config('ranking.scoreSumQuery').' as score,
+                              posts.score as score,
                               (posts.downs/posts.ups)*100 as controversy,
                               posts.created_utc'))
             ->join('players', 'posts.player_id', '=', 'players.id')

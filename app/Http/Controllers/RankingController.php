@@ -21,18 +21,10 @@ class RankingController extends Controller
             ->select(DB::raw('posts.player_id,
                               players.name,
                               (SUM(posts.downs)/SUM(posts.ups))*100 as controversy,
-                              '.config('ranking.scoreSumQuery').' as score,
+                              players.score as score,
                               '.config('ranking.scoreAvgQuery').' as score_avg,
                               COUNT(posts.id) as posts'))
             ->join('players', 'posts.player_id', '=', 'players.id')
-            ->join(DB::raw('(
-                SELECT row_number() over (partition by player_id order by score DESC) row_num, player_id
-                FROM posts 
-                order by score DESC) rownum'),
-                function($join)
-                {
-                    $join->on('posts.player_id', '=', 'rownum.player_id');
-                })
             ->having(DB::raw(config('ranking.scoreSumQuery')), '>=', 100)
             ->groupBy('posts.player_id', 'players.name')
             ->orderBy($sort, 'desc')

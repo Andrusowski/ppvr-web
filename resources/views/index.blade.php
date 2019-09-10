@@ -3,7 +3,7 @@
 @section('content')
 
 
-    <h1 class="uk-heading-medium uk-text-center nunito">PPV<span style="color: #ff4500;">R</span></h1>
+    <h1 class="uk-heading-medium uk-text-center nunito">PPV<span style="color: #ff4500;">R<small class="uk-text-small">2</small></span></h1>
     <p class="uk-text-center">
         Alternative osu! ranking based on posts from /r/osugame
     </p>
