@@ -68,6 +68,7 @@ class IndexController extends Controller
 
         $top_comment = '';
         $top_comment_author = '';
+        $top_comment_link = '';
 
         if ($posts_new_top_score >= 100) {
             //get top comment from top post
@@ -84,6 +85,7 @@ class IndexController extends Controller
                     && !stripos($comments[$i]->data->body_html, 'https')) {
                     $top_comment = $comments[$i]->data->body_html;
                     $top_comment_author = $comments[$i]->data->author;
+                    $top_comment_link = 'https://www.reddit.com'.$comments[$i]->data->permalink;
                     $top_score = $comments[$i]->data->score;
                 }
             }
@@ -96,6 +98,7 @@ class IndexController extends Controller
             ->with('posts_authors', $posts_authors)
             ->with('posts_new', $posts_new)
             ->with('top_comment', $top_comment)
-            ->with('top_comment_author', $top_comment_author);
+            ->with('top_comment_author', $top_comment_author)
+            ->with('top_comment_link', $top_comment_link);
     }
 }

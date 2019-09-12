@@ -66,7 +66,7 @@
 
     @if ($top_comment != '')
         <blockquote class="uk-text-center">
-          <p>{!! html_entity_decode($top_comment) !!}</p>
+          <a class="uk-text-secondary" href="{{ $top_comment_link }}">{!! html_entity_decode($top_comment) !!}</a>
           <footer><cite>{{ $top_comment_author }}</cite></footer>
         </blockquote>
         <br><br>
