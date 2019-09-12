@@ -18,6 +18,9 @@ class AuthorController extends Controller
                              (SUM(downs)/SUM(ups))*100 as controversy,
                              '.config('ranking.scoreSumQuery').' as score,
                              '.config('ranking.scoreAvgQuery').' as score_avg,
+                             SUM(silver) as silver,
+                             SUM(gold) as gold,
+                             SUM(platinum) as platinum,
                              COUNT(posts.id) as posts'))
             ->where('author', $name)
             ->groupBy('author')
@@ -46,7 +49,7 @@ class AuthorController extends Controller
                               map_artist,
                               map_title,
                               map_diff,
-                              '.config('ranking.scoreSumQuery').' as score,
+                              score,
                               (downs/ups)*100 as controversy'))
             ->where('author', $name)
             ->orderBy('score', 'desc')
@@ -58,7 +61,7 @@ class AuthorController extends Controller
                               map_artist,
                               map_title,
                               map_diff,
-                              '.config('ranking.scoreSumQuery').' as score,
+                              score,
                               (downs/ups)*100 as controversy,
                               created_utc'))
             ->where('author', $name)

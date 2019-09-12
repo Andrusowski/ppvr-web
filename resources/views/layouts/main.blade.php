@@ -87,13 +87,13 @@
             @yield('content')
 
             <br>
-
-            <p class="uk-text-center uk-text-meta">
-                made by Andrus
-                <a href="https://discordapp.com/users/86760014068355072"><i class="fab fa-discord link text-secondary"></i></a>
-                <a href="https://github.com/Andrusowski"><i class="fab fa-github link text-secondary"></i></a>
-            </p>
         </div>
+
+        <p class="uk-text-center uk-text-meta" id="footertext">
+            made by Andrus
+            <a href="https://discordapp.com/users/86760014068355072"><i class="fab fa-discord link text-secondary"></i></a>
+            <a href="https://github.com/Andrusowski"><i class="fab fa-github link text-secondary"></i></a>
+        </p>
     </div>
 
     <script type="text/javascript">

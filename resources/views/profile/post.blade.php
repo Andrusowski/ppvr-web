@@ -2,11 +2,11 @@
 
 @section('content')
 
-    <h4 class="d-inline-block">
+    <p class="uk-text-lead">
         {{ $player->name.' | '.$post->map_artist.' - '.$post->map_title.' ['.$post->map_diff.']' }}
-    </h4>
+    </p>
 
-    <p class="lead">
+    <p>
         posted
         @if (time() - $post->created_utc < (60 * 60))
             {{ round((time() - $post->created_utc) / 60) }} minutes ago
@@ -26,16 +26,20 @@
         by {{ $post->author }}
     </p>
 
-    <div class="row pt-4">
-        <div class="col-md-3">
-            <div class="card">
+    <div uk-grid>
+        <div class="uk-width-1-3@m">
+            <div class="uk-card uk-card-default">
                 @if ($img != '')
-                    <a href="{{ $img }}"><img class="card-img-top" src="{{ $img }}" alt="screenshot" /></a>
+                    <div class="uk-card-media-top" uk-lightbox="animation: slide">
+                        <a href="{{ $img }}">
+                            <img href="{{ $img }}"><img class="card-image" src="{{ $img }}" alt="screenshot" /></img>
+                        </a>
+                    </div>
                 @endif
-                <div class="card-body">
-                    <h5 class="card-title">Stats</h5>
+                <div class="uk-card-body">
+                    <h5 class="uk-card-title">Stats</h5>
 
-                    <table class="table table-borderless">
+                    <table class="uk-table uk-table-small uk-table-justify">
                         <tbody>
                             <tr>
                                 <td>Score:</td>
@@ -49,92 +53,120 @@
                                 <td>Downvotes:</td>
                                 <td>{{ $post->downs }}</td>
                             </tr>
-                            <tr>
-                                <td>Gold:</td>
-                                <td>{{ $post->gilded }}</td>
-                            </tr>
                         </tbody>
                     </table>
 
-                    <a class="btn btn-reddit btn-lg btn-block" href="{{ 'https://www.reddit.com/r/osugame/comments/'.$post->id }}">view on Reddit</a>
+                    <table class="uk-table uk-table-small uk-table-justify uk-table-middle">
+                        <thead>
+                        <th>
+                            <img src="https://www.redditstatic.com/gold/awards/icon/silver_32.png" alt="platinum-icon">
+                        </th>
+                        <th>
+                            <img src="https://www.redditstatic.com/gold/awards/icon/gold_32.png" alt="platinum-icon">
+                        </th>
+                        <th>
+                            <img src="https://www.redditstatic.com/gold/awards/icon/platinum_32.png" alt="platinum-icon">
+                        </th>
+                        </thead>
+                        <tbody>
+                        <tr class="uk-text-center@m">
+                            <td>
+                                {{ $post->silver }}
+                            </td>
+                            <td>
+                                {{ $post->gold }}
+                            </td>
+                            <td>
+                                {{ $post->platinum }}
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <a class="uk-button uk-button-small uk-button-default uk-width-1-1 btn-reddit uk-text-nowrap" href="{{ 'https://www.reddit.com/r/osugame/comments/'.$post->id }}">view on Reddit</a>
                 </div>
             </div>
         </div>
-        <div class="col-md-9">
+        <div class="uk-width-expand@m">
             @if ($top_comment != '')
-                <blockquote class="blockquote text-center mt-5 mb-5">
-                  <p class="mb-0">{!! html_entity_decode($top_comment) !!}</p>
-                  <footer class="blockquote-footer"><cite title="Source Title">{{ $top_comment_author }}</cite></footer>
+                <blockquote class="uk-text-center">
+                  <p class="uk-text-secondary">{!! html_entity_decode($top_comment) !!}</p>
+                  <footer><cite>{{ $top_comment_author }}</cite></footer>
                 </blockquote>
             @endif
-            <h4 class="pt-2 pb-2">Top posts for the same map</h4>
-            <table class="table table-sm table-hover">
+
+            <br>
+
+            <p class="uk-text-lead">Top posts for the same map</p>
+                <table class="uk-table uk-table-small uk-table-justify">
                 <thead>
                     <tr>
-                        <th></th>
-                        <th>Played by</th>
-                        <th>Posted by</th>
-                        <th>Score</th>
-                        <th>spicy</th>
+                        <th class="uk-padding-remove-vertical"></th>
+                        <th class="uk-padding-remove-vertical">Played by</th>
+                        <th class="uk-padding-remove-vertical">Posted by</th>
+                        <th class="uk-padding-remove-vertical">Score</th>
+                        <th class="uk-padding-remove-vertical">spicy</th>
                     </tr>
                 </thead>
 
                 <tbody>
                     @foreach($posts_other as $post)
                         <tr>
-                            <td>
+                            <td class="uk-padding-remove-vertical">
                                 <a href="{{ url('/post/'.$post->id) }}" class="text-body" style="text-decoration: none"><i class="fas fa-link"></i></a>
                             </td>
-                            <td>
+                            <td class="uk-padding-remove-vertical">
                                 <a href="{{ url('/player/'.$post->player_id) }}" class="text-body" style="text-decoration: none">
                                     {{ App\Player::find($post->player_id)->name }}
                                 </a>
                             </td>
-                            <td>
+                            <td class="uk-padding-remove-vertical">
                                 <a href="{{ url('/author/'.$post->author) }}" class="text-body" style="text-decoration: none">
                                     {{ $post->author }}
                                 </a>
                             </td>
-                            <td>{{ round($post->ups - $post->downs) }}</td>
-                            <td>{{ ($post->downs == 0) ? 0 : round(($post->downs / $post->ups) * 100) }}%</td>
+                            <td class="uk-padding-remove-vertical">{{ round($post->ups - $post->downs) }}</td>
+                            <td class="uk-padding-remove-vertical">{{ ($post->downs == 0) ? 0 : round(($post->downs / $post->ups) * 100) }}%</td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
-
             @if (count($posts_other) >= 10)
-                <h4 class="pt-2 pb-2">Newest posts for the same map</h4>
-                <table class="table table-sm table-hover">
+                <br>
+
+                <p class="uk-text-lead">Newest posts for the same map</p>
+
+                <table class="uk-table uk-table-small uk-table-justify">
                     <thead>
                         <tr>
-                            <th></th>
-                            <th>Played by</th>
-                            <th>Posted by</th>
-                            <th>Score</th>
-                            <th>spicy</th>
+                            <th class="uk-padding-remove-vertical"></th>
+                            <th class="uk-padding-remove-vertical">Played by</th>
+                            <th class="uk-padding-remove-vertical">Posted by</th>
+                            <th class="uk-padding-remove-vertical">Score</th>
+                            <th class="uk-padding-remove-vertical">spicy</th>
                         </tr>
                     </thead>
 
                     <tbody>
                         @foreach($posts_other_new as $post)
                             <tr>
-                                <td>
+                                <td class="uk-padding-remove-vertical">
                                     <a href="{{ url('/post/'.$post->id) }}" class="text-body" style="text-decoration: none"><i class="fas fa-link"></i></a>
                                 </td>
-                                <td>
+                                <td class="uk-padding-remove-vertical">
                                     <a href="{{ url('/player/'.$post->player_id) }}" class="text-body" style="text-decoration: none">
                                         {{ App\Player::find($post->player_id)->name }}
                                     </a>
                                 </td>
-                                <td>
+                                <td class="uk-padding-remove-vertical">
                                     @if ($post->author != '[deleted]')
                                         <a href="{{ url('/author/'.$post->author) }}" class="text-body" style="text-decoration: none">{{ $post->author }}</a>
                                     @else
                                         <a class="text-body">{{ $post->author }}</a>
                                     @endif
                                 </td>
-                                <td>{{ round($post->score) }}</td>
-                                <td>{{ ($post->downs == 0) ? 0 : round(($post->downs / $post->ups) * 100) }}%</td>
+                                <td class="uk-padding-remove-vertical">{{ round($post->score) }}</td>
+                                <td class="uk-padding-remove-vertical">{{ ($post->downs == 0) ? 0 : round(($post->downs / $post->ups) * 100) }}%</td>
                             </tr>
                         @endforeach
                     </tbody>

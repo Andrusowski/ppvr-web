@@ -2,8 +2,7 @@
 
 @section('content')
 
-    <h1>Statistics</h1>
-    <br>
+    <div class="uk-placeholder uk-text-center">WIP</div>
 
 
 @endsection
