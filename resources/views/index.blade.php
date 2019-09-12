@@ -86,11 +86,9 @@
                         </a>
                     </td>
                     @if (time() - $post->created_utc < (60 * 60))
-                        <td>{{ round((time() - $post->created_utc) / 60) }} minutes ago</td>
-                    @elseif (time() - $post->created_utc < (119 * 60))
-                        <td>1 hour ago</td>
+                        <td class="uk-text-nowrap">{{ round((time() - $post->created_utc) / 60) }}min ago</td>
                     @else
-                        <td>{{ round((time() - $post->created_utc) / 60 / 60) }} hours ago</td>
+                        <td class="uk-text-nowrap">{{ round((time() - $post->created_utc) / 60 / 60) }}h ago</td>
                     @endif
                 </tr>
                 @endif
