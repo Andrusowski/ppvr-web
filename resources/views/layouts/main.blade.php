@@ -48,12 +48,24 @@
         @endif
 
         <div class="uk-container uk-container-small">
-        <!-- Navbar -->
-        <nav class="uk-navbar-container uk-navbar-transparent" uk-navbar>
-            <div class="uk-navbar-left">
-                <button class="uk-navbar-toggle uk-hidden@s" type="button" data-uk-navbar-toggle-icon></button>
-                <div uk-dropdown>
-                    <ul class="uk-nav uk-dropdown-nav">
+            <!-- Navbar -->
+            <nav class="uk-navbar-container uk-navbar-transparent" uk-navbar>
+                <div class="uk-navbar-left">
+                    <button class="uk-navbar-toggle uk-hidden@s" type="button" data-uk-navbar-toggle-icon></button>
+                    <div uk-dropdown>
+                        <ul class="uk-nav uk-dropdown-nav">
+                            <!-- menu -->
+                            <li><a href="{{url('/stats')}}">Stats</a></li>
+                            <li><a href="{{url('/faq')}}">FAQ</a></li>
+                            <li><a href="{{url('/changelog')}}">Changelog</a></li>
+                        </ul>
+                    </div>
+
+                    <a class="uk-navbar-item uk-logo nunito" href="{{url('/')}}">
+                        PPV<span class="reddit">R</span>
+                    </a>
+
+                    <ul class="uk-navbar-nav uk-visible@s">
                         <!-- menu -->
                         <li><a href="{{url('/stats')}}">Stats</a></li>
                         <li><a href="{{url('/faq')}}">FAQ</a></li>
@@ -61,30 +73,26 @@
                     </ul>
                 </div>
 
-                <a class="uk-navbar-item uk-logo nunito" href="{{url('/')}}">
-                    PPV<span class="reddit">R</span>
-                </a>
 
-                <ul class="uk-navbar-nav uk-visible@s">
-                    <!-- menu -->
-                    <li><a href="{{url('/stats')}}">Stats</a></li>
-                    <li><a href="{{url('/faq')}}">FAQ</a></li>
-                    <li><a href="{{url('/changelog')}}">Changelog</a></li>
-                </ul>
-            </div>
-
-
-            <div class="uk-navbar-right">
-                <!-- search -->
-                <form class="uk-search uk-search-default" action="{{url('search/')}}">
-                    <span uk-search-icon></span>
-                    <input class="uk-search-input" name="name" type="search" placeholder="Search Player">
-                </form>
-            </div>
-        </nav>
-        <br><br>
+                <div class="uk-navbar-right">
+                    <!-- search -->
+                    <form class="uk-search uk-search-default" action="{{url('search/')}}">
+                        <span uk-search-icon></span>
+                        <input class="uk-search-input" name="name" type="search" placeholder="Search Player">
+                    </form>
+                </div>
+            </nav>
+            <br><br>
 
             @yield('content')
+
+            <br>
+
+            <p class="uk-text-center uk-text-meta">
+                made by Andrus
+                <a href="https://discordapp.com/users/86760014068355072"><i class="fab fa-discord link text-secondary"></i></a>
+                <a href="https://github.com/Andrusowski"><i class="fab fa-github link text-secondary"></i></a>
+            </p>
         </div>
     </div>
 

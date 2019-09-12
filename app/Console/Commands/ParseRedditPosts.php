@@ -143,17 +143,20 @@ class ParseRedditPosts extends Command
                 $this->parsePost($jsonPost, true, false);
             }
             else if ($age < 48*60*60) {
-                $this->parsePost($jsonPost, true, false);
+                $this->parsePost($jsonPost, false, false);
             }
         }
         //update non-final post, if it already exists in the database (only in non-archive mode)
         else if (!$archive){
             if ($post->final == 0) {
+                $content = file_get_contents('https://www.reddit.com/r/osugame/comments/'.$jsonPost->id.'.json');
+                $jsonPostDetail = json_decode($content)[0]->data->children[0]->data;
+
                 if ($age >= 24*60*60) {
-                    $this->updatePost($jsonPost, 1);
+                    $this->updatePost($jsonPostDetail, 1);
                 }
                 else {
-                    $this->updatePost($jsonPost, 0);
+                    $this->updatePost($jsonPostDetail, 0);
                 }
             }
         }
@@ -309,10 +312,27 @@ class ParseRedditPosts extends Command
         $post->created_utc = $jsonPost->created_utc;
 
         //post platin and silver update
-        if (isset($jsonPost->gilding)) {
-            $post->silver = $jsonPost->gildings->gid_1;
-            $post->gold = $jsonPost->gildings->gid_2;
-            $post->platinum = $jsonPost->gildings->gid_3;
+        if (isset($jsonPost->gildings)) {
+            if (isset($jsonPost->gildings->gid_1)){
+                $post->silver = $jsonPost->gildings->gid_1;
+            }
+            else {
+                $post->silver = 0;
+            }
+
+            if (isset($jsonPost->gildings->gid_2)){
+                $post->gold = $jsonPost->gildings->gid_2;
+            }
+            else {
+                $post->gold = 0;
+            }
+
+            if (isset($jsonPost->gildings->gid_3)){
+                $post->platinum = $jsonPost->gildings->gid_3;
+            }
+            else {
+                $post->platinum = 0;
+            }
         }
         //pre
         else {
@@ -341,14 +361,52 @@ class ParseRedditPosts extends Command
 
     private function updatePost($jsonPost, $final) {
         $post = Post::where('id', '=', $jsonPost->id)->first();
+        $scorePre = $post->score;
 
         $post->ups = round($jsonPost->score * $jsonPost->upvote_ratio);
         $post->downs = round($jsonPost->score * (1 - $jsonPost->upvote_ratio));
         $post->score = $post->ups - $post->downs;
-        $post->silver = $jsonPost->gildings->gid_1;
-        $post->gold = $jsonPost->gildings->gid_2;
-        $post->platinum = $jsonPost->gildings->gid_3;
-        $post->final = $final;
+
+        // update if needed
+        if($scorePre != $post->score) {
+            $post->final = $final;
+
+            //post platin and silver update
+            if (isset($jsonPost->gildings)) {
+                if (isset($jsonPost->gildings->gid_1)){
+                    $post->silver = $jsonPost->gildings->gid_1;
+                }
+                else {
+                    $post->silver = 0;
+                }
+
+                if (isset($jsonPost->gildings->gid_2)){
+                    $post->gold = $jsonPost->gildings->gid_2;
+                }
+                else {
+                    $post->gold = 0;
+                }
+
+                if (isset($jsonPost->gildings->gid_3)){
+                    $post->platinum = $jsonPost->gildings->gid_3;
+                }
+                else {
+                    $post->platinum = 0;
+                }
+            }
+            //pre
+            else {
+                $post->gold = $jsonPost->gilded;
+            }
+
+            if($post->save()) {
+                $this->line('Updated: '.
+                    $post->map_artist. ' - '.
+                    $post->map_title. ' [' .
+                    $post->map_diff."] ".
+                    'Score: '.$scorePre.' -> '.$post->score);
+            }
+        }
     }
 
     private function updatePlayerScore($playerId) {

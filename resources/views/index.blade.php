@@ -3,7 +3,7 @@
 @section('content')
 
 
-    <h1 class="uk-heading-medium uk-text-center nunito">PPV<span style="color: #ff4500;">R<small class="uk-text-small">2</small></span></h1>
+    <h1 class="uk-heading-medium uk-text-center">PPV<span style="color: #ff4500;">R<small class="uk-text-small">2</small></span></h1>
     <p class="uk-text-center">
         Alternative osu! ranking based on posts from /r/osugame
     </p>
@@ -97,12 +97,4 @@
             @endforeach
         </tbody>
     </table>
-    <br>
-
-    <p class="uk-text-center uk-text-meta">
-        made by Andrus
-        <a href="https://discordapp.com/users/86760014068355072"><i class="fab fa-discord link text-secondary"></i></a>
-        <a href="https://github.com/Andrusowski"><i class="fab fa-github link text-secondary"></i></a>
-    </p>
-
 @endsection

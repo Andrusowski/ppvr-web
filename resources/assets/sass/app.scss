@@ -17,18 +17,31 @@ body {
     font-family: 'Nunito', sans-serif !important;
 }
 
+h1 {
+    font-family: 'Nunito', sans-serif !important;
+}
+
 .reddit {
     color: #ff4500;
 }
 
-/*.btn-reddit {
-    @include button-variant($reddit, darken($reddit, 7.5%), darken($reddit, 10%), lighten($reddit,5%), lighten($reddit, 10%), darken($reddit,30%));
+.btn-reddit {
+
 }
 
 .btn-osu {
-    @include button-variant($osu, darken($osu, 7.5%), darken($osu, 10%), lighten($osu,5%), lighten($osu, 10%), darken($osu,30%));
-}*/
+    background-color: $osu !important;
+    color: #ffffff;
+}
+
+.btn-osu:hover {
+    color: #ffffff;
+}
 
 .link {
     text-decoration: none;
+}
+
+.card-image {
+    width: 100%;
 }

@@ -3,7 +3,7 @@
 @section('content')
 
     <div class="uk-text-center">
-        <h1 class="uk-heading-medium nunito">Player Score Ranking</h1>
+        <h1 class="uk-heading-medium">Player Score Ranking</h1>
         <p>Top Players</p>
     </div>
     <br><br>
@@ -52,7 +52,7 @@
                 @foreach($posts as $post)
                     <tr>
                         <td>{{ ++$rank }}</td>
-                        <td><a href="{{ url('/player/'.$post->player_id) }}" class="text-body" style="text-decoration: none">{{ $post->name }}</a></td>
+                        <td><a href="{{ url('/player/'.$post->player_id) }}" style="text-decoration: none">{{ $post->name }}</a></td>
                         <td>{{ $post->posts }}</td>
                         <td>{{ number_format($post->controversy, 2) }}%</td>
                         <td>{{ round($post->score) }}</td>
@@ -67,6 +67,4 @@
         <li><a href="{{ $posts->previousPageUrl() }}" ><span class="uk-margin-small-right" uk-pagination-previous></span> Previous</a></li>
         <li class="uk-margin-auto-left"><a href="{{ $posts->nextPageUrl() }}" aria-label="Next">Next <span class="uk-margin-small-left" uk-pagination-next></span></a></li>
     </ul>
-
-    <br><br>
 @endsection
