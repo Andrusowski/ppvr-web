@@ -40,8 +40,10 @@
         <!-- Player not found -->
         @if ($errors->any())
             <div class="uk-alert-warning" uk-alert>
-                <a class="uk-alert-close" uk-close></a>
-                <strong>Error!</strong> {{$errors->first()}}
+                <div class="uk-container uk-container-small">
+                    <a class="uk-alert-close" uk-close></a>
+                    <strong>Error!</strong> {{$errors->first()}}
+                </div>
             </div>
         @endif
 

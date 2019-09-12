@@ -358,7 +358,7 @@ class ParseRedditPosts extends Command
             JOIN (
                 SELECT player_id, SUM(round((score+(platinum*180)+(gold*50)+(silver*10)) * POWER(0.95, row_num - 1))) AS weighted
                 FROM (
-                    SELECT row_number() over (partition BY player_id ORDER BY score DESC) row_num, score, player_id
+                    SELECT row_number() over (partition BY player_id ORDER BY score DESC) row_num, score, silver, gold, platinum, player_id
                     FROM posts
                     ORDER BY score DESC
                 ) AS ranking
