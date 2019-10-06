@@ -8,9 +8,21 @@
 // Variables
 @import 'variables';
 
-body {
-    background-image: url("../img/bg.png");
+html {
+    height: 100%;
+    box-sizing: border-box;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    background: url("../img/bg.png") center;
     font-family: 'Nunito', sans-serif !important;
+}
+
+body {
+    min-height: 100%;
+    position: relative;
+    margin: 0;
 }
 
 .nunito {
@@ -44,6 +56,15 @@ h1 {
 
 .card-image {
     width: 100%;
+}
+
+#footertext {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 1rem;
+    text-align: center;
 }
 
 

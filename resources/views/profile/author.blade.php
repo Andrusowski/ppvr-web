@@ -14,7 +14,7 @@
     </h1>
 
     <div uk-grid>
-        <div class="uk-width-1-4@m">
+        <div class="uk-width-1-3@m">
             <div class="uk-card uk-card-default">
                 <div class="uk-card-body">
                     <h5 class="uk-card-title">Stats</h5>

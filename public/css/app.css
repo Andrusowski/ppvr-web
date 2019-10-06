@@ -1,6 +1,15 @@
-@import url(https://fonts.googleapis.com/css?family=Nunito);body {
-  background-image: url(/images/bg.png?383fc1f703da9b79b7aab0fae970b661);
+@import url(https://fonts.googleapis.com/css?family=Nunito);html {
+  height: 100%;
+  box-sizing: border-box;
+  background-size: cover;
+  background: url(/images/bg.png?383fc1f703da9b79b7aab0fae970b661) center;
   font-family: "Nunito", sans-serif !important;
+}
+
+body {
+  min-height: 100%;
+  position: relative;
+  margin: 0;
 }
 
 .nunito {
@@ -34,5 +43,14 @@ h1 {
 
 .card-image {
   width: 100%;
+}
+
+#footertext {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 1rem;
+  text-align: center;
 }
 

@@ -82,14 +82,15 @@
                     </form>
                 </div>
             </nav>
-            <br><br>
 
             @yield('content')
 
             <br>
         </div>
 
-        <p class="uk-text-center uk-text-meta" id="footertext">
+        <br><br>
+
+        <p class="uk-text-center uk-text-meta uk-margin-remove-bottom uk-padding-small" id="footertext">
             made by Andrus
             <a href="https://discordapp.com/users/86760014068355072"><i class="fab fa-discord link text-secondary"></i></a>
             <a href="https://github.com/Andrusowski"><i class="fab fa-github link text-secondary"></i></a>
