@@ -7,6 +7,7 @@ use App\Player;
 use App\Post;
 use App\Tmppost;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 
 class ParseRedditPosts extends Command
@@ -100,6 +101,8 @@ class ParseRedditPosts extends Command
             $first = $firstPost->created_utc;
         }
         $after = $first;  //time of first scorepost posted
+        $month_seconds = 2629743;
+        $lastRankSave = 0;
 
         self::$lastParse = time();
 
@@ -112,8 +115,15 @@ class ParseRedditPosts extends Command
             for ($i = 0; $i < sizeof($jsonPosts->data); ++$i) {
                 $jsonPost = $jsonPosts->data[$i];
                 $this->prepareParse($jsonPost, true);
+
                 $bar->setProgress($jsonPost->created_utc - 1426668291);
+
                 $after = $jsonPost->created_utc;
+                if(($jsonPost->created_utc > time() - $month_seconds * 3) && ($jsonPost->created_utc - $lastRankSave > 86400)) {
+                    $this->line('Saving ranks...');
+                    Artisan::call('parse:ranks '.$jsonPost->created_utc);
+                    $lastRankSave = $jsonPost->created_utc;
+                }
             }
         }
 
