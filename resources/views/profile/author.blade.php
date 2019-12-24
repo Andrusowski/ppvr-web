@@ -14,7 +14,7 @@
     </h1>
 
     <div uk-grid>
-        <div class="uk-width-1-3@m">
+        <div class="uk-width-1-4@m">
             <div class="uk-card uk-card-default">
                 <div class="uk-card-body">
                     <h5 class="uk-card-title">Stats</h5>
@@ -68,10 +68,10 @@
                         </tr>
                         </tbody>
                     </table>
-
-                    <a class="uk-button uk-button-small uk-button-default uk-width-1-1 btn-reddit uk-text-nowrap" href="{{ 'https://www.reddit.com/u/'.$author_stats->author }}">Reddit Profile</a>
                 </div>
             </div>
+
+            <a class="uk-button uk-button-small uk-button-default uk-width-1-1 btn-reddit uk-text-nowrap uk-margin-top" href="{{ 'https://www.reddit.com/u/'.$author_stats->author }}">Reddit Profile</a>
         </div>
         <div class="uk-width-expand@m">
             <p class="uk-text-lead">Top posts</p>

@@ -73,10 +73,10 @@
                             </tr>
                         </tbody>
                     </table>
-
-                    <a class="uk-button uk-button-small uk-button-default uk-width-1-1 btn-osu uk-text-nowrap" href="{{ 'https://osu.ppy.sh/users/'.$player->id }}">osu! Profile</a>
                 </div>
             </div>
+
+            <a class="uk-button uk-button-default uk-width-1-1 btn-osu uk-text-nowrap uk-margin-top" href="{{ 'https://osu.ppy.sh/users/'.$player->id }}">osu! Profile</a>
         </div>
         <div class="uk-width-expand@m">
             <p class="uk-text-lead">Top posts</p>
