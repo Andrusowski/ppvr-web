@@ -69,7 +69,7 @@
                         <!-- menu -->
                         <li><a href="{{url('/stats')}}">Stats</a></li>
                         <li><a href="{{url('/faq')}}">FAQ</a></li>
-                        <li><a href="{{url('/changelog')}}">Changelog</a></li>
+                        <li><a href="https://github.com/Andrusowski/ppvr-web/blob/master/CHANGELOG.md">Changelog</a></li>
                     </ul>
                 </div>
 
