@@ -97,6 +97,8 @@
         </p>
     </div>
 
+    @yield('javascript')
+
     <script type="text/javascript">
         var base_url = {!! json_encode(url('/')) !!}
     </script>

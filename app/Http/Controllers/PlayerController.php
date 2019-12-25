@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Alias;
+use App\Rank;
 use Illuminate\Support\Facades\DB;
 use App\Player;
 
@@ -72,6 +73,8 @@ class PlayerController extends Controller
             ->take(10)
             ->get();
 
+        $ranks = Rank::where('player_id', '=', $player->id)->orderBy('created_at', 'ASC')->take(92)->get();
+
         return view('profile.player')
             ->with('rank', $rank)
             ->with('posts', $posts)
@@ -79,6 +82,7 @@ class PlayerController extends Controller
             ->with('alias', $alias)
             ->with('awards', $awards[0])
             ->with('posts_new', $posts_new)
-            ->with('player_stats', $player_stats);
+            ->with('player_stats', $player_stats)
+            ->with('ranks', $ranks);
     }
 }
