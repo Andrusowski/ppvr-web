@@ -14,14 +14,12 @@ class CreateTmppostsTable extends Migration
     public function up()
     {
         Schema::create('tmpposts', function (Blueprint $table) {
-            $table->string('id', 8);
+            $table->string('id', 8)->primary();
             $table->string('title', 300);
             $table->string('author', 20);
-            $table->integer('score');
-            $table->timestamp('created_at')->useCurrent();
+            $table->integer('score')->index();
+            $table->timestamp('created_at')->useCurrent()->index();
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
-
-            $table->primary('id');
         });
     }
 
