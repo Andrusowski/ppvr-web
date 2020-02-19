@@ -44,7 +44,7 @@ class GetAliases extends Command
                 'ignore_errors' => true)
             )
         );
-        
+
         $players = Player::all();
 
         $bar = $this->output->createProgressBar(count($players));
@@ -69,7 +69,7 @@ class GetAliases extends Command
             }
 
             $bar->advance();
-            sleep(1);
+            usleep(100000);
         }
 
         $bar->finish();

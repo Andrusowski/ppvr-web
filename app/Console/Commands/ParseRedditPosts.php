@@ -104,7 +104,7 @@ class ParseRedditPosts extends Command
         $month_seconds = 2629743;
         $lastRankSave = 0;
 
-        self::$lastParse = time();
+        self::$lastParse = microtime(true);
 
         $bar = $this->output->createProgressBar(time() - 1426668291);
 
@@ -228,11 +228,11 @@ class ParseRedditPosts extends Command
                     $parsedPost->map_title. ' [' .
                     $parsedPost->map_diff."]");
                 //take a break to prevent osu!api spam
-                while (self::$lastParse == time()) {
+                while (self::$lastParse + 0.1 > microtime(true)) {
                     //wait
-                    usleep(100000);
+                    usleep(10000);
                 }
-                self::$lastParse = time();
+                self::$lastParse = microtime(true);
                 $content = file_get_contents('https://www.reddit.com/r/osugame/comments/'.$jsonPost->id.'.json');
                 $jsonPostDetail = json_decode($content)[0]->data->children[0]->data;
                 $this->preparePost($jsonPostDetail, $parsedPost, $playerName, $final);

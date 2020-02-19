@@ -17,7 +17,6 @@ class CreateRanksTable extends Migration
             $table->bigIncrements('id');
             $table->integer('player_id')->unsigned()->index();
             $table->integer('rank')->unsigned();
-            $table->integer('score')->unsigned();
             $table->timestamps();
 
             $table->foreign('player_id')->references('id')->on('players');
