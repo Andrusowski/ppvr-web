@@ -157,17 +157,15 @@ class ParseRedditPosts extends Command
             }
         }
         //update non-final post, if it already exists in the database (only in non-archive mode)
-        else if (!$archive){
-            if ($post->final == 0) {
-                $content = file_get_contents('https://www.reddit.com/r/osugame/comments/'.$jsonPost->id.'.json');
-                $jsonPostDetail = json_decode($content)[0]->data->children[0]->data;
+        else if (!$archive && $post && $post->final == 0){
+            $content = file_get_contents('https://www.reddit.com/r/osugame/comments/'.$jsonPost->id.'.json');
+            $jsonPostDetail = json_decode($content)[0]->data->children[0]->data;
 
-                if ($age >= 24*60*60) {
-                    $this->updatePost($jsonPostDetail, 1);
-                }
-                else {
-                    $this->updatePost($jsonPostDetail, 0);
-                }
+            if ($age >= 24*60*60) {
+                $this->updatePost($jsonPostDetail, 1);
+            }
+            else {
+                $this->updatePost($jsonPostDetail, 0);
             }
         }
     }
