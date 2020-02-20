@@ -2,16 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
-## 2019-09
-Note: This version is a major rewrite and took a bunch of time because of procrastination :^ it's possible that not everything is documented for this version
+## 2020-02
+Note: This version is a major rewrite and took a bunch of time because of procrastination :^) it's possible that not everything is documented for this version
 
 ### Added
+- Graphs showing the player's rank history
 - Maximizable scorepost screenshots on post pages.
 - Silver, gold and platnium on detail pages.
 - Artisan command for saving player ranks periodically.
 - Placeholders for a statistics and an FAQ Page
 
 ### Changed
+- **Player PP is now weighted** using the same calculation the official PP uses
+- Quotes on the start page can now be clicked to get to the originating post
 - Transition from bootstrap to uikit
 - ppvr-bot is now archived and was replaced by Laravel Artisan commands.
 - Aliases are now stored forever. Instead of being a column in the player database table, aliases now have a seperate table so it is possible to save multiple aliases per player.

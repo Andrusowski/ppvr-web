@@ -44,15 +44,15 @@
 
                     <table class="uk-table uk-table-small uk-table-justify uk-table-middle">
                         <thead>
-                        <th>
-                            <img src="https://www.redditstatic.com/gold/awards/icon/silver_32.png" alt="platinum-icon">
-                        </th>
-                        <th>
-                            <img src="https://www.redditstatic.com/gold/awards/icon/gold_32.png" alt="platinum-icon">
-                        </th>
-                        <th>
-                            <img src="https://www.redditstatic.com/gold/awards/icon/platinum_32.png" alt="platinum-icon">
-                        </th>
+                            <th>
+                                <object data="{{ URL::asset('/icons/medal-f.svg') }} " type="image/svg+xml" class="medal-silver" title="Silver"></object>
+                            </th>
+                            <th>
+                                <object data="{{ URL::asset('/icons/medal-f.svg') }} " type="image/svg+xml" class="medal-gold" title="Gold"></object>
+                            </th>
+                            <th>
+                                <object data="{{ URL::asset('/icons/medal-f.svg') }} " type="image/svg+xml" class="medal-platinum" title="Platinum"></object>
+                            </th>
                         </thead>
                         <tbody>
                         <tr class="uk-text-center@m">

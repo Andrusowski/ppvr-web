@@ -33966,7 +33966,7 @@ console.log(myChart);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /var/www/resources/assets/js/rankChart.js */"./resources/assets/js/rankChart.js");
+module.exports = __webpack_require__(/*! /var/www/html/ppvr.andrus.io/resources/assets/js/rankChart.js */"./resources/assets/js/rankChart.js");
 
 
 /***/ })

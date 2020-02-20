@@ -67,4 +67,16 @@ h1 {
     text-align: center;
 }
 
+.medal-platinum {
+    filter: invert(99%) sepia(35%) saturate(3269%) hue-rotate(168deg) brightness(100%) contrast(104%) !important;
+}
+
+.medal-gold {
+    filter: invert(55%) sepia(100%) saturate(366%) hue-rotate(5deg) brightness(100%) contrast(90%) !important;
+}
+
+.medal-silver {
+    filter: invert(77%) sepia(0%) saturate(1%) hue-rotate(123deg) brightness(102%) contrast(89%) !important;
+}
+
 
