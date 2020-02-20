@@ -64,6 +64,6 @@ class SaveRanks extends Command
 
         DB::commit();
         $bar->finish();
-        $this->line();
+        $this->line('');
     }
 }
