@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.2.0/css/uikit.min.css" />
 
     <!-- my CSS -->
-    <link rel="stylesheet" href="{!! asset('css/app.css') !!}" type="text/css">
+    <link rel="stylesheet" href="{!! mix('/css/app.css') !!}" type="text/css">
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="https://fonts.gstatic.com">
