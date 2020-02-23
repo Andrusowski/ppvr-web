@@ -9,11 +9,11 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://bootswatch.com/4/litera/bootstrap.min.css">
+    <!-- UIkit CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.2.0/css/uikit.min.css" />
 
     <!-- my CSS -->
-    <link rel="stylesheet" href="{!! asset('css/app.css') !!}" type="text/css">
+    <link rel="stylesheet" href="{!! mix('/css/app.css') !!}" type="text/css">
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="https://fonts.gstatic.com">
@@ -37,51 +37,75 @@
 </head>
 <body>
     <div id="app">
-        <div class="container">
-            <nav class="navbar">
-                <!-- menu -->
-                <div class="dropdown">
-                    <a class="navbar-brand text-body dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="{{url('/')}}">
+        <!-- Player not found -->
+        @if ($errors->any())
+            <div class="uk-alert-warning" uk-alert>
+                <div class="uk-container uk-container-small">
+                    <a class="uk-alert-close" uk-close></a>
+                    <strong>Error!</strong> {{$errors->first()}}
+                </div>
+            </div>
+        @endif
+
+        <div class="uk-container uk-container-small">
+            <!-- Navbar -->
+            <nav class="uk-navbar-container uk-navbar-transparent" uk-navbar>
+                <div class="uk-navbar-left">
+                    <button class="uk-navbar-toggle uk-hidden@s" type="button" data-uk-navbar-toggle-icon></button>
+                    <div uk-dropdown>
+                        <ul class="uk-nav uk-dropdown-nav">
+                            <!-- menu -->
+                            <li><a href="{{url('/stats')}}">Stats</a></li>
+                            <li><a href="{{url('/faq')}}">FAQ</a></li>
+                            <li><a href="https://github.com/Andrusowski/ppvr-web/blob/master/CHANGELOG.md">Changelog</a></li>
+                        </ul>
+                    </div>
+
+                    <a class="uk-navbar-item uk-logo nunito" href="{{url('/')}}">
                         PPV<span class="reddit">R</span>
                     </a>
 
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <a class="dropdown-item" href="{{url('/')}}">Home</a>
-                        <!--<a class="dropdown-item" href="{{url('/about')}}">About</a>-->
-                        <a class="dropdown-item" href="{{url('/changelog')}}">Changelog</a>
-                    </div>
+                    <ul class="uk-navbar-nav uk-visible@s">
+                        <!-- menu -->
+                        <li><a href="{{url('/stats')}}">Stats</a></li>
+                        <li><a href="{{url('/faq')}}">FAQ</a></li>
+                        <li><a href="https://github.com/Andrusowski/ppvr-web/blob/master/CHANGELOG.md">Changelog</a></li>
+                    </ul>
                 </div>
 
-                <!-- search -->
-                <form class="form-inline searchbar" action="{{url('search/')}}">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <div class="input-group-text" id="btnGroupAddon2"><i data-eva="search-outline"></i></div>
-                        </div>
-                        <input type="text" class="form-control" name="name" placeholder="Player Search" aria-describedby="btnGroupAddon2">
-                    </div>
-                </form>
+
+                <div class="uk-navbar-right">
+                    <!-- search -->
+                    <form class="uk-search uk-search-default" action="{{url('search/')}}">
+                        <span uk-search-icon></span>
+                        <input class="uk-search-input" name="name" type="search" placeholder="Search Player">
+                    </form>
+                </div>
             </nav>
 
-            @if ($errors->any())
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <strong>Error!</strong> {{$errors->first()}}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-            @endif
-            <br><br>
             @yield('content')
+
+            <br>
         </div>
+
+        <br><br>
+
+        <p class="uk-text-center uk-text-meta uk-margin-remove-bottom uk-padding-small" id="footertext">
+            made by Andrus
+            <a href="https://discordapp.com/users/86760014068355072"><i class="fab fa-discord link text-secondary"></i></a>
+            <a href="https://github.com/Andrusowski"><i class="fab fa-github link text-secondary"></i></a>
+        </p>
     </div>
 
+    @yield('javascript')
+
     <script type="text/javascript">
-    var base_url = {!! json_encode(url('/')) !!}
+        var base_url = {!! json_encode(url('/')) !!}
     </script>
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script type="text/javascript" src="{!! asset('js/app.js') !!}" defer></script>
+
+    <!-- UIkit JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.2.0/js/uikit.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.2.0/js/uikit-icons.min.js"></script>
 </body>
 </html>

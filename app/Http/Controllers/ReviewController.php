@@ -27,7 +27,7 @@ class ReviewController extends Controller
      */
     public function getIndex()
     {
-        $tmpposts = Tmppost::orderBy('id','desc')->paginate(10);
+        $tmpposts = Tmppost::orderBy('id','desc')->paginate(50);
         return view('review.index')->with('tmpposts', $tmpposts);
     }
 
@@ -136,8 +136,16 @@ class ReviewController extends Controller
             $post->score = $tmppostApi->score;
             $post->ups = round($tmppostApi->score * $tmppostApi->upvote_ratio);
             $post->downs = round($tmppostApi->score * (1 - $tmppostApi->upvote_ratio));
-            $post->gilded = $tmppostApi->gilded;
             $post->created_utc = $tmppostApi->created_utc;
+
+            if (isset($jsonPost->gildings)) {
+                $post->silver = $tmppostApi->gildings->gid_1;
+                $post->gold = $tmppostApi->gildings->gid_2;
+                $post->platinum = $tmppostApi->gildings->gid_3;
+            }
+            else {
+                $post->gold = $tmppostApi->gilded;
+            }
 
             if ((time() - $tmppostApi->created_utc) > 48*60*60) {
                 $post->final = true;

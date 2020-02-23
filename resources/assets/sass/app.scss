@@ -3,17 +3,33 @@
 @import url('https://fonts.googleapis.com/css?family=Nunito');
 
 // Bootstrap
-@import '~bootstrap/scss/bootstrap';
+// @import '~bootstrap/scss/bootstrap';
 
 // Variables
 @import 'variables';
 
-body {
-    background-image: url("../img/bg.png");
-    font-family: 'Nunito', sans-serif
+html {
+    height: 100%;
+    box-sizing: border-box;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    background: url("../img/bg.png") center;
+    font-family: 'Nunito', sans-serif !important;
 }
 
+body {
+    min-height: 100%;
+    position: relative;
+    margin: 0;
+}
+mycroft-cli
 .nunito {
+    font-family: 'Nunito', sans-serif !important;
+}
+
+h1 {
     font-family: 'Nunito', sans-serif !important;
 }
 
@@ -22,19 +38,45 @@ body {
 }
 
 .btn-reddit {
-    @include button-variant($reddit, darken($reddit, 7.5%), darken($reddit, 10%), lighten($reddit,5%), lighten($reddit, 10%), darken($reddit,30%));
+    background-color: $reddit !important;
 }
 
 .btn-osu {
-    @include button-variant($osu, darken($osu, 7.5%), darken($osu, 10%), lighten($osu,5%), lighten($osu, 10%), darken($osu,30%));
+    background-color: $osu !important;
+    color: #ffffff;
 }
 
-.table-width { width: 100%; }
-
-.searchbar {
-    width: 15em;
+.btn-osu:hover {
+    color: #ffffff;
 }
 
 .link {
     text-decoration: none;
 }
+
+.card-image {
+    width: 100%;
+}
+
+#footertext {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 1rem;
+    text-align: center;
+}
+
+.medal-platinum {
+    filter: invert(99%) sepia(35%) saturate(3269%) hue-rotate(168deg) brightness(100%) contrast(104%) !important;
+}
+
+.medal-gold {
+    filter: invert(55%) sepia(100%) saturate(366%) hue-rotate(5deg) brightness(100%) contrast(90%) !important;
+}
+
+.medal-silver {
+    filter: invert(77%) sepia(0%) saturate(1%) hue-rotate(123deg) brightness(102%) contrast(89%) !important;
+}
+
+
