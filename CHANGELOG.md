@@ -10,6 +10,8 @@ Note: This version is a major rewrite and took a bunch of time because of procra
 - Maximizable scorepost screenshots on post pages.
 - Silver, gold and platnium on detail pages.
 - Artisan command for saving player ranks periodically.
+- Artisan command for getting the old names of players.
+- Artisan command for updating scores after manual changes to posts.
 - Placeholders for a statistics and an FAQ Page
 
 ### Changed
