@@ -5,13 +5,13 @@
 
     <div class="uk-child-width-expand@s uk-text-center" uk-grid>
         <div>
-            <div class="uk-card uk-card-default uk-card-body">
+            <div class="uk-card uk-card-default uk-card-body uk-card-hover">
                 <h2 class="uk-card-title">Scoreposts Total</h2>
                 <p>{{ $postsTotal }}</p>
             </div>
         </div>
         <div>
-            <div class="uk-card uk-card-default uk-card-body">
+            <div class="uk-card uk-card-default uk-card-body uk-card-hover">
                 <h2 class="uk-card-title">Invalid Scoreposts Total</h2>
                 <p>{{ $tmpPostsTotal }}</p>
             </div>
