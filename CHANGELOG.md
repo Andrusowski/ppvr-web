@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2020-07-03
+### Added
+- Stats page
+- FAQ page
+- rank change indicator on player ranking page
+
+### Changed
+- Javascript rewrite using Vue components to render graphs
+- Improved ranking pagination by adding page numbers
+- updated dependencies
+
 ## 2020-02-23
 Note: This version is a major rewrite and took a bunch of time because of procrastination :^) it's possible that not everything is documented for this version
 

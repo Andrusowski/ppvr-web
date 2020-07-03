@@ -80,7 +80,12 @@
         </div>
         <div class="uk-width-expand@m">
             <p class="uk-text-lead">Rank History</p>
-            <canvas id="rankHistory" height="70"></canvas>
+            <chart
+                posts="{{ $ranks }}"
+                name="rankHistory"
+                value-index="rank">
+            </chart>
+
             <p class="uk-text-lead">Top posts</p>
             <table class="uk-table uk-table-small uk-table-justify">
                 <thead>
@@ -136,12 +141,4 @@
             @endif
         </div>
     </div>
-@endsection
-
-@section('javascript')
-    <script type="text/javascript">
-        var ranks = @JSON($ranks);
-    </script>
-
-    <script type="text/javascript" src="{!! asset('js/rankChart.js') !!}"></script>
 @endsection

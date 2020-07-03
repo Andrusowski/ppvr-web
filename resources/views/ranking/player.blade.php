@@ -11,6 +11,7 @@
         <table class="uk-table uk-table-small uk-table-divider uk-table-justify">
             <thead>
                 <tr>
+                    <th></th>
                     <th>#</th>
                     <th>name</th>
                     <th class="uk-text-nowrap">
@@ -50,8 +51,20 @@
 
             <tbody>
                 @foreach($posts as $post)
+                    <?php ++$rank ?>
                     <tr>
-                        <td>{{ ++$rank }}</td>
+                        <td>
+                            @if ($post->lastRank > ($rank + 1)) {{-- more than 1 rank gained --}}
+                                <i class="fas fa-angle-double-up rank-up" uk-tooltip="{{ $post->lastRank - $rank }} ranks gained over the past week"></i>
+                            @elseif ($post->lastRank === ($rank + 1)) {{-- 1 rank gained --}}
+                                <i class="fas fa-angle-up rank-up" uk-tooltip="1 rank gained over the past week"></i>
+                            @elseif ($post->lastRank < ($rank - 1)) {{-- more than 1 rank lost --}}
+                                <i class="fas fa-angle-down rank-down" uk-tooltip="{{ $rank - $post->lastRank }} ranks lost over the past week"></i>
+                            @elseif ($post->lastRank === ($rank - 1)) {{-- 1 rank lost --}}
+                                <i class="fas fa-angle-down rank-down" uk-tooltip="1 rank lost over the past week"></i>
+                            @endif
+                        </td>
+                        <td>{{ $rank }}</td>
                         <td><a href="{{ url('/player/'.$post->player_id) }}" style="text-decoration: none">{{ $post->name }}</a></td>
                         <td>{{ $post->posts }}</td>
                         <td>{{ number_format($post->controversy, 2) }}%</td>
@@ -63,8 +76,22 @@
         </table>
     </div>
 
-    <ul class="uk-pagination">
-        <li><a href="{{ $posts->previousPageUrl() }}" ><span class="uk-margin-small-right" uk-pagination-previous></span> Previous</a></li>
-        <li class="uk-margin-auto-left"><a href="{{ $posts->nextPageUrl() }}" aria-label="Next">Next <span class="uk-margin-small-left" uk-pagination-next></span></a></li>
+    <ul class="uk-pagination uk-flex-center">
+        <li><a href="{{ $posts->previousPageUrl() }}" ><span uk-pagination-previous></span></a></li>
+        @if (($posts->total() > 7) && ($posts->currentPage() > 5))
+            <li><a href="{{ $posts->url(1) }}">1</a></li>
+            <li class="uk-disabled"><span>...</span></li>
+        @endif
+
+        @foreach($pageUrls as $pageNo => $pageUrl)
+            @if ($posts->currentPage() === $pageNo)
+                <li class="uk-active">
+            @else
+                <li>
+            @endif
+                <a href="{{ $pageUrl }}">{{ $pageNo }}</a>
+            </li>
+        @endforeach
+        <li><a href="{{ $posts->nextPageUrl() }}"><span uk-pagination-next></span></a></li>
     </ul>
 @endsection

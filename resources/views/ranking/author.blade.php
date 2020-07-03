@@ -66,8 +66,22 @@
         </table>
     </div>
 
-    <ul class="uk-pagination">
-        <li><a href="{{ $posts->previousPageUrl() }}" ><span class="uk-margin-small-right" uk-pagination-previous></span> Previous</a></li>
-        <li class="uk-margin-auto-left"><a href="{{ $posts->nextPageUrl() }}" aria-label="Next">Next <span class="uk-margin-small-left" uk-pagination-next></span></a></li>
+    <ul class="uk-pagination uk-flex-center">
+        <li><a href="{{ $posts->previousPageUrl() }}" ><span uk-pagination-previous></span></a></li>
+        @if (($posts->total() > 7) && ($posts->currentPage() > 5))
+            <li><a href="{{ $posts->url(1) }}">1</a></li>
+            <li class="uk-disabled"><span>...</span></li>
+        @endif
+
+        @foreach($pageUrls as $pageNo => $pageUrl)
+            @if ($posts->currentPage() === $pageNo)
+                <li class="uk-active">
+            @else
+                <li>
+                    @endif
+                    <a href="{{ $pageUrl }}">{{ $pageNo }}</a>
+                </li>
+                @endforeach
+                <li><a href="{{ $posts->nextPageUrl() }}"><span uk-pagination-next></span></a></li>
     </ul>
 @endsection

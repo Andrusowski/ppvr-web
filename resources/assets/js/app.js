@@ -1,12 +1,13 @@
+import Vue from "vue";
+import Chart from "./components/Chart";
 
-/**
- * First we will load all of this project's JavaScript dependencies which
- * includes Vue and other libraries. It is a great starting point when
- * building robust, powerful web applications using Vue and Laravel.
- */
-
-//require('./bootstrap');
 const eva = require('eva-icons');
+
+Vue.component('chart', Chart);
+
+const app = new Vue({
+    el: '#app'
+});
 
 function search() {
     var name = document.getElementById('search').value;
