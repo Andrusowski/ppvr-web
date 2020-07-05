@@ -107,5 +107,8 @@
     <!-- UIkit JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.2.0/js/uikit.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.2.0/js/uikit-icons.min.js"></script>
+
+    <!-- Ackee -->
+    <script async src="https://ackee.andrus.io/ackee.js" data-ackee-server="https://ackee.andrus.io" data-ackee-domain-id="a9f21c73-92ba-4be0-bdba-ecfad3b31cec"></script>
 </body>
 </html>
