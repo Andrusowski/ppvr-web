@@ -83,7 +83,9 @@
             <chart
                 posts="{{ $ranks }}"
                 name="rankHistory"
-                value-index="rank">
+                value-index="rank"
+                unit="Rank"
+                v-bind:reverse="true">
             </chart>
 
             <p class="uk-text-lead">Top posts</p>

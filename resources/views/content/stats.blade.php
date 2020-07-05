@@ -24,6 +24,7 @@
             posts="{{ $postsHistory }}"
             name="postsHistory"
             value-index="postsDaily"
+            unit="Posts"
             v-bind:y-axes-display="true">
         </chart>
     </div>
@@ -35,6 +36,7 @@
             name="postsHistory"
             value-index="postsDaily"
             color="rgb(255, 127, 17)"
+            unit="Upvotes"
             v-bind:y-axes-display="true">
         </chart>
     </div>
