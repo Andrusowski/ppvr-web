@@ -30,6 +30,14 @@
                 type: String,
                 required: true,
             },
+            unit: {
+                type: String,
+                required: true,
+            },
+            reverse: {
+                type: Boolean,
+                default: false,
+            },
             color: {
                 type: String,
                 default: 'rgb(255, 99, 132)',
@@ -70,7 +78,7 @@
                         yAxes: [{
                             ticks: {
                                 precision:1,
-                                reverse: false
+                                reverse: this.reverse
                             },
                             display: this.yAxesDisplay
                         }]
@@ -81,12 +89,12 @@
                     tooltips: {
                         mode: 'index',
                         callbacks: {
-                            title: function(tooltipItem, data) {
+                            title: (tooltipItem, data) => {
                                 var days = data.datasets[0].data.length - tooltipItem[0].xLabel;
                                 return days + ' days ago';
                             },
-                            label: function(tooltipItem) {
-                                return 'Posts: ' + tooltipItem.yLabel;
+                            label: (tooltipItem) => {
+                                return this.unit + ': ' + tooltipItem.yLabel;
                             }
                         },
                         intersect: false,
