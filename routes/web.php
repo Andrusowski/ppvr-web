@@ -11,9 +11,7 @@
 |
 */
 
-/* Route::get('/', function () {
-    return view('welcome');
-}); */
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', 'IndexController@getIndex');
 Route::get('/ranking', 'RawRankingController@getIndex');
@@ -26,11 +24,3 @@ Route::get('/search', 'SearchController@postSearch');
 Route::get('/changelog', 'ChangelogController@getIndex');
 Route::get('/faq', 'FaqController@getIndex');
 Route::get('/stats', 'StatsController@getIndex');
-
-Auth::routes();
-
-Route::get('/review', 'ReviewController@getIndex')->name('review');
-Route::get('/review/add/{id}', 'ReviewController@getAdd');
-Route::get('/review/add/{id}', 'ReviewController@getAdd');
-Route::post('/review/add/{id}', 'ReviewController@postAdd');
-Route::get('/review/delete/{id}', 'ReviewController@getDelete');
