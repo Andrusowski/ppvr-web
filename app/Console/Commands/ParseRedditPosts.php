@@ -3,6 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Alias;
+use App\Console\Requests\OsuRequest;
+use App\Console\Requests\RedditRequest;
 use App\Player;
 use App\Post;
 use App\Tmppost;
@@ -109,8 +111,8 @@ class ParseRedditPosts extends Command
         $bar = $this->output->createProgressBar(time() - 1426668291);
 
         while ($after < time() - 60*60) { //stop archiving, when posts are younger than an hour
-            $jsonContent = file_get_contents('https://api.pushshift.io/reddit/submission/search?subreddit=osugame&sort=asc&limit=100&after='.$after);
-            $jsonPosts = json_decode($jsonContent);
+            $redditRequest = new RedditRequest();
+            $jsonPosts = $redditRequest->getArchiveAfter($after);
 
             for ($i = 0; $i < sizeof($jsonPosts->data); ++$i) {
                 $jsonPost = $jsonPosts->data[$i];
@@ -131,8 +133,8 @@ class ParseRedditPosts extends Command
     }
 
     private function new() {
-        $jsonContent=file_get_contents('https://ga.reddit.com/r/osugame/search.json?q=flair%3AGameplay&sort=new&restrict_sr=on&t=all');
-        $jsonPosts = json_decode($jsonContent);
+        $redditRequest = new RedditRequest();
+        $jsonPosts = $redditRequest->getNewPosts();
 
         for ($i = 0; $i < $jsonPosts->data->dist; ++$i) {
             $jsonPost = $jsonPosts->data->children[$i]->data;
@@ -158,8 +160,8 @@ class ParseRedditPosts extends Command
         }
         //update non-final post, if it already exists in the database (only in non-archive mode)
         else if (!$archive && $post && $post->final == 0){
-            $content = file_get_contents('https://www.reddit.com/r/osugame/comments/'.$jsonPost->id.'.json');
-            $jsonPostDetail = json_decode($content)[0]->data->children[0]->data;
+            $redditRequest = new RedditRequest();
+            $jsonPostDetail = $redditRequest->getComments($jsonPost->id)[0]->data->children[0]->data;
 
             if ($age >= 24*60*60) {
                 $this->updatePost($jsonPostDetail, 1);
@@ -231,8 +233,8 @@ class ParseRedditPosts extends Command
                     usleep(10000);
                 }
                 self::$lastParse = microtime(true);
-                $content = file_get_contents('https://www.reddit.com/r/osugame/comments/'.$jsonPost->id.'.json');
-                $jsonPostDetail = json_decode($content)[0]->data->children[0]->data;
+                $redditRequest = new RedditRequest();
+                $jsonPostDetail = $redditRequest->getComments($jsonPost->id)[0]->data->children[0]->data;
                 $this->preparePost($jsonPostDetail, $parsedPost, $playerName, $final);
                 return true;
             }
@@ -243,11 +245,8 @@ class ParseRedditPosts extends Command
     }
 
     private function preparePost($jsonPost, $parsedPost, $playerName, $final) {
-        $apiUser = file_get_contents (
-            "https://osu.ppy.sh/api/get_user?k=".env('OSU_API_KEY').
-            "&u=".urlencode($playerName)."&type=string"
-        );
-        $user = json_decode($apiUser);
+        $osuRequest = new OsuRequest();
+        $user = $osuRequest->getUser($playerName);
 
         //if the api can find the username, check if its in the DB and insert
         if (isset($user[0]->user_id)) {
@@ -265,12 +264,7 @@ class ParseRedditPosts extends Command
         else {
             $alias = Alias::where('alias', '=', $playerName)->orderBy('created_at', 'DESC')->first();
             if ($alias != null) {
-                $apiUserAlias = file_get_contents (
-                    "https://osu.ppy.sh/api/get_user?k=".env('OSU_API_KEY').
-                    "&u=".urlencode($alias->alias)."&type=string"
-                );
-
-                $userAlias = json_decode($apiUserAlias);
+                $userAlias = $osuRequest->getUser(urlencode($alias->alias));
                 if ($userAlias != null)
                 {
                     $this->addPost($jsonPost, $parsedPost, $userAlias, $final);

@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Alias;
+use App\Console\Requests\OsuRequest;
 use App\Player;
 use Illuminate\Console\Command;
 
@@ -49,8 +50,9 @@ class GetAliases extends Command
 
         $bar = $this->output->createProgressBar(count($players));
 
+        $osuRequest = new OsuRequest();
         foreach ($players as $player) {
-            $playerPage = file_get_contents('https://osu.ppy.sh/users/'.$player->id, true);
+            $playerPage = $osuRequest->getPlayerPage($player->id);
 
             $matches = array();
             preg_match('/previous_usernames":\[\"(.*)\"\]/m', $playerPage, $matches);
