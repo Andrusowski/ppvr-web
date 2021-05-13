@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Alias;
 use App\Player;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
@@ -46,8 +45,7 @@ class UpdatePlayerScore extends Command
             foreach ($playerCollection as $player) {
                 $playerIds[] = $player->id;
             }
-        }
-        elseif ($this->hasArgument('player_id')) {
+        } elseif ($this->hasArgument('player_id')) {
             $playerId[] = $this->argument('player_id');
         }
 
@@ -68,8 +66,7 @@ class UpdatePlayerScore extends Command
                 ORDER BY weighted DESC
             ) weighted ON players.id=weighted.player_id
             SET score=weighted.weighted
-            WHERE players.id='.$playerId
-            );
+            WHERE players.id=' . $playerId);
 
             $bar->advance();
         }

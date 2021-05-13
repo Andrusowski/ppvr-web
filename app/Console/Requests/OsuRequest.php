@@ -5,6 +5,7 @@
  */
 
 namespace App\Console\Requests;
+
 use GuzzleHttp\Client;
 
 class OsuRequest
@@ -22,8 +23,8 @@ class OsuRequest
             'query' => [
                 'k' => env('OSU_API_KEY'),
                 'u' => $playerName,
-                'type' => 'string'
-            ]
+                'type' => 'string',
+            ],
         ])->getBody()->getContents();
 
         return json_decode($response, false, 512, JSON_THROW_ON_ERROR);
@@ -32,6 +33,7 @@ class OsuRequest
     public function getPlayerPage(string $playerId): string
     {
         $client = new Client(['base_url' => 'https://osu.ppy.sh']);
+
         return $client->request('GET', '/users/' . $playerId)
             ->getBody()
             ->getContents();

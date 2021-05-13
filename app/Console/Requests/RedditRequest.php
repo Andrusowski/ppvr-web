@@ -11,7 +11,7 @@ use GuzzleHttp\Client;
 
 class RedditRequest
 {
-    const TIME_FIRST_POST = 1426668291;
+    public const TIME_FIRST_POST = 1426668291;
 
     /**
      * @param DateTime|null $after
@@ -28,7 +28,7 @@ class RedditRequest
                 'sort' => 'asc',
                 'limit' => 100,
                 'after' => $after ?? new DateTime(static::TIME_FIRST_POST),
-            ]
+            ],
         ])->getBody()->getContents();
 
         return json_decode($response, false, 512, JSON_THROW_ON_ERROR);
@@ -47,7 +47,7 @@ class RedditRequest
                 'sort' => 'new',
                 'restrict_sr' => 'on',
                 't' => 'all',
-            ]
+            ],
         ])->getBody()->getContents();
 
         return json_decode($response, false, 512, JSON_THROW_ON_ERROR);
@@ -81,7 +81,8 @@ class RedditRequest
     /**
      * @return Client
      */
-    private function createRedditClient(): Client {
+    private function createRedditClient(): Client
+    {
         return new Client(['base_uri' => 'https://www.reddit.com']);
     }
 }

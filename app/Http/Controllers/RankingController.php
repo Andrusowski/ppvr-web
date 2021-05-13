@@ -22,7 +22,7 @@ class RankingController extends Controller
                               players.name,
                               (SUM(posts.downs)/SUM(posts.ups))*100 as controversy,
                               players.score as score,
-                              '.config('ranking.scoreAvgQuery').' as score_avg,
+                              ' . config('ranking.scoreAvgQuery') . ' as score_avg,
                               COUNT(posts.id) as posts,
                               ranks.rank as lastRank'))
             ->join('players', 'posts.player_id', '=', 'players.id')
@@ -33,7 +33,7 @@ class RankingController extends Controller
             ->orderBy($sort, 'desc')
             ->paginate(ENTRIES_PER_PAGE);
 
-        $rank = ENTRIES_PER_PAGE * ($posts->currentPage()-1);
+        $rank = ENTRIES_PER_PAGE * ($posts->currentPage() - 1);
 
         $pageUrls = $this->getPageUrls($posts);
 
@@ -51,8 +51,8 @@ class RankingController extends Controller
         $posts = DB::table('posts')
             ->select(DB::raw('author,
                               (SUM(downs)/SUM(ups))*100 as controversy,
-                              '.config('ranking.scoreSumQuery').' as score,
-                              '.config('ranking.scoreAvgQuery').' as score_avg,
+                              ' . config('ranking.scoreSumQuery') . ' as score,
+                              ' . config('ranking.scoreAvgQuery') . ' as score_avg,
                               COUNT(id) as posts'))
             ->where('author', '!=', '[deleted]')
             ->having(DB::raw(config('ranking.scoreSumQuery')), '>=', 100)
@@ -60,7 +60,7 @@ class RankingController extends Controller
             ->orderBy($sort, 'desc')
             ->paginate(ENTRIES_PER_PAGE);
 
-        $rank = ENTRIES_PER_PAGE * ($posts->currentPage()-1);
+        $rank = ENTRIES_PER_PAGE * ($posts->currentPage() - 1);
 
         $pageUrls = $this->getPageUrls($posts);
 
@@ -83,12 +83,12 @@ class RankingController extends Controller
         if (( $posts->total() > 7 ) && ( $posts->currentPage() > 5 )) {
             $firstPageRange = ( $posts->currentPage() - 2 > 1 ) ? $posts->currentPage() - 2 : 1;
             $lastPageRange = ( $posts->currentPage() + 2 <= $posts->total() ) ? $posts->currentPage() + 2 : $posts->total();
-        }
-        else {
+        } else {
             $firstPageRange = 1;
             $lastPageRange = ( $posts->total() < 7 ) ? $posts->total() : 7;
         }
         $pageUrls = $posts->getUrlRange($firstPageRange, $lastPageRange);
+
         return $pageUrls;
-}
+    }
 }

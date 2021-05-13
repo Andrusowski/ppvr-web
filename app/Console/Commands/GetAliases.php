@@ -41,9 +41,9 @@ class GetAliases extends Command
     public function handle()
     {
         stream_context_set_default(
-            array('http' => array(
-                'ignore_errors' => true)
-            )
+            ['http' => [
+                'ignore_errors' => true],
+            ]
         );
 
         $players = Player::all();
@@ -54,18 +54,18 @@ class GetAliases extends Command
         foreach ($players as $player) {
             $playerPage = $osuRequest->getPlayerPage($player->id);
 
-            $matches = array();
+            $matches = [];
             preg_match('/previous_usernames":\[\"(.*)\"\]/m', $playerPage, $matches);
 
-            if(sizeof($matches) > 0) {
+            if (count($matches) > 0) {
                 $aliases = explode('","', $matches[1]);
                 foreach ($aliases as $alias) {
                     $aliasEntity = new Alias();
                     $aliasEntity->player_id = $player->id;
                     $aliasEntity->alias = $alias;
 
-                    if($aliasEntity->save()) {
-                        $this->info($player->name.'->'.$alias);
+                    if ($aliasEntity->save()) {
+                        $this->info($player->name . '->' . $alias);
                     }
                 }
             }

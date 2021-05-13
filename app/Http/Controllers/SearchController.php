@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Request;
-use Illuminate\Support\Facades\DB;
 use App\Player;
+use Illuminate\Support\Facades\Request;
 
 class SearchController extends Controller
 {
@@ -28,6 +27,5 @@ class SearchController extends Controller
         }
 
         return back()->withErrors(['The requested user does not exist or has no Reddit posts yet.']);
-
     }
 }
