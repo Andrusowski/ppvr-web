@@ -47,8 +47,9 @@
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
         ],
-        "phpcs": "vendor/bin/phpcs --standard=ruleset.xml --extensions=php --tab-width=4 -sp app",
-        "phpstan": "vendor/bin/phpstan analyse app"
+        "phpcs": "vendor/bin/phpcs --standard=ruleset.xml --extensions=php --tab-width=4 -sp app routes tests",
+        "phpcbf": "vendor/bin/phpcbf --standard=ruleset.xml --extensions=php --tab-width=4 -sp app routes tests",
+        "phpstan": "vendor/bin/phpstan analyse app routes"
     },
     "extra": {
         "laravel": {
