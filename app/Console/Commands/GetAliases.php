@@ -2,9 +2,9 @@
 
 namespace App\Console\Commands;
 
-use App\Alias;
-use App\Console\Requests\OsuClient;
-use App\Player;
+use App\Models\Alias;
+use App\Services\Clients\OsuClient;
+use App\Models\Player;
 use Illuminate\Console\Command;
 
 class GetAliases extends Command

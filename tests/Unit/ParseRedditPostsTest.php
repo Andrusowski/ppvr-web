@@ -3,8 +3,8 @@
 namespace Tests\Unit;
 
 use App\Console\Commands\ParseRedditPosts;
-use App\Console\Requests\OsuClient;
-use App\Console\Requests\RedditClient;
+use App\Services\Clients\OsuClient;
+use App\Services\Clients\RedditClient;
 use Faker\Factory;
 use ReflectionClass;
 use Tests\TestCase;

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Post;
-use App\Tmppost;
+use App\Models\Post;
+use App\Models\Tmppost;
 use Illuminate\Support\Facades\DB;
 
 class StatsController extends Controller

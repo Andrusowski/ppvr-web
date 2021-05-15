@@ -4,7 +4,7 @@
  * Licensed under the MIT License
  */
 
-namespace App\Console\Requests;
+namespace App\Services\Clients;
 
 use GuzzleHttp\Client;
 

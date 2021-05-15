@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Player;
-use App\Post;
+use App\Models\Player;
+use App\Models\Post;
 
 class PostController extends Controller
 {

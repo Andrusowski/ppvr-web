@@ -4,7 +4,7 @@
  * Licensed under the MIT License
  */
 
-namespace App\Console\Requests;
+namespace App\Services\Clients;
 
 use DateTime;
 use GuzzleHttp\Client;
@@ -14,20 +14,20 @@ class RedditClient
     public const TIME_FIRST_POST = 1426668291;
 
     /**
-     * @param DateTime|null $after
+     * @param int|null $after
      *
      * @return mixed
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \JsonException
      */
-    public function getArchiveAfter(?DateTime $after)
+    public function getArchiveAfter(?int $after)
     {
         $response = $this->createPushshiftClient()->request('GET', '/reddit/submission/search', [
             'query' => [
                 'subreddit' => 'osugame',
                 'sort' => 'asc',
                 'limit' => 100,
-                'after' => $after ?? new DateTime(static::TIME_FIRST_POST),
+                'after' => $after ?? static::TIME_FIRST_POST,
             ],
         ])->getBody()->getContents();
 

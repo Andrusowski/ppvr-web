@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Player;
-use App\Rank;
+use App\Models\Player;
+use App\Models\Rank;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 

@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Player;
+use App\Models\Player;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 

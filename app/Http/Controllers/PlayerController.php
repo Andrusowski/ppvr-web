@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Alias;
-use App\Player;
-use App\Rank;
+use App\Models\Alias;
+use App\Models\Player;
+use App\Models\Rank;
 use Illuminate\Support\Facades\DB;
 
 class PlayerController extends Controller

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Player;
+use App\Models\Player;
 use Illuminate\Support\Facades\Request;
 
 class SearchController extends Controller
