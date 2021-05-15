@@ -3,12 +3,17 @@
 namespace App\Console\Commands;
 
 use App\Alias;
-use App\Console\Requests\OsuRequest;
+use App\Console\Requests\OsuClient;
 use App\Player;
 use Illuminate\Console\Command;
 
 class GetAliases extends Command
 {
+    /**
+     * @var OsuClient
+     */
+    private $osuClient;
+
     /**
      * The name and signature of the console command.
      *
@@ -31,6 +36,8 @@ class GetAliases extends Command
     public function __construct()
     {
         parent::__construct();
+
+        $this->osuClient = new OsuClient();
     }
 
     /**
@@ -50,9 +57,8 @@ class GetAliases extends Command
 
         $bar = $this->output->createProgressBar(count($players));
 
-        $osuRequest = new OsuRequest();
         foreach ($players as $player) {
-            $playerPage = $osuRequest->getPlayerPage($player->id);
+            $playerPage = $this->osuClient->getPlayerPage($player->id);
 
             $matches = [];
             preg_match('/previous_usernames":\[\"(.*)\"\]/m', $playerPage, $matches);

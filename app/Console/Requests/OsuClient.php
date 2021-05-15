@@ -8,7 +8,7 @@ namespace App\Console\Requests;
 
 use GuzzleHttp\Client;
 
-class OsuRequest
+class OsuClient
 {
     /**
      * @param string $playerName

@@ -3,8 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Alias;
-use App\Console\Requests\OsuRequest;
-use App\Console\Requests\RedditRequest;
+use App\Console\Requests\OsuClient;
+use App\Console\Requests\RedditClient;
 use App\Player;
 use App\Post;
 use App\Tmppost;
@@ -14,15 +14,11 @@ use Illuminate\Support\Facades\DB;
 
 class ParseRedditPosts extends Command
 {
-    /**
-     * @var int
-     */
-    private static $lastParse;
-
+    private const TIMESTAMP_FIRST_SCOREPOST = 1426668291;
     /**
      * consts taken from christopher-dG's osu-bot
      */
-    private static $title_ignores = [
+    private const TITLE_IGNORES = [
         'UNNOTICED',
         'UNNOTICED?',
         'RIPPLE',
@@ -56,6 +52,21 @@ class ParseRedditPosts extends Command
     ];
 
     /**
+     * @var int
+     */
+    private static $lastParse;
+
+    /**
+     * @var RedditClient
+     */
+    private $redditClient;
+
+    /**
+     * @var OsuClient
+     */
+    private $osuClient;
+
+    /**
      * The name and signature of the console command.
      *
      * @var string
@@ -77,6 +88,9 @@ class ParseRedditPosts extends Command
     public function __construct()
     {
         parent::__construct();
+
+        $this->redditClient = new RedditClient();
+        $this->osuClient = new OsuClient();
     }
 
     /**
@@ -93,12 +107,14 @@ class ParseRedditPosts extends Command
         } else {
             $this->new();
         }
+
+        return static::SUCCESS;
     }
 
     private function archive()
     {
         $firstPost = Post::orderBy('created_at', 'DESC')->first();
-        $first = 1426668291;
+        $first = static::TIMESTAMP_FIRST_SCOREPOST;
         if ($firstPost != null) {
             $first = $firstPost->created_utc;
         }
@@ -108,11 +124,10 @@ class ParseRedditPosts extends Command
 
         self::$lastParse = microtime(true);
 
-        $bar = $this->output->createProgressBar(time() - 1426668291);
+        $bar = $this->output->createProgressBar(time() - static::TIMESTAMP_FIRST_SCOREPOST);
 
         while ($after < time() - 60 * 60) { //stop archiving, when posts are younger than an hour
-            $redditRequest = new RedditRequest();
-            $jsonPosts = $redditRequest->getArchiveAfter($after);
+            $jsonPosts = $this->redditClient->getArchiveAfter($after);
 
             foreach ($jsonPosts->data as $jsonPost) {
                 $this->prepareParse($jsonPost, true);
@@ -133,12 +148,10 @@ class ParseRedditPosts extends Command
 
     private function new()
     {
-        $redditRequest = new RedditRequest();
-        $jsonPosts = $redditRequest->getNewPosts();
+        $jsonPosts = $this->redditClient->getNewPosts();
 
-        for ($i = 0; $i < $jsonPosts->data->dist; ++$i) {
-            $jsonPost = $jsonPosts->data->children[$i]->data;
-            $this->prepareParse($jsonPost, false);
+        foreach ($jsonPosts->data->children as $jsonPost) {
+            $this->prepareParse($jsonPost->data, false);
         }
     }
 
@@ -158,8 +171,7 @@ class ParseRedditPosts extends Command
                 $this->parsePost($jsonPost, false, false);
             }
         } elseif (!$archive && $post && $post->final == 0) { // update non-final post, if it already exists in the database (only in non-archive mode)
-            $redditRequest = new RedditRequest();
-            $jsonPostDetail = $redditRequest->getComments($jsonPost->id)[0]->data->children[0]->data;
+            $jsonPostDetail = $this->redditClient->getComments($jsonPost->id)[0]->data->children[0]->data;
 
             if ($age >= 24 * 60 * 60) {
                 $this->updatePost($jsonPostDetail, 1);
@@ -177,7 +189,7 @@ class ParseRedditPosts extends Command
         if (preg_match('/.*\|.*\-.*\[.*\].*/', $postTitle)) {
             //clean up posttitle from various annotations
             $postTitle = preg_replace('/([\[\(]\#.*[\]\)])/U', '', $postTitle);
-            foreach (self::$title_ignores as $ignore) {
+            foreach (self::TITLE_IGNORES as $ignore) {
                 $postTitle = preg_replace("/([\[\(]\Q" . $ignore . "\E[\]\)])/i", '', $postTitle);
             }
             //parse relevant information from post title
@@ -227,8 +239,7 @@ class ParseRedditPosts extends Command
                     usleep(10000);
                 }
                 self::$lastParse = microtime(true);
-                $redditRequest = new RedditRequest();
-                $jsonPostDetail = $redditRequest->getComments($jsonPost->id)[0]->data->children[0]->data;
+                $jsonPostDetail = $this->redditClient->getComments($jsonPost->id)[0]->data->children[0]->data;
                 $this->preparePost($jsonPostDetail, $parsedPost, $playerName, $final);
 
                 return true;
@@ -240,8 +251,7 @@ class ParseRedditPosts extends Command
 
     private function preparePost($jsonPost, $parsedPost, $playerName, $final)
     {
-        $osuRequest = new OsuRequest();
-        $user = $osuRequest->getUser($playerName);
+        $user = $this->osuClient->getUser($playerName);
 
         //if the api can find the username, check if its in the DB and insert
         if (isset($user[0]->user_id)) {
@@ -258,7 +268,7 @@ class ParseRedditPosts extends Command
                the osu!api call using the alias */
             $alias = Alias::where('alias', '=', $playerName)->orderBy('created_at', 'DESC')->first();
             if ($alias != null) {
-                $userAlias = $osuRequest->getUser(urlencode($alias->alias));
+                $userAlias = $this->osuClient->getUser(urlencode($alias->alias));
                 if ($userAlias != null) {
                     $this->addPost($jsonPost, $parsedPost, $userAlias, $final);
                 }

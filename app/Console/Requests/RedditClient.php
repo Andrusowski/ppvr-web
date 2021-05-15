@@ -9,7 +9,7 @@ namespace App\Console\Requests;
 use DateTime;
 use GuzzleHttp\Client;
 
-class RedditRequest
+class RedditClient
 {
     public const TIME_FIRST_POST = 1426668291;
 

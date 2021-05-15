@@ -3,11 +3,11 @@
 namespace Tests\Unit;
 
 use App\Console\Commands\ParseRedditPosts;
-use App\Console\Requests\OsuRequest;
-use App\Console\Requests\RedditRequest;
+use App\Console\Requests\OsuClient;
+use App\Console\Requests\RedditClient;
 use Faker\Factory;
-use PHPUnit\Framework\TestCase;
 use ReflectionClass;
+use Tests\TestCase;
 
 class ParseRedditPostsTest extends TestCase
 {
@@ -18,25 +18,30 @@ class ParseRedditPostsTest extends TestCase
      */
     public function testExample()
     {
-        $parseRedditPostsCommand = new ParseRedditPosts();
+        $parseRedditPostsMock = $this->getMockBuilder(ParseRedditPosts::class)
+            ->onlyMethods(['option', 'line'])
+            ->getMock();
+        $parseRedditPostsMock->method('option')
+            ->willReturn(false);
+        $parseRedditPostsMock->method('line')
+            ->willReturn(null);
 
-        $parseRedditPostsReflection = new ReflectionClass($parseRedditPostsCommand);
-        $reflectionRedditClient = $parseRedditPostsReflection->getProperty('redditRequest');
+        $parseRedditPostsReflection = new ReflectionClass(ParseRedditPosts::class);
+        $reflectionRedditClient = $parseRedditPostsReflection->getProperty('redditClient');
         $reflectionRedditClient->setAccessible(true);
-        $reflectionRedditClient->setValue($parseRedditPostsCommand, $this->mockRedditClient());
+        $reflectionRedditClient->setValue($parseRedditPostsMock, $this->mockRedditClient());
 
-        $reflectionOsuClient = $parseRedditPostsReflection->getProperty('osuRequest');
+        $reflectionOsuClient = $parseRedditPostsReflection->getProperty('osuClient');
         $reflectionOsuClient->setAccessible(true);
-        $reflectionOsuClient->setValue($parseRedditPostsCommand, $this->mockOsuClient());
+        $reflectionOsuClient->setValue($parseRedditPostsMock, $this->mockOsuClient());
 
-        $parseRedditPostsCommand->addOption()
-        $parseRedditPostsCommand->handle();
+        self::assertEquals(0, $parseRedditPostsMock->handle());
     }
 
     private function mockRedditClient()
     {
         $faker = Factory::create();
-        $mockRedditClient = $this->getMockBuilder(RedditRequest::class)
+        $redditClientMock = $this->getMockBuilder(RedditClient::class)
             ->onlyMethods(['getArchiveAfter', 'getNewPosts', 'getComments'])
             ->getMock();
 
@@ -44,24 +49,25 @@ class ParseRedditPostsTest extends TestCase
             'data' => $this->mockPosts($faker->randomDigitNotZero())
         ];
 
-        $mockRedditClient->method('getArchiveAfter')
-            ->willReturn((object)$mockArchive);
+        $redditClientMock->method('getArchiveAfter')
+            ->willReturn($this->toObject($mockArchive));
 
         $mockNewPosts = [
             'data' => [
-                'children' => [
-                    $this->mockPosts($faker->randomDigitNotZero())
-                ]
+                'children' => $this->mockPosts($faker->randomDigitNotZero())
             ]
         ];
 
-        $mockRedditClient->method('getNewPosts')
-            ->willReturn((object)$mockNewPosts);
+        $redditClientMock->method('getNewPosts')
+            ->willReturn($this->toObject($mockNewPosts));
 
-        $mockRedditClient->method('getComments')
-            ->willReturn((object)$this->mockPostDetails());
+        $redditClientMock->method('getComments')
+            ->with(self::anything())
+            ->willReturnCallback(function ($argument) {
+                return $this->toObject($this->mockPostDetails($argument));
+            });
 
-        return $mockRedditClient;
+        return $redditClientMock;
     }
 
     private function mockOsuClient()
@@ -71,15 +77,17 @@ class ParseRedditPostsTest extends TestCase
         $mockPlayer = [
             [
                 'user_id' => $faker->randomNumber(9),
-                'username' => $faker->regexify('[a-z0-9]){3,12}'),
+                'username' => $faker->regexify('[a-z0-9]{3,12}'),
             ]
         ];
 
-        return $this->getMockBuilder(OsuRequest::class)
+        $osuClientMock = $this->getMockBuilder(OsuClient::class)
             ->onlyMethods(['getUser'])
-            ->getMock()
-            ->method('getUser')
-            ->willReturn((object) $mockPlayer);
+            ->getMock();
+        $osuClientMock->method('getUser')
+            ->willReturn($this->toObject($mockPlayer));
+
+        return $osuClientMock;
     }
 
     private function mockPosts(int $amount): array
@@ -88,24 +96,28 @@ class ParseRedditPostsTest extends TestCase
         $posts = [];
 
         for ($i = 0; $i < $amount; $i++) {
+            $title = $faker->regexify('[a-z0-9]{3,12}') . ' | '
+                . $faker->word . ' - '
+                . $faker->sentence(5, true) . ' ['
+                . $faker->word . '] '
+                . $faker->sentence(10, true);
+
             $posts[] = [
-                'id' => $faker->regexify('([a-z0-9]){6}'),
-                'created_utc' => $faker->unixTime(),
+                'data' => [
+                    'id' => $faker->regexify('[a-z0-9]{6}'),
+                    'created_utc' => $faker->unixTime(),
+                    'title' => $title,
+                    'permalink' => $faker->url,
+                ],
             ];
         }
 
         return $posts;
     }
 
-    private function mockPostDetails(): array
+    private function mockPostDetails(string $id): array
     {
         $faker = Factory::create();
-
-        $title = $faker->regexify('[a-z0-9]){3,12}') . ' | '
-            . $faker->word . ' - '
-            . $faker->sentence(5, true) . ' ['
-            . $faker->word . '] '
-            . $faker->sentence(10, true);
 
         return [
             [
@@ -113,8 +125,7 @@ class ParseRedditPostsTest extends TestCase
                     'children' => [
                         [
                             'data' => [
-                                'id' => $faker->regexify('([a-z0-9]){6}'),
-                                'title' => $title,
+                                'id' => $id,
                                 'author' => $faker->regexify('[A-Za-z0-9_-]{3,20}'),
                                 'created_utc' => $faker->unixTime(),
                                 'score' => $faker->randomNumber(5),
@@ -130,5 +141,9 @@ class ParseRedditPostsTest extends TestCase
                 ]
             ]
         ];
+    }
+
+    private function toObject(array $data) {
+        return json_decode(json_encode($data), false, 512, JSON_THROW_ON_ERROR);
     }
 }
