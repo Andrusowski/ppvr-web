@@ -7,6 +7,7 @@
 namespace App\Services;
 
 use App\Models\Alias;
+use App\Models\Api\User;
 use App\Models\Player;
 use App\Models\Post;
 use App\Models\Tmppost;
@@ -17,12 +18,19 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
 class RedditParser
 {
     private const TIMESTAMP_FIRST_SCOREPOST = 1426668291;
+    private const TIME_MONTH = 2629743;
+    private const TIME_DAY = 86400;
+
+    private const REGEX_SCOREPOST = '/.*\|.*\-.*\[.*\].*/';
+    private const REGEX_POST_TITLE = '/([\[\(]\#.*[\]\)])/U';
+    private const REGEX_POST_PLAYER_NAME = '/(?:\(.+?\)\s)*(.+?)\s*(?:\(.+\))*\s*[\|丨].+-.+?\[.+?\]/u';
+    private const REGEX_POST_MAP_DATA = '/.+[\|丨]\s*(.+-.+\[.+\])/u';
+    private const REGEX_POST_MAP_DATA_GROUPS = '/(.+)\s-\s(.+?)\s\[(.+?)\]/';
 
     /**
      * consts taken from christopher-dG's osu-bot
@@ -61,11 +69,6 @@ class RedditParser
     ];
 
     /**
-     * @var int
-     */
-    private static $lastParse;
-
-    /**
      * @var RedditClient
      */
     private $redditClient;
@@ -102,17 +105,12 @@ class RedditParser
     public function archive()
     {
         $firstPost = Post::orderBy('created_at', 'DESC')->first();
-        $first = static::TIMESTAMP_FIRST_SCOREPOST;
-        if ($firstPost != null) {
-            $first = $firstPost->created_utc;
-        }
-        $after = $first;  //time of first scorepost posted
-        $month_seconds = 2629743;
+        $after = $firstPost->created_utc ?? self::TIMESTAMP_FIRST_SCOREPOST;
         $lastRankSave = 0;
 
         self::$lastParse = microtime(true);
 
-        $this->bar = $this->output->createProgressBar(time() - static::TIMESTAMP_FIRST_SCOREPOST);
+        $this->bar = $this->output->createProgressBar(time() - self::TIMESTAMP_FIRST_SCOREPOST);
         $this->bar->setFormat('custom');
         $this->bar->setMessage('Reading from archive...');
 
@@ -122,10 +120,13 @@ class RedditParser
             foreach ($jsonPosts->data as $jsonPost) {
                 $this->prepareParse($jsonPost, true);
 
-                $this->bar->setProgress($jsonPost->created_utc - static::TIMESTAMP_FIRST_SCOREPOST);
+                $this->bar->setProgress($jsonPost->created_utc - self::TIMESTAMP_FIRST_SCOREPOST);
 
                 $after = $jsonPost->created_utc;
-                if (($jsonPost->created_utc > time() - $month_seconds * 3) && ($jsonPost->created_utc - $lastRankSave > 86400)) {
+                if (
+                    (($jsonPost->created_utc - $lastRankSave) > self::TIME_DAY) &&
+                    ($jsonPost->created_utc > (time() - self::TIME_MONTH * 3))
+                ) {
                     $this->output->writeln('Saving ranks...');
                     Artisan::call('parse:ranks ' . $jsonPost->created_utc);
                     $lastRankSave = $jsonPost->created_utc;
@@ -160,19 +161,13 @@ class RedditParser
 
         if ($post === null && $tmpPost === null) {
             //determine if post is final (>48h old)
-            if ($age >= 48 * 60 * 60) {
-                $this->parsePost($jsonPost, true, false);
-            } elseif ($age < 48 * 60 * 60) {
-                $this->parsePost($jsonPost, false, false);
-            }
+            $final = $age >= 48 * 60 * 60;
+            $this->parsePost($jsonPost, $final, false);
         } elseif (!$archive && $post && $post->final == 0) { // update non-final post, if it already exists in the database (only in non-archive mode)
             $jsonPostDetail = $this->redditClient->getComments($jsonPost->id)[0]->data->children[0]->data;
 
-            if ($age >= 24 * 60 * 60) {
-                $this->updatePost($jsonPostDetail, 1);
-            } else {
-                $this->updatePost($jsonPostDetail, 0);
-            }
+            $finalUpdate = $age >= 24 * 60 * 60;
+            $this->updatePost($jsonPostDetail, $finalUpdate);
         }
     }
 
@@ -181,89 +176,83 @@ class RedditParser
         /* check for characteristic characters from the already established format
         Player Name | Song Artist - Song Title [Diff Name] +Mods */
         $postTitle = $jsonPost->title;
-        if (preg_match('/.*\|.*\-.*\[.*\].*/', $postTitle)) {
-            //clean up posttitle from various annotations
-            $postTitle = preg_replace('/([\[\(]\#.*[\]\)])/U', '', $postTitle);
-            foreach (self::TITLE_IGNORES as $ignore) {
-                $postTitle = preg_replace("/([\[\(]\Q" . $ignore . "\E[\]\)])/i", '', $postTitle);
-            }
-            //parse relevant information from post title
-            $playerName = '**error**';
-            $parsedPost = new Post();
-            $parsedPost->map_artist = '**error**';
-            $parsedPost->map_title = '**error**';
-            $parsedPost->map_diff = '**error**';
-
-            $parseError = false;
-            $matches = [];
-            //Player
-            $match = preg_match("/(?:\(.+?\)\s)*(.+?)\s*(?:\(.+\))*\s*[\|丨].+-.+?\[.+?\]/", $postTitle, $matches);
-            if ($match != false && count($matches) == 2) {
-                $playerName = trim($matches[1]);
-            } else {
-                $parseError = true;
-            }
-            //map Data
-            $tmpMap = '';
-            $match = preg_match("/.+[\|丨]\s*(.+-.+\[.+\])/", $postTitle, $matches);
-            if ($match != false && count($matches) == 2) {
-                $tmpMap = $matches[1];
-            } else {
-                $parseError = true;
-            }
-            //split map Data
-            $match = preg_match("/(.+)\s-\s(.+?)\s\[(.+?)\]/", $tmpMap, $matches);
-            if ($match != false && count($matches) == 4) {
-                $parsedPost->map_artist = htmlspecialchars_decode(trim($matches[1]));
-                $parsedPost->map_title = htmlspecialchars_decode(trim($matches[2]));
-                $parsedPost->map_diff = htmlspecialchars_decode(trim($matches[3]));
-            } else {
-                $parseError = true;
-            }
-            if ($parseError == false) {
-                //check some additional stuff before marking as final
-                $this->bar->setMessage('Parsed: ' . $playerName . ' | ' .
-                    $parsedPost->map_artist . ' - ' .
-                    $parsedPost->map_title . ' [' .
-                    $parsedPost->map_diff . "]");
-                //take a break to prevent osu!api spam
-                while (self::$lastParse + 0.1 > microtime(true)) {
-                    //wait
-                    usleep(10000);
-                }
-                self::$lastParse = microtime(true);
-                $jsonPostDetail = $this->redditClient->getComments($jsonPost->id)[0]->data->children[0]->data;
-                $this->preparePost($jsonPostDetail, $parsedPost, $playerName, $final);
-
-                return true;
-            } else {
-                $this->addTmpPost($jsonPost);
-            }
+        if (!preg_match(self::REGEX_SCOREPOST, $postTitle)) {
+            return false;
         }
+
+        //clean up posttitle from various annotations
+        $postTitle = preg_replace(self::REGEX_POST_TITLE, '', $postTitle);
+        foreach (self::TITLE_IGNORES as $ignore) {
+            $postTitle = preg_replace("/([\[\(]\Q" . $ignore . "\E[\]\)])/i", '', $postTitle);
+        }
+        //parse relevant information from post title
+        $parsedPost = new Post();
+
+        $matches = [];
+        //Player
+        $match = preg_match(self::REGEX_POST_PLAYER_NAME, $postTitle, $matches);
+        if ($match === false || count($matches) !== 2) {
+            $this->addTmpPost($jsonPost);
+
+            return false;
+        }
+        $playerName = trim($matches[1]);
+
+        //map Data
+        $match = preg_match(self::REGEX_POST_MAP_DATA, $postTitle, $matches);
+        if ($match === false || count($matches) !== 2) {
+            $this->addTmpPost($jsonPost);
+
+            return false;
+        }
+
+        $tmpMap = $matches[1];
+
+        //split map Data
+        $match = preg_match(self::REGEX_POST_MAP_DATA_GROUPS, $tmpMap, $matches);
+        if ($match === false || count($matches) !== 4) {
+            $this->addTmpPost($jsonPost);
+
+            return false;
+        }
+
+        $parsedPost->map_artist = htmlspecialchars_decode(trim($matches[1]));
+        $parsedPost->map_title = htmlspecialchars_decode(trim($matches[2]));
+        $parsedPost->map_diff = htmlspecialchars_decode(trim($matches[3]));
+
+        //check some additional stuff before marking as final
+        $this->bar->setMessage('Parsed: ' . $playerName . ' | ' .
+            $parsedPost->map_artist . ' - ' .
+            $parsedPost->map_title . ' [' .
+            $parsedPost->map_diff . "]");
+
+        $jsonPostDetail = $this->redditClient->getComments($jsonPost->id)[0]->data->children[0]->data;
+        $this->preparePost($jsonPostDetail, $parsedPost, $playerName, $final);
+
+        return true;
     }
 
     private function preparePost($jsonPost, $parsedPost, $playerName, $final)
     {
-        $user = $this->osuClient->getUser($playerName);
+        $apiPlayer = $this->osuClient->getUser($playerName);
 
         //if the api can find the username, check if its in the DB and insert
-        if (isset($user[0]->user_id)) {
-            $dbUser = Player::where('id', '=', $user[0]->user_id)->first();
-            if ($dbUser === null) {
-                $this->addPlayer($user[0]);
-                $dbUser = Player::where('id', '=', $user[0]->user_id)->first();
+        if ($apiPlayer->getId()) {
+            $dbPlayer = Player::where('id', '=', $apiPlayer->getId())->first();
+            if ($dbPlayer === null) {
+                $dbPlayer = Player::createPlayer($apiPlayer);
             }
 
-            $this->updatePlayer($user[0], $dbUser);
-            $this->addPost($jsonPost, $parsedPost, $user, $final);
+            $this->updatePlayer($apiPlayer, $dbPlayer);
+            $this->addPost($jsonPost, $parsedPost, $apiPlayer, $final);
         } else {
             /* else check if the username exists in the DB as an alias and retry
                the osu!api call using the alias */
             $alias = Alias::where('alias', '=', $playerName)->orderBy('created_at', 'DESC')->first();
-            if ($alias != null) {
-                $userAlias = $this->osuClient->getUser(urlencode($alias->alias));
-                if ($userAlias != null) {
-                    $this->addPost($jsonPost, $parsedPost, $userAlias, $final);
+            if ($alias !== null) {
+                $userByAlias = $this->osuClient->getUser(urlencode($alias->alias));
+                if ($userByAlias !== null) {
+                    $this->addPost($jsonPost, $parsedPost, $userByAlias, $final);
                 }
             } else {
                 $this->addTmpPost($jsonPost);
@@ -271,39 +260,28 @@ class RedditParser
         }
     }
 
-    private function addPlayer($user)
-    {
-        $newPlayer = new Player();
-        $newPlayer->id = $user->user_id;
-        $newPlayer->name = $user->username;
-        $newPlayer->save();
-    }
-
-    private function updatePlayer($user, $dbUser)
+    private function updatePlayer(User $ApiPlayer, Player $dbPlayer)
     {
         if (
-            $dbUser->name !=  $user->username
-            && $dbUser->name != ''
-            && $dbUser->name != null
+            $dbPlayer->name !== ''
+            && $dbPlayer->name !== null
+            && $dbPlayer->name !== $ApiPlayer->getName()
         ) {
-            $alias = new Alias();
-            $alias->player_id = $user->user_id;
-            $alias->alias = $dbUser->name;
-            $alias->save();
+            $alias = Alias::createAlias($ApiPlayer->getId(), $dbPlayer->name);
 
-            $dbUser->name = $user->username;
-            if ($dbUser->save()) {
-                $this->bar->setMessage("Player \"" . $alias->alias . "\" updated successfully! New name:" . $dbUser->name);
+            $dbPlayer->name = $ApiPlayer->getName();
+            if ($dbPlayer->save()) {
+                $this->bar->setMessage("Player \"" . $alias->alias . "\" updated successfully! New name:" . $dbPlayer->name);
             }
         }
     }
 
-    private function addPost($jsonPost, $parsedPost, $user, $final)
+    private function addPost($jsonPost, $parsedPost, User $user, $final)
     {
         $post = $parsedPost;
 
         $post->id = $jsonPost->id;
-        $post->player_id = $user[0]->user_id;
+        $post->player_id = $user->getId();
         $post->author = $jsonPost->author;
         $post->ups = round($jsonPost->score * $jsonPost->upvote_ratio);
         $post->downs = round($jsonPost->score * (1 - $jsonPost->upvote_ratio));
@@ -313,23 +291,7 @@ class RedditParser
 
         //post platin and silver update
         if (isset($jsonPost->gildings)) {
-            if (isset($jsonPost->gildings->gid_1)) {
-                $post->silver = $jsonPost->gildings->gid_1;
-            } else {
-                $post->silver = 0;
-            }
-
-            if (isset($jsonPost->gildings->gid_2)) {
-                $post->gold = $jsonPost->gildings->gid_2;
-            } else {
-                $post->gold = 0;
-            }
-
-            if (isset($jsonPost->gildings->gid_3)) {
-                $post->platinum = $jsonPost->gildings->gid_3;
-            } else {
-                $post->platinum = 0;
-            }
+            $post = $this->setAwards($jsonPost, $post);
         } else {
             $post->gold = $jsonPost->gilded;
         }
@@ -354,7 +316,7 @@ class RedditParser
         $post->save();
     }
 
-    private function updatePost($jsonPost, $final)
+    private function updatePost($jsonPost, bool $final)
     {
         $post = Post::where('id', '=', $jsonPost->id)->first();
         $scorePre = $post->score;
@@ -365,27 +327,11 @@ class RedditParser
 
         // update if needed
         if ($scorePre != $post->score) {
-            $post->final = $final;
+            $post->final = $final ? 1 : 0;
 
             //post platin and silver update
             if (isset($jsonPost->gildings)) {
-                if (isset($jsonPost->gildings->gid_1)) {
-                    $post->silver = $jsonPost->gildings->gid_1;
-                } else {
-                    $post->silver = 0;
-                }
-
-                if (isset($jsonPost->gildings->gid_2)) {
-                    $post->gold = $jsonPost->gildings->gid_2;
-                } else {
-                    $post->gold = 0;
-                }
-
-                if (isset($jsonPost->gildings->gid_3)) {
-                    $post->platinum = $jsonPost->gildings->gid_3;
-                } else {
-                    $post->platinum = 0;
-                }
+                $post = $this->setAwards($jsonPost, $post);
             } else {
                 $post->gold = $jsonPost->gilded;
             }
@@ -415,7 +361,35 @@ class RedditParser
                 ORDER BY weighted DESC
             ) weighted ON players.id=weighted.player_id
             SET score=weighted.weighted
-            WHERE players.id=' . $playerId
-        );
+            WHERE players.id=' . $playerId);
+    }
+
+    /**
+     * @param $jsonPost
+     * @param $post
+     *
+     * @return Post
+     */
+    private function setAwards($jsonPost, $post): Post
+    {
+        if (isset($jsonPost->gildings->gid_1)) {
+            $post->silver = $jsonPost->gildings->gid_1;
+        } else {
+            $post->silver = 0;
+        }
+
+        if (isset($jsonPost->gildings->gid_2)) {
+            $post->gold = $jsonPost->gildings->gid_2;
+        } else {
+            $post->gold = 0;
+        }
+
+        if (isset($jsonPost->gildings->gid_3)) {
+            $post->platinum = $jsonPost->gildings->gid_3;
+        } else {
+            $post->platinum = 0;
+        }
+
+        return $post;
     }
 }

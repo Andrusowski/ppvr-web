@@ -6,28 +6,38 @@
 
 namespace App\Services\Clients;
 
+use App\Models\Api\User;
+use DateTime;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 
 class OsuClient
 {
     /**
-     * @param string $playerName
-     *
-     * @return mixed
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \JsonException
+     * @var DateTime
      */
-    public function getUser(string $playerName)
-    {
-        $response = $this->createClient()->request('GET', '/api/get_user', [
-            'query' => [
-                'k' => env('OSU_API_KEY'),
-                'u' => $playerName,
-                'type' => 'string',
-            ],
-        ])->getBody()->getContents();
+    private static $lastRequest;
 
-        return json_decode($response, false, 512, JSON_THROW_ON_ERROR);
+    /**
+     * @var string
+     */
+    private static $accessToken;
+
+    public function getUser(string $playerName): User
+    {
+        try {
+            $response = $this->createClient()->get("/api/v2/users/${playerName}/osu", [
+                'headers' => [
+                    'Authorization' => "Bearer {$this->getAccessToken()}",
+                ],
+            ]);
+        } catch (ClientException $exception) {
+            return new User();
+        }
+
+        $userData = json_decode($response->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
+
+        return new User($userData);
     }
 
     public function getPlayerPage(string $playerId): string
@@ -44,6 +54,36 @@ class OsuClient
      */
     private function createClient(): Client
     {
+        if (static::$lastRequest === null) {
+            static::$lastRequest = new DateTime();
+        }
+
+        //take a break to prevent osu!api spam
+        while (static::$lastRequest->diff(new DateTime())->s < 1) {
+            usleep(200000);
+        }
+        self::$lastRequest = new DateTime();
+
         return new Client(['base_uri' => 'https://osu.ppy.sh']);
+    }
+
+    private function getAccessToken(): string
+    {
+        if (static::$accessToken === null) {
+            $response = $this->createClient()->post('/oauth/token', [
+                'json' => [
+                    'grant_type' => 'client_credentials',
+                    'client_id' => env('OSU_CLIENT_ID'),
+                    'client_secret' => env('OSU_CLIENT_SECRET'),
+                    'scope' => 'public',
+                ],
+            ]);
+
+            $parsedResponse = json_decode($response->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
+
+            static::$accessToken = $parsedResponse['access_token'];
+        }
+
+        return static::$accessToken;
     }
 }

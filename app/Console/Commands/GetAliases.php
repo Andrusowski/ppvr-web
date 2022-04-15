@@ -3,8 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Models\Alias;
-use App\Services\Clients\OsuClient;
 use App\Models\Player;
+use App\Services\Clients\OsuClient;
 use Illuminate\Console\Command;
 
 class GetAliases extends Command

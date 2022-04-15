@@ -2,16 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Alias;
-use App\Services\Clients\OsuClient;
-use App\Services\Clients\RedditClient;
-use App\Models\Player;
-use App\Models\Post;
-use App\Models\Tmppost;
 use App\Services\RedditParser;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\DB;
 
 class ParseRedditPosts extends Command
 {
@@ -55,6 +47,8 @@ class ParseRedditPosts extends Command
         } else {
             $redditParser->new();
         }
+
+        $this->newLine();
 
         return static::SUCCESS;
     }

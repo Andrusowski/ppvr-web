@@ -6,7 +6,6 @@
 
 namespace App\Services\Clients;
 
-use DateTime;
 use GuzzleHttp\Client;
 
 class RedditClient
