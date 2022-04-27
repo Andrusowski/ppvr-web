@@ -14,7 +14,6 @@
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', 'IndexController@getIndex');
-Route::get('/ranking', 'RawRankingController@getIndex');
 Route::get('/ranking/player/{sort?}', 'RankingController@getIndexPlayer')->where('sort', 'score|score_avg|controversy|posts');
 Route::get('/ranking/author/{sort?}', 'RankingController@getIndexAuthor')->where('sort', 'score|score_avg|controversy|posts');
 Route::get('/post/{id}', 'PostController@getIndex');
