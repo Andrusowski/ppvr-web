@@ -8,19 +8,18 @@
         "php": "^7.3|^8.0",
         "ext-json": "*",
         "barryvdh/laravel-ide-helper": "^2.12",
-        "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
-        "laravel/framework": "^8.40",
+        "laravel/framework": "^9.0",
         "laravel/tinker": "^2.5",
         "squizlabs/php_codesniffer": "*"
     },
     "require-dev": {
-        "facade/ignition": "^2.5",
+        "spatie/laravel-ignition": "^1.0",
         "fakerphp/faker": "^1.9.1",
         "laravel/sail": "^1.0.1",
         "mockery/mockery": "^1.4.2",
-        "nunomaduro/collision": "^5.0",
+        "nunomaduro/collision": "^6.1",
         "phpstan/phpstan": "^0.12.87",
         "phpunit/phpunit": "^9.3.3",
         "slevomat/coding-standard": "^7.0"
