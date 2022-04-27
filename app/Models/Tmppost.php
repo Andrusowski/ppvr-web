@@ -29,4 +29,19 @@ class Tmppost extends Model
     protected $casts = [
       'id' => 'string',
     ];
+
+    public static function addTmpPost($jsonPost)
+    {
+        $post = new self();
+
+        $post->id = $jsonPost->id;
+        $post->title = $jsonPost->title;
+        $post->author = $jsonPost->author;
+
+        //$ups = round($jsonPost->score * $jsonPost->upvote_ratio);
+        //$downs = round($jsonPost->score * (1 - $jsonPost->upvote_ratio));
+        $post->score = $jsonPost->score;
+
+        $post->save();
+    }
 }

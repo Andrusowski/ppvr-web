@@ -37,16 +37,20 @@ class Alias extends Model
      * @param int $playerId
      * @param string $name
      *
-     * @return Alias|null
+     * @return Alias
      */
-    public static function createAlias(int $playerId, string $name): ?Alias
+    public static function createAlias(int $playerId, string $name): Alias
     {
-        dump($name);
+        $existingAlias = self::whereAlias($name)->where('player_id', '!=', $playerId);
+        if ($existingAlias) {
+            $existingAlias->delete();
+        }
+
         $alias = new self();
         $alias->player_id = $playerId;
         $alias->alias = $name;
-        $success = $alias->save();
+        $alias->save();
 
-        return $success ? $alias : null;
+        return $alias;
     }
 }

@@ -6,6 +6,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\PostNotFoundException;
 use App\Models\Alias;
 use App\Models\Api\User;
 use App\Models\Player;
@@ -15,14 +16,13 @@ use App\Services\Clients\OsuClient;
 use App\Services\Clients\RedditClient;
 use Illuminate\Console\OutputStyle;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\DB;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
 class RedditParser
 {
-    private const TIMESTAMP_FIRST_SCOREPOST = 1426668291;
+    private const TIMESTAMP_FIRST_SCOREPOST = 1426668291; // Timestamp of the first valid scorepost
     private const TIME_MONTH = 2629743;
     private const TIME_DAY = 86400;
 
@@ -68,6 +68,10 @@ class RedditParser
         'O!M',
     ];
 
+    /**
+     * @var float|string
+     */
+    private static $lastParse;
     /**
      * @var RedditClient
      */
@@ -161,13 +165,17 @@ class RedditParser
 
         if ($post === null && $tmpPost === null) {
             //determine if post is final (>48h old)
-            $final = $age >= 48 * 60 * 60;
-            $this->parsePost($jsonPost, $final, false);
+            $isFinal = $age >= 48 * 60 * 60;
+            $this->parsePost($jsonPost, $isFinal, false);
         } elseif (!$archive && $post && $post->final == 0) { // update non-final post, if it already exists in the database (only in non-archive mode)
             $jsonPostDetail = $this->redditClient->getComments($jsonPost->id)[0]->data->children[0]->data;
 
-            $finalUpdate = $age >= 24 * 60 * 60;
-            $this->updatePost($jsonPostDetail, $finalUpdate);
+            $isFinalUpdate = $age >= 24 * 60 * 60;
+            $postToUpdate = Post::whereId($jsonPost->id)->first();
+            if (!$postToUpdate) {
+                throw new PostNotFoundException('No message found to update');
+            }
+            $postToUpdate->updatePost($jsonPostDetail, $isFinalUpdate, $this->bar);
         }
     }
 
@@ -180,7 +188,7 @@ class RedditParser
             return false;
         }
 
-        //clean up posttitle from various annotations
+        //clean up post title from various annotations
         $postTitle = preg_replace(self::REGEX_POST_TITLE, '', $postTitle);
         foreach (self::TITLE_IGNORES as $ignore) {
             $postTitle = preg_replace("/([\[\(]\Q" . $ignore . "\E[\]\)])/i", '', $postTitle);
@@ -192,7 +200,7 @@ class RedditParser
         //Player
         $match = preg_match(self::REGEX_POST_PLAYER_NAME, $postTitle, $matches);
         if ($match === false || count($matches) !== 2) {
-            $this->addTmpPost($jsonPost);
+            Tmppost::addTmpPost($jsonPost);
 
             return false;
         }
@@ -201,7 +209,7 @@ class RedditParser
         //map Data
         $match = preg_match(self::REGEX_POST_MAP_DATA, $postTitle, $matches);
         if ($match === false || count($matches) !== 2) {
-            $this->addTmpPost($jsonPost);
+            Tmppost::addTmpPost($jsonPost);
 
             return false;
         }
@@ -211,7 +219,7 @@ class RedditParser
         //split map Data
         $match = preg_match(self::REGEX_POST_MAP_DATA_GROUPS, $tmpMap, $matches);
         if ($match === false || count($matches) !== 4) {
-            $this->addTmpPost($jsonPost);
+            Tmppost::addTmpPost($jsonPost);
 
             return false;
         }
@@ -232,7 +240,7 @@ class RedditParser
         return true;
     }
 
-    private function preparePost($jsonPost, $parsedPost, $playerName, $final)
+    private function preparePost($jsonPost, Post $parsedPost, $playerName, $final)
     {
         $apiPlayer = $this->osuClient->getUser($playerName);
 
@@ -244,7 +252,7 @@ class RedditParser
             }
 
             $this->updatePlayer($apiPlayer, $dbPlayer);
-            $this->addPost($jsonPost, $parsedPost, $apiPlayer, $final);
+            $parsedPost->addPost($jsonPost, $apiPlayer, $final);
         } else {
             /* else check if the username exists in the DB as an alias and retry
                the osu!api call using the alias */
@@ -252,14 +260,15 @@ class RedditParser
             if ($alias !== null) {
                 $userByAlias = $this->osuClient->getUser(urlencode($alias->alias));
                 if ($userByAlias !== null) {
-                    $this->addPost($jsonPost, $parsedPost, $userByAlias, $final);
+                    $parsedPost->addPost($jsonPost, $userByAlias, $final);
                 }
             } else {
-                $this->addTmpPost($jsonPost);
+                Tmppost::addTmpPost($jsonPost);
             }
         }
     }
 
+    // Update the player's name in the db if it has changed
     private function updatePlayer(User $ApiPlayer, Player $dbPlayer)
     {
         if (
@@ -274,122 +283,5 @@ class RedditParser
                 $this->bar->setMessage("Player \"" . $alias->alias . "\" updated successfully! New name:" . $dbPlayer->name);
             }
         }
-    }
-
-    private function addPost($jsonPost, $parsedPost, User $user, $final)
-    {
-        $post = $parsedPost;
-
-        $post->id = $jsonPost->id;
-        $post->player_id = $user->getId();
-        $post->author = $jsonPost->author;
-        $post->ups = round($jsonPost->score * $jsonPost->upvote_ratio);
-        $post->downs = round($jsonPost->score * (1 - $jsonPost->upvote_ratio));
-        $post->score = $post->ups - $post->downs;
-        $post->final = $final;
-        $post->created_utc = $jsonPost->created_utc;
-
-        //post platin and silver update
-        if (isset($jsonPost->gildings)) {
-            $post = $this->setAwards($jsonPost, $post);
-        } else {
-            $post->gold = $jsonPost->gilded;
-        }
-
-        if ($post->save()) {
-            $this->updatePlayerScore($post->player_id);
-        }
-    }
-
-    private function addTmpPost($jsonPost)
-    {
-        $post = new Tmppost();
-
-        $post->id = $jsonPost->id;
-        $post->title = $jsonPost->title;
-        $post->author = $jsonPost->author;
-
-        //$ups = round($jsonPost->score * $jsonPost->upvote_ratio);
-        //$downs = round($jsonPost->score * (1 - $jsonPost->upvote_ratio));
-        $post->score = $jsonPost->score;
-
-        $post->save();
-    }
-
-    private function updatePost($jsonPost, bool $final)
-    {
-        $post = Post::where('id', '=', $jsonPost->id)->first();
-        $scorePre = $post->score;
-
-        $post->ups = round($jsonPost->score * $jsonPost->upvote_ratio);
-        $post->downs = round($jsonPost->score * (1 - $jsonPost->upvote_ratio));
-        $post->score = $post->ups - $post->downs;
-
-        // update if needed
-        if ($scorePre != $post->score) {
-            $post->final = $final ? 1 : 0;
-
-            //post platin and silver update
-            if (isset($jsonPost->gildings)) {
-                $post = $this->setAwards($jsonPost, $post);
-            } else {
-                $post->gold = $jsonPost->gilded;
-            }
-
-            if ($post->save()) {
-                $this->bar->setMessage('Updated: ' .
-                    $post->map_artist . ' - ' .
-                    $post->map_title . ' [' .
-                    $post->map_diff . "] " .
-                    'Score: ' . $scorePre . ' -> ' . $post->score);
-            }
-        }
-    }
-
-    private function updatePlayerScore($playerId)
-    {
-        DB::statement('
-            UPDATE players
-            JOIN (
-                SELECT player_id, SUM(round((score+(platinum*180)+(gold*50)+(silver*10)) * POWER(0.95, row_num - 1))) AS weighted
-                FROM (
-                    SELECT row_number() over (partition BY player_id ORDER BY score DESC) row_num, score, silver, gold, platinum, player_id
-                    FROM posts
-                    ORDER BY score DESC
-                ) AS ranking
-                GROUP BY player_id
-                ORDER BY weighted DESC
-            ) weighted ON players.id=weighted.player_id
-            SET score=weighted.weighted
-            WHERE players.id=' . $playerId);
-    }
-
-    /**
-     * @param $jsonPost
-     * @param $post
-     *
-     * @return Post
-     */
-    private function setAwards($jsonPost, $post): Post
-    {
-        if (isset($jsonPost->gildings->gid_1)) {
-            $post->silver = $jsonPost->gildings->gid_1;
-        } else {
-            $post->silver = 0;
-        }
-
-        if (isset($jsonPost->gildings->gid_2)) {
-            $post->gold = $jsonPost->gildings->gid_2;
-        } else {
-            $post->gold = 0;
-        }
-
-        if (isset($jsonPost->gildings->gid_3)) {
-            $post->platinum = $jsonPost->gildings->gid_3;
-        } else {
-            $post->platinum = 0;
-        }
-
-        return $post;
     }
 }

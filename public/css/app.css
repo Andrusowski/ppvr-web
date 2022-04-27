@@ -1,8 +1,9 @@
-@import url(https://fonts.googleapis.com/css?family=Nunito);html {
+@import url(https://fonts.googleapis.com/css?family=Nunito);
+html {
   height: 100%;
   box-sizing: border-box;
   background-size: cover;
-  background: url(/images/bg.png?383fc1f703da9b79b7aab0fae970b661) center;
+  background: url(/images/bg.png?f9d0b951f79dcc2fd47e6940774fe1a7) center;
   font-family: "Nunito", sans-serif !important;
 }
 
@@ -12,7 +13,7 @@ body {
   margin: 0;
 }
 
-mycroft-cli .nunito {
+.nunito {
   font-family: "Nunito", sans-serif !important;
 }
 
@@ -55,17 +56,21 @@ h1 {
 }
 
 .medal-platinum {
-  -webkit-filter: invert(99%) sepia(35%) saturate(3269%) hue-rotate(168deg) brightness(100%) contrast(104%) !important;
-          filter: invert(99%) sepia(35%) saturate(3269%) hue-rotate(168deg) brightness(100%) contrast(104%) !important;
+  filter: invert(99%) sepia(35%) saturate(3269%) hue-rotate(168deg) brightness(100%) contrast(104%) !important;
 }
 
 .medal-gold {
-  -webkit-filter: invert(55%) sepia(100%) saturate(366%) hue-rotate(5deg) brightness(100%) contrast(90%) !important;
-          filter: invert(55%) sepia(100%) saturate(366%) hue-rotate(5deg) brightness(100%) contrast(90%) !important;
+  filter: invert(55%) sepia(100%) saturate(366%) hue-rotate(5deg) brightness(100%) contrast(90%) !important;
 }
 
 .medal-silver {
-  -webkit-filter: invert(77%) sepia(0%) saturate(1%) hue-rotate(123deg) brightness(102%) contrast(89%) !important;
-          filter: invert(77%) sepia(0%) saturate(1%) hue-rotate(123deg) brightness(102%) contrast(89%) !important;
+  filter: invert(77%) sepia(0%) saturate(1%) hue-rotate(123deg) brightness(102%) contrast(89%) !important;
 }
 
+.rank-up {
+  color: #61E294;
+}
+
+.rank-down {
+  color: #e3342f;
+}
