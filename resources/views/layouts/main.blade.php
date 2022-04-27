@@ -109,6 +109,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.2.0/js/uikit-icons.min.js"></script>
 
     <!-- Ackee -->
-    <script async src="https://ackee.andrus.io/ackee.js" data-ackee-server="https://ackee.andrus.io" data-ackee-domain-id="5ecaf1a7-9a5e-4860-9b95-889526ab677c"></script>
+    {{--<script async src="https://ackee.andrus.io/ackee.js" data-ackee-server="https://ackee.andrus.io" data-ackee-domain-id="5ecaf1a7-9a5e-4860-9b95-889526ab677c"></script>--}}
 </body>
 </html>
