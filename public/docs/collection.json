@@ -1,0 +1,239 @@
+{
+    "variable": [
+        {
+            "id": "baseUrl",
+            "key": "baseUrl",
+            "type": "string",
+            "name": "string",
+            "value": "http:\/\/localhost"
+        }
+    ],
+    "info": {
+        "name": "Laravel",
+        "_postman_id": "8d3b4892-fdc5-4385-8278-e978b5d800ab",
+        "description": "",
+        "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
+    },
+    "item": [
+        {
+            "name": "Players",
+            "description": "",
+            "item": [
+                {
+                    "name": "Players",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/players",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/players"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Get all players (paginated, 50 per page)",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\"data\":[{\"id\":124493,\"name\":\"chocomint\",\"score\":807,\"created_at\":\"2022-04-27T20:13:07.000000Z\",\"updated_at\":\"2022-04-27T20:13:08.000000Z\"},{\"id\":124493,\"name\":\"chocomint\",\"score\":807,\"created_at\":\"2022-04-27T20:13:07.000000Z\",\"updated_at\":\"2022-04-27T20:13:08.000000Z\"}],\"links\":{\"first\":\"\\\/?page=1\",\"last\":\"\\\/?page=1\",\"prev\":null,\"next\":null},\"meta\":{\"current_page\":1,\"from\":1,\"last_page\":1,\"links\":[{\"url\":null,\"label\":\"&laquo; Previous\",\"active\":false},{\"url\":\"\\\/?page=1\",\"label\":\"1\",\"active\":true},{\"url\":null,\"label\":\"Next &raquo;\",\"active\":false}],\"path\":\"\\\/\",\"per_page\":50,\"to\":2,\"total\":2}}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Player",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/players\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/players\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "124493",
+                                    "description": "player id (same as osu player id)"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Get a player by id (same as osu player id)",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\"data\":{\"id\":124493,\"name\":\"chocomint\",\"score\":807,\"created_at\":\"2022-04-27T20:13:07.000000Z\",\"updated_at\":\"2022-04-27T20:13:08.000000Z\"}}",
+                            "name": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Posts",
+            "description": "",
+            "item": [
+                {
+                    "name": "Posts",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/posts",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/posts"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Get all posts (paginated, 50 per page)",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\"data\":[{\"id\":\"u3rk97\",\"player_id\":5033077,\"map_artist\":\"xi\",\"map_title\":\"Last Resort\",\"map_diff\":\"R3m's HEAVENLY\",\"author\":\"Dcs2012Charlie\",\"score\":170,\"ups\":172,\"downs\":2,\"silver\":0,\"gold\":0,\"platinum\":0,\"created_utc\":1649970782,\"final\":0,\"created_at\":\"2022-04-15T16:44:25.000000Z\",\"updated_at\":\"2022-04-15T16:44:25.000000Z\"},{\"id\":\"u3rk97\",\"player_id\":5033077,\"map_artist\":\"xi\",\"map_title\":\"Last Resort\",\"map_diff\":\"R3m's HEAVENLY\",\"author\":\"Dcs2012Charlie\",\"score\":170,\"ups\":172,\"downs\":2,\"silver\":0,\"gold\":0,\"platinum\":0,\"created_utc\":1649970782,\"final\":0,\"created_at\":\"2022-04-15T16:44:25.000000Z\",\"updated_at\":\"2022-04-15T16:44:25.000000Z\"}],\"links\":{\"first\":\"\\\/?page=1\",\"last\":\"\\\/?page=1\",\"prev\":null,\"next\":null},\"meta\":{\"current_page\":1,\"from\":1,\"last_page\":1,\"links\":[{\"url\":null,\"label\":\"&laquo; Previous\",\"active\":false},{\"url\":\"\\\/?page=1\",\"label\":\"1\",\"active\":true},{\"url\":null,\"label\":\"Next &raquo;\",\"active\":false}],\"path\":\"\\\/\",\"per_page\":50,\"to\":2,\"total\":2}}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Post",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/posts\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/posts\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "u3rk97",
+                                    "description": "post id (same as reddit post id)"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Get a post by id (same as reddit post id)",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\"data\":{\"id\":\"u3rk97\",\"player_id\":5033077,\"map_artist\":\"xi\",\"map_title\":\"Last Resort\",\"map_diff\":\"R3m's HEAVENLY\",\"author\":\"Dcs2012Charlie\",\"score\":170,\"ups\":172,\"downs\":2,\"silver\":0,\"gold\":0,\"platinum\":0,\"created_utc\":1649970782,\"final\":0,\"created_at\":\"2022-04-15T16:44:25.000000Z\",\"updated_at\":\"2022-04-15T16:44:25.000000Z\"}}",
+                            "name": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Ranks",
+            "description": "",
+            "item": [
+                {
+                    "name": "Ranks",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/ranks\/:playerId",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/ranks\/:playerId",
+                            "variable": [
+                                {
+                                    "id": "playerId",
+                                    "key": "playerId",
+                                    "value": "124493",
+                                    "description": "player id (same as osu player id)"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "Get the rank history for a player",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [],
+                            "code": 200,
+                            "body": "{\"data\":[{\"id\":1,\"player_id\":6447454,\"rank\":1,\"created_at\":\"2022-04-15T16:45:59.000000Z\",\"updated_at\":\"2022-04-15T16:45:59.000000Z\"},{\"id\":1,\"player_id\":6447454,\"rank\":1,\"created_at\":\"2022-04-15T16:45:59.000000Z\",\"updated_at\":\"2022-04-15T16:45:59.000000Z\"}]}",
+                            "name": ""
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "auth": {
+        "type": "noauth"
+    }
+}

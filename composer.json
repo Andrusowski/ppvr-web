@@ -15,14 +15,15 @@
         "squizlabs/php_codesniffer": "*"
     },
     "require-dev": {
-        "spatie/laravel-ignition": "^1.0",
         "fakerphp/faker": "^1.9.1",
+        "knuckleswtf/scribe": "^3.26",
         "laravel/sail": "^1.0.1",
         "mockery/mockery": "^1.4.2",
         "nunomaduro/collision": "^6.1",
         "phpstan/phpstan": "^0.12.87",
         "phpunit/phpunit": "^9.3.3",
-        "slevomat/coding-standard": "^7.0"
+        "slevomat/coding-standard": "^7.0",
+        "spatie/laravel-ignition": "^1.0"
     },
     "autoload": {
         "psr-4": {
