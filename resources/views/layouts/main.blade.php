@@ -57,6 +57,7 @@
                             <!-- menu -->
                             <li><a href="{{url('/stats')}}">Stats</a></li>
                             <li><a href="{{url('/faq')}}">FAQ</a></li>
+                            <li><a href="{{url('/docs')}}">API</a></li>
                             <li><a href="https://github.com/Andrusowski/ppvr-web/blob/master/CHANGELOG.md">Changelog</a></li>
                         </ul>
                     </div>
@@ -69,6 +70,7 @@
                         <!-- menu -->
                         <li><a href="{{url('/stats')}}">Stats</a></li>
                         <li><a href="{{url('/faq')}}">FAQ</a></li>
+                        <li><a href="{{url('/docs')}}">API</a></li>
                         <li><a href="https://github.com/Andrusowski/ppvr-web/blob/master/CHANGELOG.md">Changelog</a></li>
                     </ul>
                 </div>
@@ -92,7 +94,7 @@
 
         <p class="uk-text-center uk-text-meta uk-margin-remove-bottom uk-padding-small" id="footertext">
             made by Andrus
-            <a href="https://discordapp.com/users/86760014068355072"><i class="fab fa-discord link text-secondary"></i></a>
+            <a class="uk-margin-small-right uk-margin-small-left" href="https://discordapp.com/users/86760014068355072"><i class="fab fa-discord link text-secondary"></i></a>
             <a href="https://github.com/Andrusowski"><i class="fab fa-github link text-secondary"></i></a>
         </p>
     </div>
@@ -109,6 +111,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.2.0/js/uikit-icons.min.js"></script>
 
     <!-- Ackee -->
-    <script async src="https://ackee.andrus.io/ackee.js" data-ackee-server="https://ackee.andrus.io" data-ackee-domain-id="5ecaf1a7-9a5e-4860-9b95-889526ab677c"></script>
+    <script async src="https://ackee.gymir.andrus.io/cooltrack.js" data-ackee-server="https://ackee.gymir.andrus.io" data-ackee-domain-id="3f1bbbb6-ff3f-4090-9c10-79f33667b435"></script>
 </body>
 </html>

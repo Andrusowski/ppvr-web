@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Alias;
-use App\Rank;
+use App\Models\Alias;
+use App\Models\Player;
+use App\Models\Rank;
 use Illuminate\Support\Facades\DB;
-use App\Player;
 
 class PlayerController extends Controller
 {
@@ -22,7 +22,7 @@ class PlayerController extends Controller
 
         $player_stats = DB::table('posts')
             ->select(DB::raw('(SUM(downs)/SUM(ups))*100 as controversy,
-                               '.config('ranking.scoreAvgQuery').' as score_avg,
+                               ' . config('ranking.scoreAvgQuery') . ' as score_avg,
                                COUNT(posts.id) as posts'))
             ->where('player_id', $id)
             ->first();
@@ -33,8 +33,7 @@ class PlayerController extends Controller
         foreach ($ranking as $rankingPlayer) {
             if ($rankingPlayer->id != $player->id) {
                 $rank++;
-            }
-            else {
+            } else {
                 break;
             }
         }
@@ -51,7 +50,7 @@ class PlayerController extends Controller
                               map_artist,
                               map_title,
                               map_diff,
-                              '.config('ranking.scoreSumQuery').' as score,
+                              ' . config('ranking.scoreSumQuery') . ' as score,
                               (downs/ups)*100 as controversy'))
             ->where('player_id', $id)
             ->groupBy('posts.id')
@@ -64,7 +63,7 @@ class PlayerController extends Controller
                               map_artist,
                               map_title,
                               map_diff,
-                              '.config('ranking.scoreSumQuery').' as score,
+                              ' . config('ranking.scoreSumQuery') . ' as score,
                               (downs/ups)*100 as controversy,
                               created_utc'))
             ->where('player_id', $id)

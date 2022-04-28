@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\DB;
-use App\Post;
-use App\Player;
+use App\Models\Player;
+use App\Models\Post;
 
 class PostController extends Controller
 {
@@ -23,7 +22,7 @@ class PostController extends Controller
             ->get();
 
         $posts_other_new = [];
-        if(count($posts_other) >= 10) {
+        if (count($posts_other) >= 10) {
             $posts_other_new = Post::where([['map_title', 'LIKE', $post->map_title],
                                             ['map_diff', 'LIKE', $post->map_diff]])
                 ->orderBy('created_at', 'desc')
@@ -33,7 +32,7 @@ class PostController extends Controller
 
         $player = Player::find($post->player_id);
 
-        $content = file_get_contents("https://www.reddit.com/r/osugame/comments/".$post->id.".json?raw_json=1");
+        $content = file_get_contents("https://www.reddit.com/r/osugame/comments/" . $post->id . ".json?raw_json=1");
         $post_reddit = json_decode($content);
 
         $img = '';
@@ -45,15 +44,17 @@ class PostController extends Controller
         $top_comment_author = '';
         $top_score = 0;
         $comments = $post_reddit[1]->data->children;
-        for ($i = 0; $i < count($comments) - 1; $i++) {
-            if ($comments[$i]->data->score > $top_score
-                && !$comments[$i]->data->stickied
-                && strlen($comments[$i]->data->body) < 500
-                && !stripos($comments[$i]->data->body_html, 'http')
-                && !stripos($comments[$i]->data->body_html, 'https')) {
-                $top_comment = $comments[$i]->data->body_html;
-                $top_comment_author = $comments[$i]->data->author;
-                $top_score = $comments[$i]->data->score;
+        foreach ($comments as $comment) {
+            if (
+                $comment->data->score > $top_score
+                && !$comment->data->stickied
+                && strlen($comment->data->body) < 500
+                && !stripos($comment->data->body_html, 'http')
+                && !stripos($comment->data->body_html, 'https')
+            ) {
+                $top_comment = $comment->data->body_html;
+                $top_comment_author = $comment->data->author;
+                $top_score = $comment->data->score;
             }
         }
 

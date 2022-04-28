@@ -11,12 +11,9 @@
 |
 */
 
-/* Route::get('/', function () {
-    return view('welcome');
-}); */
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', 'IndexController@getIndex');
-Route::get('/ranking', 'RawRankingController@getIndex');
 Route::get('/ranking/player/{sort?}', 'RankingController@getIndexPlayer')->where('sort', 'score|score_avg|controversy|posts');
 Route::get('/ranking/author/{sort?}', 'RankingController@getIndexAuthor')->where('sort', 'score|score_avg|controversy|posts');
 Route::get('/post/{id}', 'PostController@getIndex');
@@ -26,11 +23,3 @@ Route::get('/search', 'SearchController@postSearch');
 Route::get('/changelog', 'ChangelogController@getIndex');
 Route::get('/faq', 'FaqController@getIndex');
 Route::get('/stats', 'StatsController@getIndex');
-
-Auth::routes();
-
-Route::get('/review', 'ReviewController@getIndex')->name('review');
-Route::get('/review/add/{id}', 'ReviewController@getAdd');
-Route::get('/review/add/{id}', 'ReviewController@getAdd');
-Route::post('/review/add/{id}', 'ReviewController@postAdd');
-Route::get('/review/delete/{id}', 'ReviewController@getDelete');

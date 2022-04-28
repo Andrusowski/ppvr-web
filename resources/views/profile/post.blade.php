@@ -117,7 +117,7 @@
                             </td>
                             <td class="uk-padding-remove-vertical">
                                 <a href="{{ url('/player/'.$post->player_id) }}" class="text-body" style="text-decoration: none">
-                                    {{ App\Player::find($post->player_id)->name }}
+                                    {{ App\Models\Player::find($post->player_id)->name }}
                                 </a>
                             </td>
                             <td class="uk-padding-remove-vertical">
@@ -155,7 +155,7 @@
                                 </td>
                                 <td class="uk-padding-remove-vertical">
                                     <a href="{{ url('/player/'.$post->player_id) }}" class="text-body" style="text-decoration: none">
-                                        {{ App\Player::find($post->player_id)->name }}
+                                        {{ App\Models\Player::find($post->player_id)->name }}
                                     </a>
                                 </td>
                                 <td class="uk-padding-remove-vertical">

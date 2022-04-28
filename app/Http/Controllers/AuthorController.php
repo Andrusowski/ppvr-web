@@ -7,17 +7,17 @@ use Illuminate\Support\Facades\DB;
 class AuthorController extends Controller
 {
     /**
-    * Show the application dashboard.
-    *
-    * @return \Illuminate\Http\Response
-    */
+     * Show the application dashboard.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function getIndex($name)
     {
         $author_stats = DB::table('posts')
             ->select(DB::raw('author,
                              (SUM(downs)/SUM(ups))*100 as controversy,
-                             '.config('ranking.scoreSumQuery').' as score,
-                             '.config('ranking.scoreAvgQuery').' as score_avg,
+                             ' . config('ranking.scoreSumQuery') . ' as score,
+                             ' . config('ranking.scoreAvgQuery') . ' as score_avg,
                              SUM(silver) as silver,
                              SUM(gold) as gold,
                              SUM(platinum) as platinum,
@@ -28,7 +28,7 @@ class AuthorController extends Controller
 
         $ranking = DB::table('posts')
             ->select(DB::raw('author,
-                              '.config('ranking.scoreSumQuery').' as score'))
+                              ' . config('ranking.scoreSumQuery') . ' as score'))
             ->where('author', '!=', '[deleted]')
             ->groupBy('author')
             ->orderBy('score', 'desc')
@@ -38,8 +38,7 @@ class AuthorController extends Controller
         foreach ($ranking as $rankingAuthor) {
             if ($rankingAuthor->author != $author_stats->author) {
                 $rank++;
-            }
-            else {
+            } else {
                 break;
             }
         }

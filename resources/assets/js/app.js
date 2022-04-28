@@ -1,13 +1,11 @@
-import Vue from "vue";
-import Chart from "./components/Chart";
+import { createApp } from 'vue'
+import Chart from "./components/Chart.vue";
 
 const eva = require('eva-icons');
 
-Vue.component('chart', Chart);
-
-const app = new Vue({
-    el: '#app'
-});
+createApp({})
+    .component('chart', Chart)
+    .mount('#app');
 
 function search() {
     var name = document.getElementById('search').value;

@@ -7,10 +7,10 @@ use Illuminate\Support\Facades\DB;
 class IndexController extends Controller
 {
     /**
-    * Show the application dashboard.
-    *
-    * @return \Illuminate\Http\Response
-    */
+     * Show the application dashboard.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function getIndex()
     {
         $rank_players = 0;
@@ -19,7 +19,7 @@ class IndexController extends Controller
                               players.name,
                               (SUM(posts.downs)/SUM(posts.ups))*100 as controversy,
                               players.score as score,
-                              '.config('ranking.scoreAvgQuery').' as score_avg,
+                              ' . config('ranking.scoreAvgQuery') . ' as score_avg,
                               COUNT(posts.id) as posts'))
             ->join('players', 'posts.player_id', '=', 'players.id')
             ->groupBy('posts.player_id', 'players.name')
@@ -31,8 +31,8 @@ class IndexController extends Controller
         $posts_authors = DB::table('posts')
             ->select(DB::raw('author,
                               (SUM(downs)/SUM(ups))*100 as controversy,
-                              '.config('ranking.scoreSumQuery').' as score,
-                              '.config('ranking.scoreAvgQuery').' as score_avg,
+                              ' . config('ranking.scoreSumQuery') . ' as score,
+                              ' . config('ranking.scoreAvgQuery') . ' as score_avg,
                               COUNT(id) as posts'))
             ->where('author', '!=', '[deleted]')
             ->having(DB::raw(config('ranking.scoreSumQuery')), '>=', 100)
@@ -59,7 +59,8 @@ class IndexController extends Controller
         //find top new post
         $posts_new_top = 0;
         $posts_new_top_score = 0;
-        for ($i = 0; $i < count($posts_new); $i++) {
+        $postsCount = count($posts_new);
+        for ($i = 0; $i < $postsCount; $i++) {
             if ($posts_new[$i]->score > $posts_new_top_score) {
                 $posts_new_top = $i;
                 $posts_new_top_score = $posts_new[$i]->score;
@@ -72,21 +73,24 @@ class IndexController extends Controller
 
         if ($posts_new_top_score >= 100) {
             //get top comment from top post
-            $content = file_get_contents("https://www.reddit.com/r/osugame/comments/".$posts_new[$posts_new_top]->id.".json");
+            $content = file_get_contents("https://www.reddit.com/r/osugame/comments/" . $posts_new[$posts_new_top]->id . ".json");
             $post_reddit = json_decode($content);
 
             $top_score = 0;
             $comments = $post_reddit[1]->data->children;
-            for ($i = 0; $i < count($comments) - 1; $i++) {
-                if ($comments[$i]->data->score > $top_score
-                    && !$comments[$i]->data->stickied
-                    && strlen($comments[$i]->data->body) < 500
-                    && !stripos($comments[$i]->data->body_html, 'http')
-                    && !stripos($comments[$i]->data->body_html, 'https')) {
-                    $top_comment = $comments[$i]->data->body_html;
-                    $top_comment_author = $comments[$i]->data->author;
-                    $top_comment_link = 'https://www.reddit.com'.$comments[$i]->data->permalink;
-                    $top_score = $comments[$i]->data->score;
+            foreach ($comments as $comment) {
+                if (
+                    $comment->data->score
+                    && $comment->data->score > $top_score
+                    && !$comment->data->stickied
+                    && strlen($comment->data->body) < 500
+                    && !stripos($comment->data->body_html, 'http')
+                    && !stripos($comment->data->body_html, 'https')
+                ) {
+                    $top_comment = $comment->data->body_html;
+                    $top_comment_author = $comment->data->author;
+                    $top_comment_link = 'https://www.reddit.com' . $comment->data->permalink;
+                    $top_score = $comment->data->score;
                 }
             }
         }

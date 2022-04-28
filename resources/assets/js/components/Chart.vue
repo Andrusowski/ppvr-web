@@ -1,11 +1,20 @@
 <template>
-    <canvas :ref="name" height="70"></canvas>
+    <Line
+        :chart-options="chartOptions"
+        :chart-data="chartData"
+        :height="100"
+    />
 </template>
 
 <script>
-    import Chart from 'chart.js';
+    import { Line } from 'vue-chartjs';
+    import { Chart as ChartJS, Title, Tooltip, Legend, PointElement, LinearScale, LineElement} from 'chart.js'
+
+    ChartJS.register(Title, Tooltip, Legend, PointElement, LinearScale, LineElement)
 
     export default {
+        name: 'Chart',
+        components: { Line },
         props: {
             posts:  {
                 type: String,
@@ -51,72 +60,67 @@
                 default: false,
             }
         },
-        mounted() {
-            const ctx = this.$refs[this.name].getContext('2d');
-            const chartdata = this.prepareChartData();
+        setup(props) {
+            const posts = JSON.parse(props.posts);
+            const chartdata = [];
 
-            new Chart(ctx, {
-                type: 'line',
-                data: {
+            posts.forEach((item, index) => {
+                chartdata.push({
+                    x: index,
+                    y: item[props.valueIndex]
+                });
+            });
+
+            return {
+                chartData: {
                     datasets: [{
-                        borderColor: this.color,
+                        borderColor: props.color,
                         data: chartdata,
                         pointRadius: 0,
                         fill: false
                     }]
                 },
-                options: {
+                chartOptions: {
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                title: (context) => {
+                                    const days = context[0].dataset.data.length - context[0].raw.x;
+                                    return days + ' days ago';
+                                },
+                                label: (context) => {
+                                    return 'Rank ' + context.raw.y;
+                                }
+                            },
+                            titleFont: '',
+                            displayColors: false
+                        }
+                    },
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
                     scales: {
-                        xAxes: [{
+                        x: {
                             type: 'linear',
                             position: 'bottom',
                             ticks: {
                                 precision:1
                             },
-                            display: this.xAxesDisplay
-                        }],
-                        yAxes: [{
+                            display: props.xAxesDisplay
+                        },
+                        y: {
                             ticks: {
                                 precision:1,
-                                reverse: this.reverse
+                                reverse: props.reverse
                             },
-                            display: this.yAxesDisplay
-                        }]
-                    },
-                    legend: {
-                        display: false
-                    },
-                    tooltips: {
-                        mode: 'index',
-                        callbacks: {
-                            title: (tooltipItem, data) => {
-                                var days = data.datasets[0].data.length - tooltipItem[0].xLabel;
-                                return days + ' days ago';
-                            },
-                            label: (tooltipItem) => {
-                                return this.unit + ': ' + tooltipItem.yLabel;
-                            }
-                        },
-                        intersect: false,
-                        titleFontFamily: '',
-                        displayColors: false
+                            display: props.yAxesDisplay
+                        }
                     }
                 }
-            });
-        },
-        methods: {
-            prepareChartData: function() {
-                const posts = JSON.parse(this.posts);
-                const chartdata = [];
-
-                posts.forEach((item, index) => {
-                    chartdata.push({
-                        x: index,
-                        y: item[this.valueIndex]
-                    });
-                });
-
-                return chartdata;
             }
         }
     }
