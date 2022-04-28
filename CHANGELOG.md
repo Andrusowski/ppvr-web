@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2022-04-29
+### Added
+- Basic API for posts, players and rank history
+- API Documentation page and navigation link
+- Sentry error logging
+
+###Changed
+- Upgraded Vue to v3
+- Upgraded Chart.js to v3
+- Refactored osu! and Reddit API functions
+    - Added clients as an abstraction layer for api calls
+    - Changed osu! api calls to work with osu!api v2
+    - Alias creation is now based on the previous_usernames attribute in the user api result instead of the player's scraped page
+- Rank changes on the ranking page are now compared to the past day instead of the past week
+
 ## 2020-07-03
 ### Added
 - Stats page
