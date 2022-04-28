@@ -58,26 +58,13 @@ class GetAliases extends Command
         $bar = $this->output->createProgressBar(count($players));
 
         foreach ($players as $player) {
-            $playerPage = $this->osuClient->getPlayerPage($player->id);
+            $user = $this->osuClient->getUser($player->name);
 
-            $matches = [];
-            preg_match('/previous_usernames":\[\"(.*)\"\]/m', $playerPage, $matches);
-
-            if (count($matches) > 0) {
-                $aliases = explode('","', $matches[1]);
-                foreach ($aliases as $alias) {
-                    $aliasEntity = new Alias();
-                    $aliasEntity->player_id = $player->id;
-                    $aliasEntity->alias = $alias;
-
-                    if ($aliasEntity->save()) {
-                        $this->info($player->name . '->' . $alias);
-                    }
-                }
+            foreach ($user->getPreviousUsernames() as $alias) {
+                Alias::createAlias($player->id, $alias);
             }
 
             $bar->advance();
-            usleep(100000);
         }
 
         $bar->finish();
