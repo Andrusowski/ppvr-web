@@ -9,17 +9,17 @@ namespace App\Models\Api;
 class User
 {
     /**
-     * @var int
+     * @var int|null
      */
     private $id;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $name;
 
     /**
-     * @var string[]
+     * @var string[]|null
      */
     private $previousUsernames;
 
@@ -33,49 +33,49 @@ class User
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
 
     /**
-     * @param int $id
+     * @param int|null $id
      */
-    public function setId(int $id): void
+    public function setId(?int $id): void
     {
         $this->id = $id;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
 
     /**
-     * @param string $name
+     * @param string|null $name
      */
-    public function setName(string $name): void
+    public function setName(?string $name): void
     {
         $this->name = $name;
     }
 
     /**
-     * @return string[]
+     * @return string[]|null
      */
-    public function getPreviousUsernames(): array
+    public function getPreviousUsernames(): ?array
     {
         return $this->previousUsernames;
     }
 
     /**
-     * @param string[] $previousUsernames
+     * @param string[]|null $previousUsernames
      */
-    public function setPreviousUsernames(array $previousUsernames): void
+    public function setPreviousUsernames(?array $previousUsernames): void
     {
         $this->previousUsernames = $previousUsernames;
     }

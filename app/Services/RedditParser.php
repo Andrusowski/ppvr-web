@@ -14,11 +14,14 @@ use App\Models\Post;
 use App\Models\Tmppost;
 use App\Services\Clients\OsuClient;
 use App\Services\Clients\RedditClient;
+use Exception;
 use Illuminate\Console\OutputStyle;
 use Illuminate\Support\Facades\Artisan;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
+use Throwable;
+use function Sentry\captureException;
 
 class RedditParser
 {
@@ -122,7 +125,11 @@ class RedditParser
             $jsonPosts = $this->redditClient->getArchiveAfter($after);
 
             foreach ($jsonPosts->data as $jsonPost) {
-                $this->prepareParse($jsonPost, true);
+                try {
+                    $this->prepareParse($jsonPost, true);
+                } catch (Throwable $exception) {
+                    captureException($exception);
+                }
 
                 $this->bar->setProgress($jsonPost->created_utc - self::TIMESTAMP_FIRST_SCOREPOST);
 

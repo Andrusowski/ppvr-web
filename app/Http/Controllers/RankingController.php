@@ -19,6 +19,7 @@ class RankingController extends Controller
                               ranks.rank as lastRank'))
             ->join('players', 'posts.player_id', '=', 'players.id')
             ->rightJoin('ranks', 'posts.player_id', '=', 'ranks.player_id')
+            ->whereDate('ranks.created_at', '=', date('Y-m-d', strtotime("-1 week")))
             ->having(DB::raw(config('ranking.scoreSumQuery')), '>=', 100)
             ->groupBy('posts.player_id', 'players.name', 'ranks.rank')
             ->orderBy($sort, 'desc')

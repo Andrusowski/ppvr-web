@@ -6,6 +6,7 @@ use App\Models\Api\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\Console\Helper\ProgressBar;
+use function Sentry\captureMessage;
 
 /**
  * App\Models\Post
@@ -86,6 +87,8 @@ class Post extends Model
 
         if ($this->save()) {
             $this->updatePlayerScore();
+        } else {
+            captureMessage('Could not save post ' . $this->id);
         }
     }
 
