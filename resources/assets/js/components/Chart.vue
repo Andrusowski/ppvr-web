@@ -115,8 +115,8 @@
                         y: {
                             ticks: {
                                 precision:1,
-                                reverse: props.reverse
                             },
+                            reverse: props.reverse,
                             display: props.yAxesDisplay
                         }
                     }
