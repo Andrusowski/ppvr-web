@@ -102,7 +102,7 @@
     @yield('javascript')
 
     <script type="text/javascript">
-        var base_url = {!! json_encode(url('/')) !!}
+        let base_url = {!! json_encode(url('/')) !!}
     </script>
     <script type="text/javascript" src="{!! asset('js/app.js') !!}" defer></script>
 
@@ -110,7 +110,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.2.0/js/uikit.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.2.0/js/uikit-icons.min.js"></script>
 
-    <!-- Ackee -->
-    <script async src="https://ackee.gymir.andrus.io/cooltrack.js" data-ackee-server="https://ackee.gymir.andrus.io" data-ackee-domain-id="3f1bbbb6-ff3f-4090-9c10-79f33667b435"></script>
+    @env(['production'])
+        <!-- Ackee -->
+        <script async src="https://ackee.gymir.andrus.io/cooltrack.js" data-ackee-server="https://ackee.gymir.andrus.io" data-ackee-domain-id="3f1bbbb6-ff3f-4090-9c10-79f33667b435"></script>
+    @endenv
 </body>
 </html>

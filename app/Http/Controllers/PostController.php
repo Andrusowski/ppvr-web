@@ -15,6 +15,11 @@ class PostController extends Controller
     public function getIndex($id)
     {
         $post = Post::find($id);
+        if(!$post) {
+            abort(404);
+        }
+
+
         $posts_other = Post::where([['map_title', 'LIKE', $post->map_title],
                                     ['map_diff', 'LIKE', $post->map_diff]])
             ->orderBy('score', 'desc')
@@ -44,9 +49,11 @@ class PostController extends Controller
         $top_comment_author = '';
         $top_score = 0;
         $comments = $post_reddit[1]->data->children;
+
         foreach ($comments as $comment) {
             if (
-                $comment->data->score > $top_score
+                isset($comment->data->score)
+                && $comment->data->score > $top_score
                 && !$comment->data->stickied
                 && strlen($comment->data->body) < 500
                 && !stripos($comment->data->body_html, 'http')
