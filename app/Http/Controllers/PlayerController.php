@@ -18,6 +18,10 @@ class PlayerController extends Controller
     public function getIndex($id)
     {
         $player = Player::find($id);
+        if (!$player) {
+            abort(404);
+        }
+
         $alias = Alias::where('player_id', '=', $player->id)->orderBy('created_at', 'DESC')->first();
 
         $player_stats = DB::table('posts')
