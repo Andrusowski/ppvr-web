@@ -26,6 +26,10 @@ class AuthorController extends Controller
             ->groupBy('author')
             ->first();
 
+        if (!$author_stats) {
+            abort(404);
+        }
+
         $ranking = DB::table('posts')
             ->select(DB::raw('author,
                               ' . config('ranking.scoreSumQuery') . ' as score'))
