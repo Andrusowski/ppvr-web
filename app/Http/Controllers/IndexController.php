@@ -80,7 +80,7 @@ class IndexController extends Controller
             $comments = $post_reddit[1]->data->children;
             foreach ($comments as $comment) {
                 if (
-                    $comment->data->score
+                    isset($comment->data->score)
                     && $comment->data->score > $top_score
                     && !$comment->data->stickied
                     && strlen($comment->data->body) < 500
