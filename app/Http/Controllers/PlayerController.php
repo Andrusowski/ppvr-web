@@ -74,7 +74,8 @@ class PlayerController extends Controller
             ->groupBy('posts.id')
             ->orderBy('created_utc', 'desc')
             ->take(10)
-            ->get();
+            ->get()
+            ->all();
 
         $ranks = Rank::where('player_id', '=', $player->id)->orderBy('created_at', 'ASC')->take(92)->get();
 

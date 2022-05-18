@@ -15,7 +15,7 @@
             @if ((time() - strtotime($player->created_at)) < 48*60*60)
                 <span class="uk-label uk-label-default">new</span>
             @endif
-            @if ((time() - $posts_new[0]->created_utc) < 48*60*60)
+            @if (!empty($posts_new) && (time() - $posts_new[0]->created_utc) < 48*60*60)
                 <span class="uk-label uk-label-success">recent activity</span>
             @endif
         </p>

@@ -3,10 +3,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\DB;
 
-define("ENTRIES_PER_PAGE", 50);
-
 class RankingController extends Controller
 {
+    private const ENTRIES_PER_PAGE = 50;
     public function getIndexPlayer($sort = 'score')
     {
         $posts = DB::table('posts')
@@ -16,16 +15,14 @@ class RankingController extends Controller
                               players.score as score,
                               ' . config('ranking.scoreAvgQuery') . ' as score_avg,
                               COUNT(posts.id) as posts,
-                              ranks.rank as lastRank'))
+                              MAX(posts.created_at) as last_created'))
             ->join('players', 'posts.player_id', '=', 'players.id')
-            ->rightJoin('ranks', 'posts.player_id', '=', 'ranks.player_id')
-            ->whereDate('ranks.created_at', '=', date('Y-m-d', strtotime("-1 day")))
-            ->having(DB::raw(config('ranking.scoreSumQuery')), '>=', 100)
-            ->groupBy('posts.player_id', 'players.name', 'ranks.rank')
+            ->having('score', '>=', 100)
+            ->groupBy('posts.player_id', 'players.name')
             ->orderBy($sort, 'desc')
-            ->paginate(ENTRIES_PER_PAGE);
+            ->paginate(static::ENTRIES_PER_PAGE);
 
-        $rank = ENTRIES_PER_PAGE * ($posts->currentPage() - 1);
+        $rank = static::ENTRIES_PER_PAGE * ($posts->currentPage() - 1);
 
         $pageUrls = $this->getPageUrls($posts);
 
@@ -50,9 +47,9 @@ class RankingController extends Controller
             ->having(DB::raw(config('ranking.scoreSumQuery')), '>=', 100)
             ->groupBy('author')
             ->orderBy($sort, 'desc')
-            ->paginate(ENTRIES_PER_PAGE);
+            ->paginate(static::ENTRIES_PER_PAGE);
 
-        $rank = ENTRIES_PER_PAGE * ($posts->currentPage() - 1);
+        $rank = static::ENTRIES_PER_PAGE * ($posts->currentPage() - 1);
 
         $pageUrls = $this->getPageUrls($posts);
 

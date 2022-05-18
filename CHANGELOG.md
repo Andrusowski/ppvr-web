@@ -2,13 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2022-05-18
+###Changed
+- Replaced the rank change indicator on the player ranking page with a recent activity indicator due to a lot of problems with it
+- Fixed a minor bug regarding the player page
+- Minor code refactoring
+
 ## 2022-04-29
 ### Added
 - Basic API for posts, players and rank history
 - API Documentation page and navigation link
 - Sentry error logging
 
-###Changed
+### Changed
 - Upgraded Vue to v3
 - Upgraded Chart.js to v3
 - Refactored osu! and Reddit API functions
@@ -21,12 +27,12 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Stats page
 - FAQ page
-- rank change indicator on player ranking page
+- Rank change indicator on player ranking page
 
 ### Changed
 - Javascript rewrite using Vue components to render graphs
 - Improved ranking pagination by adding page numbers
-- updated dependencies
+- Updated dependencies
 
 ## 2020-02-23
 Note: This version is a major rewrite and took a bunch of time because of procrastination :^) it's possible that not everything is documented for this version

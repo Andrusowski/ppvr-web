@@ -79,12 +79,12 @@ h1 {
     filter: invert(77%) sepia(0%) saturate(1%) hue-rotate(123deg) brightness(102%) contrast(89%) !important;
 }
 
-.rank-up {
+.recent-activity {
     color: $green;
-}
 
-.rank-down {
-    color: $red;
+    &__col {
+        width: 12px;
+    }
 }
 
 

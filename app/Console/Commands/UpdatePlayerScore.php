@@ -13,7 +13,7 @@ class UpdatePlayerScore extends Command
      *
      * @var string
      */
-    protected $signature = 'parse:score {--a} {player_id?}';
+    protected $signature = 'parse:score {--a|all} {player_id?}';
 
     /**
      * The console command description.
@@ -40,12 +40,12 @@ class UpdatePlayerScore extends Command
     public function handle()
     {
         $playerIds = [];
-        if ($this->hasOption('a')) {
+        if ($this->option('all')) {
             $playerCollection = Player::all();
             foreach ($playerCollection as $player) {
                 $playerIds[] = $player->id;
             }
-        } elseif ($this->hasArgument('player_id')) {
+        } elseif ($this->argument('player_id')) {
             $playerId[] = $this->argument('player_id');
         }
 

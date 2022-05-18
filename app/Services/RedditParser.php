@@ -276,16 +276,16 @@ class RedditParser
     }
 
     // Update the player's name in the db if it has changed
-    private function updatePlayer(User $ApiPlayer, Player $dbPlayer)
+    private function updatePlayer(User $apiPlayer, Player $dbPlayer)
     {
         if (
             $dbPlayer->name !== ''
             && $dbPlayer->name !== null
-            && $dbPlayer->name !== $ApiPlayer->getName()
+            && $dbPlayer->name !== $apiPlayer->getName()
         ) {
-            $alias = Alias::createAlias($ApiPlayer->getId(), $dbPlayer->name);
+            $alias = Alias::createAlias($apiPlayer->getId(), $dbPlayer->name);
 
-            $dbPlayer->name = $ApiPlayer->getName();
+            $dbPlayer->name = $apiPlayer->getName();
             if ($dbPlayer->save()) {
                 $this->bar->setMessage("Player \"" . $alias->alias . "\" updated successfully! New name:" . $dbPlayer->name);
             }

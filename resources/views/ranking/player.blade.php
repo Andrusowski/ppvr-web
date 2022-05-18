@@ -55,19 +55,11 @@
                 @foreach($posts as $post)
                     <?php ++$rank ?>
                     <tr>
-                        @if($sort === 'score')
-                            <td>
-                                @if ($post->lastRank > ($rank + 1)) {{-- more than 1 rank gained --}}
-                                    <i class="fas fa-angle-double-up rank-up" uk-tooltip="{{ $post->lastRank - $rank }} ranks gained over the past day"></i>
-                                @elseif ($post->lastRank === ($rank + 1)) {{-- 1 rank gained --}}
-                                    <i class="fas fa-angle-up rank-up" uk-tooltip="1 rank gained over the past day"></i>
-                                @elseif ($post->lastRank < ($rank - 1)) {{-- more than 1 rank lost --}}
-                                    <i class="fas fa-angle-double-down rank-down" uk-tooltip="{{ $rank - $post->lastRank }} ranks lost over the past day"></i>
-                                @elseif ($post->lastRank === ($rank - 1)) {{-- 1 rank lost --}}
-                                    <i class="fas fa-angle-down rank-down" uk-tooltip="1 rank lost over the past day"></i>
-                                @endif
-                            </td>
-                        @endif
+                        <td class="recent-activity__col">
+                            @if(now()->subDay() < $post->last_created)
+                                <i class="fas fa-xs fa-circle recent-activity" uk-tooltip="recent activity"></i>
+                            @endif
+                        </td>
                         <td>{{ $rank }}</td>
                         <td><a href="{{ url('/player/'.$post->player_id) }}" style="text-decoration: none">{{ $post->name }}</a></td>
                         <td>{{ $post->posts }}</td>
