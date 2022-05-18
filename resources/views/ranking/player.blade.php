@@ -54,7 +54,7 @@
                     <?php ++$rank ?>
                     <tr>
                         <td class="recent-activity__col">
-                            @if(now()->subDay() < $post->last_created)
+                            @if(now()->subDays(2) < $post->last_created)
                                 <i class="fas fa-xs fa-circle recent-activity" uk-tooltip="recent activity"></i>
                             @endif
                         </td>
