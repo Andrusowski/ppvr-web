@@ -11,9 +11,7 @@
         <table class="uk-table uk-table-small uk-table-divider uk-table-justify">
             <thead>
                 <tr>
-                    @if($sort === 'score')
-                        <th></th>
-                    @endif
+                    <th></th>
                     <th>#</th>
                     <th>name</th>
                     <th class="uk-text-nowrap">

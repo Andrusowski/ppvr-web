@@ -58,6 +58,7 @@ class PostController extends Controller
                 && strlen($comment->data->body) < 500
                 && !stripos($comment->data->body_html, 'http')
                 && !stripos($comment->data->body_html, 'https')
+                && !stripos($comment->data->body_html, '[deleted]')
             ) {
                 $top_comment = $comment->data->body_html;
                 $top_comment_author = $comment->data->author;
