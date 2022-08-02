@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 class RankingController extends Controller
 {
     private const ENTRIES_PER_PAGE = 50;
+
     public function getIndexPlayer($sort = 'score')
     {
         $posts = DB::table('posts')

@@ -19,7 +19,6 @@ use App\Http\Resources\RankCollection;
 use App\Models\Player;
 use App\Models\Post;
 use App\Models\Rank;
-use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 
 /**

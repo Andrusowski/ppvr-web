@@ -14,7 +14,6 @@ use App\Models\Post;
 use App\Models\Tmppost;
 use App\Services\Clients\OsuClient;
 use App\Services\Clients\RedditClient;
-use Exception;
 use Illuminate\Console\OutputStyle;
 use Illuminate\Support\Facades\Artisan;
 use Symfony\Component\Console\Helper\ProgressBar;

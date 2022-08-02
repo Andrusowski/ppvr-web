@@ -15,7 +15,7 @@ class PostController extends Controller
     public function getIndex($id)
     {
         $post = Post::find($id);
-        if(!$post) {
+        if (!$post) {
             abort(404);
         }
 
