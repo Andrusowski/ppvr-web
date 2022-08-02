@@ -19,6 +19,7 @@ use App\Http\Resources\RankCollection;
 use App\Models\Player;
 use App\Models\Post;
 use App\Models\Rank;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 
 /**
@@ -33,7 +34,7 @@ use Illuminate\Support\Facades\Route;
  */
 Route::get('/players', function () {
     return new PlayerCollection(Player::paginate(50));
-});
+})->name('api/players');
 /**
  * Player
  *
@@ -47,7 +48,7 @@ Route::get('/players', function () {
  */
 Route::get('/players/{id}', function ($id) {
     return new PlayerResource(Player::findOrFail($id));
-});
+})->name('api/player-by-id');
 
 /**
  * Posts
@@ -61,7 +62,8 @@ Route::get('/players/{id}', function ($id) {
  */
 Route::get('/posts', function () {
     return new PostCollection(Post::paginate(50));
-});
+})->name('api/posts');
+
 /**
  * Post
  *
@@ -75,7 +77,22 @@ Route::get('/posts', function () {
  */
 Route::get('/posts/{id}', function ($id) {
     return new PostResource(Post::findOrFail($id));
-});
+})->name('api/post-by-id');
+
+/**
+ * Posts by Player
+ *
+ * Get a players' posts by player id (same as osu player id)
+ *
+ * @group Posts
+ *
+ * @apiResource App\Http\Resources\PostResource
+ * @apiResourceModel App\Models\Post
+ * @urlParam id integer required player id (same as osu player id) Example: 124493
+ */
+Route::get('/posts/by-player/{id}', function ($id) {
+    return new PostResource(Player::findOrFail($id)->post()->paginate(50));
+})->name('api/posts-by-player');
 
 /**
  * Ranks
@@ -90,4 +107,4 @@ Route::get('/posts/{id}', function ($id) {
  */
 Route::get('/ranks/{playerId}', function ($playerId) {
     return new RankCollection(Rank::wherePlayerId($playerId)->orderByDesc('created_at')->get());
-});
+})->name('api/ranks-by-player');

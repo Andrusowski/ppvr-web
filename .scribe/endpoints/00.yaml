@@ -19,7 +19,7 @@ endpoints:
     responses:
       -
         status: 200
-        content: '{"data":[{"id":124493,"name":"chocomint","score":807,"created_at":"2022-04-27T20:13:07.000000Z","updated_at":"2022-04-27T20:13:08.000000Z"},{"id":124493,"name":"chocomint","score":807,"created_at":"2022-04-27T20:13:07.000000Z","updated_at":"2022-04-27T20:13:08.000000Z"}],"links":{"first":"\/?page=1","last":"\/?page=1","prev":null,"next":null},"meta":{"current_page":1,"from":1,"last_page":1,"links":[{"url":null,"label":"&laquo; Previous","active":false},{"url":"\/?page=1","label":"1","active":true},{"url":null,"label":"Next &raquo;","active":false}],"path":"\/","per_page":50,"to":2,"total":2}}'
+        content: '{"data":[{"id":124493,"name":"chocomint","score":356,"created_at":"2022-08-02T18:20:18.000000Z","updated_at":"2022-08-02T18:20:21.000000Z"},{"id":124493,"name":"chocomint","score":356,"created_at":"2022-08-02T18:20:18.000000Z","updated_at":"2022-08-02T18:20:21.000000Z"}],"links":{"first":"\/?page=1","last":"\/?page=1","prev":null,"next":null},"meta":{"current_page":1,"from":1,"last_page":1,"links":[{"url":null,"label":"&laquo; Previous","active":false},{"url":"\/?page=1","label":"1","active":true},{"url":null,"label":"Next &raquo;","active":false}],"path":"\/","per_page":50,"to":2,"total":2}}'
         headers: []
         description: null
     responseFields: []
@@ -48,7 +48,7 @@ endpoints:
     responses:
       -
         status: 200
-        content: '{"data":{"id":124493,"name":"chocomint","score":807,"created_at":"2022-04-27T20:13:07.000000Z","updated_at":"2022-04-27T20:13:08.000000Z"}}'
+        content: '{"data":{"id":124493,"name":"chocomint","score":356,"created_at":"2022-08-02T18:20:18.000000Z","updated_at":"2022-08-02T18:20:21.000000Z"}}'
         headers: []
         description: null
     responseFields: []

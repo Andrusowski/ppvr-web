@@ -21,7 +21,7 @@ endpoints:
     responses:
       -
         status: 200
-        content: '{"data":[{"id":"u3rk97","player_id":5033077,"map_artist":"xi","map_title":"Last Resort","map_diff":"R3m''s HEAVENLY","author":"Dcs2012Charlie","score":170,"ups":172,"downs":2,"silver":0,"gold":0,"platinum":0,"created_utc":1649970782,"final":0,"created_at":"2022-04-15T16:44:25.000000Z","updated_at":"2022-04-15T16:44:25.000000Z"},{"id":"u3rk97","player_id":5033077,"map_artist":"xi","map_title":"Last Resort","map_diff":"R3m''s HEAVENLY","author":"Dcs2012Charlie","score":170,"ups":172,"downs":2,"silver":0,"gold":0,"platinum":0,"created_utc":1649970782,"final":0,"created_at":"2022-04-15T16:44:25.000000Z","updated_at":"2022-04-15T16:44:25.000000Z"}],"links":{"first":"\/?page=1","last":"\/?page=1","prev":null,"next":null},"meta":{"current_page":1,"from":1,"last_page":1,"links":[{"url":null,"label":"&laquo; Previous","active":false},{"url":"\/?page=1","label":"1","active":true},{"url":null,"label":"Next &raquo;","active":false}],"path":"\/","per_page":50,"to":2,"total":2}}'
+        content: '{"data":[{"id":"wd7mza","player_id":4830687,"map_artist":"Rche","map_title":"Todestrieb","map_diff":"Parasitic Gene \"Flow\"","author":"kipster15","score":90,"ups":91,"downs":1,"silver":0,"gold":0,"platinum":0,"created_utc":1659326356,"final":0,"created_at":"2022-08-02T18:20:34.000000Z","updated_at":"2022-08-02T18:20:34.000000Z"},{"id":"wd7mza","player_id":4830687,"map_artist":"Rche","map_title":"Todestrieb","map_diff":"Parasitic Gene \"Flow\"","author":"kipster15","score":90,"ups":91,"downs":1,"silver":0,"gold":0,"platinum":0,"created_utc":1659326356,"final":0,"created_at":"2022-08-02T18:20:34.000000Z","updated_at":"2022-08-02T18:20:34.000000Z"}],"links":{"first":"\/?page=1","last":"\/?page=1","prev":null,"next":null},"meta":{"current_page":1,"from":1,"last_page":1,"links":[{"url":null,"label":"&laquo; Previous","active":false},{"url":"\/?page=1","label":"1","active":true},{"url":null,"label":"Next &raquo;","active":false}],"path":"\/","per_page":50,"to":2,"total":2}}'
         headers: []
         description: null
     responseFields: []
@@ -50,7 +50,36 @@ endpoints:
     responses:
       -
         status: 200
-        content: '{"data":{"id":"u3rk97","player_id":5033077,"map_artist":"xi","map_title":"Last Resort","map_diff":"R3m''s HEAVENLY","author":"Dcs2012Charlie","score":170,"ups":172,"downs":2,"silver":0,"gold":0,"platinum":0,"created_utc":1649970782,"final":0,"created_at":"2022-04-15T16:44:25.000000Z","updated_at":"2022-04-15T16:44:25.000000Z"}}'
+        content: '{"data":{"id":"wd7mza","player_id":4830687,"map_artist":"Rche","map_title":"Todestrieb","map_diff":"Parasitic Gene \"Flow\"","author":"kipster15","score":90,"ups":91,"downs":1,"silver":0,"gold":0,"platinum":0,"created_utc":1659326356,"final":0,"created_at":"2022-08-02T18:20:34.000000Z","updated_at":"2022-08-02T18:20:34.000000Z"}}'
+        headers: []
+        description: null
+    responseFields: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/posts/by-player/{id}'
+    metadata:
+      title: 'Posts by Player'
+      description: 'Get a players'' posts by player id (same as osu player id)'
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'player id (same as osu player id)'
+        required: true
+        example: 124493
+        type: integer
+        custom: []
+    queryParameters: []
+    bodyParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"data":{"id":"wd7mza","player_id":4830687,"map_artist":"Rche","map_title":"Todestrieb","map_diff":"Parasitic Gene \"Flow\"","author":"kipster15","score":90,"ups":91,"downs":1,"silver":0,"gold":0,"platinum":0,"created_utc":1659326356,"final":0,"created_at":"2022-08-02T18:20:34.000000Z","updated_at":"2022-08-02T18:20:34.000000Z"}}'
         headers: []
         description: null
     responseFields: []
