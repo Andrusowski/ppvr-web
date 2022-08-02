@@ -2,8 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2022-08-02
+### Changed
+- Api docs
+- Added commands to scheduler to prevent database lock timeouts when parsing new posts while ranks are being recalculated
+
+### Added
+- Posts by player id API endpoint
+
 ## 2022-05-18
-###Changed
+### Changed
 - Replaced the rank change indicator on the player ranking page with a recent activity indicator due to a lot of problems with it
 - Fixed a minor bug regarding the player page
 - Minor code refactoring
