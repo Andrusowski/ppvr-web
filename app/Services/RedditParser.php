@@ -175,6 +175,9 @@ class RedditParser
             $this->parsePost($jsonPost, $isFinal, false);
         } elseif (!$archive && $post && $post->final == 0) { // update non-final post, if it already exists in the database (only in non-archive mode)
             $jsonPostDetail = $this->redditClient->getComments($jsonPost->id)[0]->data->children[0]->data;
+            if (!$jsonPostDetail) {
+                return;
+            }
 
             $isFinalUpdate = $age >= 24 * 60 * 60;
             $postToUpdate = Post::whereId($jsonPost->id)->first();
@@ -241,6 +244,9 @@ class RedditParser
             $parsedPost->map_diff . "]");
 
         $jsonPostDetail = $this->redditClient->getComments($jsonPost->id)[0]->data->children[0]->data;
+        if (!$jsonPostDetail) {
+            return false;
+        }
         $this->preparePost($jsonPostDetail, $parsedPost, $playerName, $final);
 
         return true;

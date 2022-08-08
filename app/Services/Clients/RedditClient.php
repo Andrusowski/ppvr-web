@@ -7,6 +7,7 @@
 namespace App\Services\Clients;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ServerException;
 
 class RedditClient
 {
@@ -61,10 +62,14 @@ class RedditClient
      */
     public function getComments(string $id)
     {
-        $response = $this->createRedditClient()
-            ->request('GET', '/r/osugame/comments/' . $id . '.json')
-            ->getBody()
-            ->getContents();
+        try {
+            $response = $this->createRedditClient()
+                ->request('GET', '/r/osugame/comments/' . $id . '.json')
+                ->getBody()
+                ->getContents();
+        } catch (ServerException $serverException) {
+            return null;
+        }
 
         return json_decode($response, false, 512, JSON_THROW_ON_ERROR);
     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use ErrorException;
 use Illuminate\Support\Facades\DB;
 
 class IndexController extends Controller
@@ -9,7 +10,7 @@ class IndexController extends Controller
     /**
      * Show the application dashboard.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\Response
      */
     public function getIndex()
     {
@@ -70,27 +71,33 @@ class IndexController extends Controller
         $top_comment = '';
         $top_comment_author = '';
         $top_comment_link = '';
+        $top_score = 0;
 
         if ($posts_new_top_score >= 100) {
             //get top comment from top post
-            $content = file_get_contents("https://www.reddit.com/r/osugame/comments/" . $posts_new[$posts_new_top]->id . ".json");
-            $post_reddit = json_decode($content);
+            try {
+                $content = file_get_contents("https://www.reddit.com/r/osugame/comments/" . $posts_new[$posts_new_top]->id . ".json");
+                $post_reddit = json_decode($content);
+            } catch (ErrorException $e) {
+                $post_reddit = null;
+            }
 
-            $top_score = 0;
-            $comments = $post_reddit[1]->data->children;
-            foreach ($comments as $comment) {
-                if (
-                    isset($comment->data->score)
-                    && $comment->data->score > $top_score
-                    && !$comment->data->stickied
-                    && strlen($comment->data->body) < 500
-                    && !stripos($comment->data->body_html, 'http')
-                    && !stripos($comment->data->body_html, 'https')
-                ) {
-                    $top_comment = $comment->data->body_html;
-                    $top_comment_author = $comment->data->author;
-                    $top_comment_link = 'https://www.reddit.com' . $comment->data->permalink;
-                    $top_score = $comment->data->score;
+            if ($post_reddit) {
+                $comments = $post_reddit[1]->data->children;
+                foreach ($comments as $comment) {
+                    if (
+                        isset($comment->data->score)
+                        && $comment->data->score > $top_score
+                        && !$comment->data->stickied
+                        && strlen($comment->data->body) < 500
+                        && !stripos($comment->data->body_html, 'http')
+                        && !stripos($comment->data->body_html, 'https')
+                    ) {
+                        $top_comment = $comment->data->body_html;
+                        $top_comment_author = $comment->data->author;
+                        $top_comment_link = 'https://www.reddit.com' . $comment->data->permalink;
+                        $top_score = $comment->data->score;
+                    }
                 }
             }
         }
