@@ -41,7 +41,7 @@
             },
             unit: {
                 type: String,
-                required: true,
+                required: false,
             },
             reverse: {
                 type: Boolean,
@@ -92,7 +92,7 @@
                                     return days + ' days ago';
                                 },
                                 label: (context) => {
-                                    return 'Rank ' + context.raw.y;
+                                    return props.unit ? props.unit + ' ' + context.raw.y : context.raw.y;
                                 }
                             },
                             titleFont: '',
