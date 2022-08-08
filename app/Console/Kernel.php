@@ -23,9 +23,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('parse:reddit')->everyFiveMinutes();
-        $schedule->command('parse:score --all')->dailyAt('3:00');
-        $schedule->command('parse:ranks')->dailyAt('3:00');
+        $schedule->command('parse:reddit')->everyFiveMinutes()->withoutOverlapping(30);
+        $schedule->command('parse:score --all')->dailyAt('3:00')->withoutOverlapping(30);
+        $schedule->command('parse:ranks')->dailyAt('3:00')->withoutOverlapping(30);
     }
 
     /**
