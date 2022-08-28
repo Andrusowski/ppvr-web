@@ -7,6 +7,8 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
 {
+    private static $dailyTasksLock;
+
     /**
      * The Artisan commands provided by your application.
      *
@@ -23,9 +25,19 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('parse:reddit')->everyFiveMinutes()->withoutOverlapping(30);
-        $schedule->command('parse:score --all')->dailyAt('3:00')->withoutOverlapping(30);
-        $schedule->command('parse:ranks')->dailyAt('3:00')->withoutOverlapping(30);
+        if (!static::$dailyTasksLock) {
+            $schedule->command('parse:reddit')
+                     ->everyFiveMinutes()
+                     ->withoutOverlapping(30);
+            $schedule->command('parse:score --all')
+                     ->dailyAt('3:00')
+                     ->withoutOverlapping(30)
+                     ->before(fn() => $this->setLock(true));
+            $schedule->command('parse:ranks')
+                     ->dailyAt('3:00')
+                     ->withoutOverlapping(30)
+                     ->after(fn() => $this->setLock(false));
+        }
     }
 
     /**
@@ -38,5 +50,10 @@ class Kernel extends ConsoleKernel
         $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
+    }
+
+    private function setLock(bool $lock)
+    {
+        Kernel::$dailyTasksLock = $lock;
     }
 }
