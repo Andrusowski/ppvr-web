@@ -59,12 +59,24 @@ h1 {
 }
 
 #footertext {
+    display: flex;
+    justify-content: center;
     position: absolute;
     right: 0;
     bottom: 0;
     left: 0;
     padding: 1rem;
     text-align: center;
+}
+
+.footer-link {
+    display: flex;
+    justify-content: center;
+}
+
+.footer-icon {
+    width: 15px;
+    z-index: -1;
 }
 
 .medal-platinum {

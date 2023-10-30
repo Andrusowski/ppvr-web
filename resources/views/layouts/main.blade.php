@@ -4,7 +4,6 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -29,7 +28,6 @@
     <link rel="manifest" href="{{ asset('/site.webmanifest') }}">
     <link rel="mask-icon" href="{{ asset('/safari-pinned-tab.svg') }}" color="#5bbad5">
     <meta name="msapplication-TileColor" content="#ff4500">
-    <meta name="theme-color" content="#ffffff">
 
     <!-- miscellaneous -->
     <meta name="theme-color" content="#ff4500"/>
@@ -94,8 +92,11 @@
 
         <p class="uk-text-center uk-text-meta uk-margin-remove-bottom uk-padding-small" id="footertext">
             made by Andrus
-            <a class="uk-margin-small-right uk-margin-small-left" href="https://discordapp.com/users/86760014068355072"><i class="fab fa-discord link text-secondary"></i></a>
-            <a href="https://github.com/Andrusowski"><i class="fab fa-github link text-secondary"></i></a>
+            <!--<a class="uk-margin-small-right uk-margin-small-left" href="https://osu.ppy.sh/users/2924006"><i class="fab fa-discord link text-secondary"></i></a>-->
+            <a class="uk-margin-small-right uk-margin-small-left footer-link" href="https://osu.ppy.sh/users/2924006" target="_blank" rel="noopener noreferrer">
+                <object data="{{ URL::asset('/icons/osu-logo-white.svg') }} " type="image/svg+xml" class="link text-secondary footer-icon" title="osu! logo"></object>
+            </a>
+            <a href="https://github.com/Andrusowski" target="_blank" rel="noopener noreferrer"><i class="fab fa-github link text-secondary"></i></a>
         </p>
     </div>
 
