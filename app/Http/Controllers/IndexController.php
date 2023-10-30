@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Clients\RedditClient;
 use ErrorException;
 use Illuminate\Support\Facades\DB;
 
@@ -76,8 +77,7 @@ class IndexController extends Controller
         if ($posts_new_top_score >= 100) {
             //get top comment from top post
             try {
-                $content = file_get_contents("https://www.reddit.com/r/osugame/comments/" . $posts_new[$posts_new_top]->id . ".json");
-                $post_reddit = json_decode($content);
+                $post_reddit = (new RedditClient())->getComments($posts_new[$posts_new_top]->id);
             } catch (ErrorException $e) {
                 $post_reddit = null;
             }

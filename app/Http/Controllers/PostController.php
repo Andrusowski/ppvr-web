@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Player;
 use App\Models\Post;
+use App\Services\Clients\RedditClient;
 use ErrorException;
 
 class PostController extends Controller
@@ -43,8 +44,7 @@ class PostController extends Controller
         $top_score = 0;
 
         try {
-            $content = file_get_contents("https://www.reddit.com/r/osugame/comments/" . $post->id . ".json?raw_json=1");
-            $post_reddit = json_decode($content);
+            $post_reddit = (new RedditClient())->getComments($post->id);
         } catch (ErrorException $e) {
             $post_reddit = null;
         }

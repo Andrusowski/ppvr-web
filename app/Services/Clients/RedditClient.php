@@ -65,6 +65,7 @@ class RedditClient
         try {
             $response = $this->createRedditClient()
                 ->request('GET', '/r/osugame/comments/' . $id . '.json')
+                ->withHeader('User-Agent', 'ppvr')
                 ->getBody()
                 ->getContents();
         } catch (ServerException $serverException) {
