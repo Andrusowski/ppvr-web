@@ -5,21 +5,21 @@ namespace App\Console\Commands;
 use App\Services\ScoreService;
 use Illuminate\Console\Command;
 
-class UpdatePlayerScore extends Command
+class UpdateAuthorScore extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'parse:player:score {player_id?}';
+    protected $signature = 'parse:author:score {author_name?}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Update players\' scores';
+    protected $description = 'Update authors\' scores';
 
     /**
      * Create a new command instance.
@@ -38,7 +38,7 @@ class UpdatePlayerScore extends Command
      */
     public function handle()
     {
-        ScoreService::updatePlayerScore($this->argument('player_id'), $this->output);
+        ScoreService::updateAuthorScore($this->argument('author_name'), $this->output);
         $this->newLine();
     }
 }

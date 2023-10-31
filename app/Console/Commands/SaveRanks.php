@@ -2,10 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Player;
-use App\Models\Rank;
+use App\Services\ScoreService;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
 
 class SaveRanks extends Command
 {
@@ -40,30 +38,7 @@ class SaveRanks extends Command
      */
     public function handle()
     {
-        $players = Player::orderBy('score', 'DESC')->get();
-        $bar = $this->output->createProgressBar($players->count());
-        DB::beginTransaction();
-
-        foreach ($players as $rankNr => $player) {
-            $rank = new Rank();
-            $rank->player_id = $player->id;
-            $rank->rank = ($rankNr + 1);
-            if ($this->argument('timestamp') != null) {
-                $rank->created_at = $this->argument('timestamp');
-                $rank->updated_at = $this->argument('timestamp');
-            }
-            $rank->save();
-
-            $rankNr++;
-            $bar->advance();
-        }
-
-        $month_seconds = 2629743;
-        $timestamp = time() - ($month_seconds * 3);
-        DB::table('ranks')->where('created_at', '<', gmdate("Y-m-d", $timestamp))->delete();
-
-        DB::commit();
-        $bar->finish();
-        $this->line('');
+        ScoreService::savePlayerRanks($this->argument('timestamp'), $this->output);
+        $this->newLine();
     }
 }

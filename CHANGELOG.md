@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2023-10-31
+### Changed
+- Changed author rankings to a weighted system like previously done with player rankings
+- Replaced the discord link in the footer with an osu! profile link
+
+### Fixed
+- Fixed top comments not loading on the home and post pages
+
 ## 2022-08-02
 ### Changed
 - Api docs

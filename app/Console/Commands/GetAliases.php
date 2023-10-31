@@ -68,5 +68,6 @@ class GetAliases extends Command
         }
 
         $bar->finish();
+        $this->newLine();
     }
 }

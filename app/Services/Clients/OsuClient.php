@@ -26,7 +26,7 @@ class OsuClient
     public function getUser(string $playerName): User
     {
         try {
-            $response = $this->createClient()->get("/api/v2/users/${playerName}/osu", [
+            $response = $this->createClient()->get("/api/v2/users/{$playerName}/osu", [
                 'headers' => [
                     'Authorization' => "Bearer {$this->getAccessToken()}",
                 ],

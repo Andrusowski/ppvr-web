@@ -41,10 +41,12 @@ class RankingController extends Controller
         $posts = DB::table('posts')
             ->select(DB::raw('author,
                               (SUM(downs)/SUM(ups))*100 as controversy,
-                              ' . config('ranking.scoreSumQuery') . ' as score,
+                              authors.score as score,
                               ' . config('ranking.scoreAvgQuery') . ' as score_avg,
-                              COUNT(id) as posts'))
+                              COUNT(posts.id) as posts,
+                              MAX(posts.created_at) as last_created'))
             ->where('author', '!=', '[deleted]')
+            ->join('authors', 'authors.name', '=', 'posts.author')
             ->having(DB::raw(config('ranking.scoreSumQuery')), '>=', 100)
             ->groupBy('author')
             ->orderBy($sort, 'desc')

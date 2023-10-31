@@ -2,24 +2,25 @@
 
 namespace App\Console\Commands;
 
-use App\Services\ScoreService;
+use App\Models\Author;
+use App\Models\Post;
 use Illuminate\Console\Command;
 
-class UpdatePlayerScore extends Command
+class SyncAuthors extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'parse:player:score {player_id?}';
+    protected $signature = 'sync:authors';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Update players\' scores';
+    protected $description = 'Sync authors table based on the authors found in the posts table';
 
     /**
      * Create a new command instance.
@@ -38,7 +39,10 @@ class UpdatePlayerScore extends Command
      */
     public function handle()
     {
-        ScoreService::updatePlayerScore($this->argument('player_id'), $this->output);
+        Post::select('author')->distinct()->get()->each(function ($author) {
+            $author = Author::whereName($author->author)->firstOrCreate(['name' => $author->author]);
+        });
+
         $this->newLine();
     }
 }

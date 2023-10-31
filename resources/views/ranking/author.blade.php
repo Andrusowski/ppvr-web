@@ -12,6 +12,7 @@
         <table class="uk-table uk-table-small uk-table-divider uk-table-justify">
             <thead>
                 <tr>
+                    <th></th>
                     <th>#</th>
                     <th>name</th>
                     <th class="uk-text-nowrap">
@@ -54,6 +55,11 @@
             <tbody>
                 @foreach($posts as $post)
                     <tr>
+                        <td class="recent-activity__col">
+                            @if(now()->subDays(2) < $post->last_created)
+                                <i class="fas fa-xs fa-circle recent-activity" uk-tooltip="recent activity"></i>
+                            @endif
+                        </td>
                         <td>{{ ++$rank }}</td>
                         <td><a href="{{ url('/author/'.$post->author) }}" style="text-decoration: none">{{ $post->author }}</a></td>
                         <td>{{ $post->posts }}</td>

@@ -43,7 +43,7 @@
             <a class="uk-accordion-title" href="#">Are the scores weighted?</a>
             <div class="uk-accordion-content">
                 <p>The individual scores displayed on a player's page are not weighted. They are simply calculated by subtracting downvotes from the upvotes and adding a certain boost depending on the amount of awards a post got.</p>
-                <p>However, the scores on the ranking page are weighted just like they are in osu. This applies only for players at the moment. Author rankings are stilly unweighted, but that may change in the future.</p>
+                <p>However, the scores on the ranking page are weighted just like they are in osu. The same also applies for author rankings.</p>
             </div>
         </li>
     </ul>

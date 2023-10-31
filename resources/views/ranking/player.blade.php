@@ -22,6 +22,7 @@
                             <a href="{{ url('/ranking/player/posts') }}" class="fas fa-sort-down uk-text-muted" alt="sort descending" style="text-decoration: none"></a>
                         @endif
                     </th>
+                    <!--
                     <th class="uk-text-nowrap">
                         spicy
                         @if ($sort === 'controversy')
@@ -30,6 +31,7 @@
                             <a href="{{ url('/ranking/player/controversy') }}" class="fas fa-sort-down uk-text-muted" alt="sort descending" style="text-decoration: none"></a>
                         @endif
                     </th>
+                    -->
                     <th class="uk-text-nowrap">
                         score
                         @if ($sort === 'score')
@@ -61,7 +63,7 @@
                         <td>{{ $rank }}</td>
                         <td><a href="{{ url('/player/'.$post->player_id) }}" style="text-decoration: none">{{ $post->name }}</a></td>
                         <td>{{ $post->posts }}</td>
-                        <td>{{ number_format($post->controversy, 2) }}%</td>
+                        <!--<td>{{ number_format($post->controversy, 2) }}%</td>-->
                         <td>{{ round($post->score) }}</td>
                         <td>{{ round($post->score_avg) }}</td>
                     </tr>
