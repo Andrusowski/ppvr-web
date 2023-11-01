@@ -71,6 +71,9 @@ class ScoreService
         DB::beginTransaction();
 
         foreach ($authorNames as $authorName) {
+            // create author if not exists
+            Author::whereName($authorName)->firstOrCreate(['name' => $authorName]);
+
             DB::statement('
             UPDATE authors
             JOIN (

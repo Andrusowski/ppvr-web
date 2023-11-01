@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Api\User;
+use App\Services\ScoreService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -86,7 +87,7 @@ class Post extends Model
         }
 
         if ($this->save()) {
-            $this->updatePlayerScore();
+            $this->updateScores();
         } else {
             captureMessage('Could not save post ' . $this->id);
         }
@@ -112,7 +113,7 @@ class Post extends Model
             }
 
             if ($this->save()) {
-                $this->updatePlayerScore();
+                $this->updateScores();
                 $bar->setMessage('Updated: ' .
                     $this->map_artist . ' - ' .
                     $this->map_title . ' [' .
@@ -143,21 +144,9 @@ class Post extends Model
         }
     }
 
-    private function updatePlayerScore()
+    private function updateScores()
     {
-        DB::statement('
-            UPDATE players
-            JOIN (
-                SELECT player_id, SUM(round((score + (platinum * 180) + (gold * 50) + (silver * 10)) * POWER(0.95, row_num - 1))) AS weighted
-                FROM (
-                    SELECT row_number() over (partition BY player_id ORDER BY score DESC) row_num, score, silver, gold, platinum, player_id
-                    FROM posts
-                    ORDER BY score DESC
-                ) AS ranking
-                GROUP BY player_id
-                ORDER BY weighted DESC
-            ) weighted ON players.id = weighted.player_id
-            SET score = weighted.weighted
-            WHERE players.id = ' . $this->player_id);
+        ScoreService::updatePlayerScore($this->player_id);
+        ScoreService::updateAuthorScore($this->author);
     }
 }
