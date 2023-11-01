@@ -113,7 +113,7 @@
 
     @env(['production'])
         <!-- Ackee -->
-        <script async src="https://ackee.gymir.andrus.io/cooltrack.js" data-ackee-server="https://ackee.gymir.andrus.io" data-ackee-domain-id="3f1bbbb6-ff3f-4090-9c10-79f33667b435"></script>
+        <script async src="https://ackee.gymir.andrus.io/cooltrack.js" data-ackee-server="https://ackee.gymir.andrus.io" data-ackee-domain-id="{{ env('ACKEE_DOMAIN_ID') }}"></script>
     @endenv
 </body>
 </html>
