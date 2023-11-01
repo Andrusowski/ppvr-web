@@ -42,7 +42,7 @@
                         @endif
                     </th>
                     <th class="uk-text-nowrap">
-                        score (weighted)
+                        weighted
                         @if ($sort == "score_weighted")
                             <a href="{{ url('/ranking/author/score_weighted') }}" class="fas fa-sort-down reddit" alt="sort descending" style="text-decoration: none"></a>
                         @else
@@ -50,7 +50,7 @@
                         @endif
                     </th>
                     <th class="uk-text-nowrap">
-                        avg pp
+                        avg
                         @if ($sort == "score_avg")
                             <a href="{{ url('/ranking/author/score_avg') }}" class="fas fa-sort-down reddit" alt="sort descending" style="text-decoration: none"></a>
                         @else
