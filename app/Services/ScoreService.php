@@ -86,8 +86,19 @@ class ScoreService
                 GROUP BY author
                 ORDER BY weighted DESC
             ) weighted ON authors.name=weighted.author
-            SET score=weighted.weighted
+            SET score_weighted=weighted.weighted
             WHERE authors.name="' . $authorName . '"');
+
+            $sumQuery = config('ranking.scoreSumQuery');
+            DB::statement("
+            UPDATE authors
+            JOIN (
+                SELECT author, {$sumQuery} AS score_sum, score, silver, gold, platinum
+                FROM posts
+                GROUP BY author
+            ) ranking ON authors.name=ranking.author
+            SET authors.score=ranking.score_sum
+            WHERE authors.name=\"" . $authorName . '"');
 
             $bar?->advance();
         }
