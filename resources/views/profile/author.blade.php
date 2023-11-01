@@ -16,7 +16,7 @@
     <div uk-grid>
         <div class="uk-width-1-4@m">
             <div class="uk-card uk-card-default">
-                <div class="uk-card-body">
+                <div class="uk-card-body uk-padding-small">
                     <h5 class="uk-card-title">Stats</h5>
 
                     <table class="uk-table uk-table-small uk-table-justify">
@@ -28,6 +28,10 @@
                             <tr>
                                 <td>score:</td>
                                 <td>{{ round($author->score) }}</td>
+                            </tr>
+                            <tr>
+                                <td>score (w):</td>
+                                <td>{{ round($author->score_weighted) }}</td>
                             </tr>
                             <tr>
                                 <td>posts:</td>

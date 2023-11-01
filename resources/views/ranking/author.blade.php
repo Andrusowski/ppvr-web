@@ -34,11 +34,19 @@
                     </th>
                     -->
                     <th class="uk-text-nowrap">
-                        total pp
+                        score
                         @if ($sort == "score")
                             <a href="{{ url('/ranking/author/score') }}" class="fas fa-sort-down reddit" alt="sort descending" style="text-decoration: none"></a>
                         @else
                             <a href="{{ url('/ranking/author/score') }}" class="fas fa-sort-down uk-text-muted" alt="sort descending" style="text-decoration: none"></a>
+                        @endif
+                    </th>
+                    <th class="uk-text-nowrap">
+                        score (weighted)
+                        @if ($sort == "score_weighted")
+                            <a href="{{ url('/ranking/author/score_weighted') }}" class="fas fa-sort-down reddit" alt="sort descending" style="text-decoration: none"></a>
+                        @else
+                            <a href="{{ url('/ranking/author/score_weighted') }}" class="fas fa-sort-down uk-text-muted" alt="sort descending" style="text-decoration: none"></a>
                         @endif
                     </th>
                     <th class="uk-text-nowrap">
@@ -65,6 +73,7 @@
                         <td>{{ $post->posts }}</td>
                         <!--<td>{{ number_format($post->controversy, 2) }}%</td>-->
                         <td>{{ round($post->score) }}</td>
+                        <td>{{ round($post->score_weighted) }}</td>
                         <td>{{ round($post->score_avg) }}</td>
                     </tr>
                 @endforeach

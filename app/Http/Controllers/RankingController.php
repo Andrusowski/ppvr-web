@@ -42,6 +42,7 @@ class RankingController extends Controller
             ->select(DB::raw('author,
                               (SUM(downs)/SUM(ups))*100 as controversy,
                               authors.score as score,
+                              authors.score_weighted as score_weighted,
                               ' . config('ranking.scoreAvgQuery') . ' as score_avg,
                               COUNT(posts.id) as posts,
                               MAX(posts.created_at) as last_created'))
