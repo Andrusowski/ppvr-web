@@ -64,10 +64,10 @@
     <br><br>
 
 
-    @if ($top_comment != '')
+    @if ($top_comment)
         <blockquote class="uk-text-center">
-          <a class="uk-text-secondary" href="{{ $top_comment_link }}">{!! html_entity_decode($top_comment) !!}</a>
-          <footer><cite>{{ $top_comment_author }}</cite></footer>
+          <a class="uk-text-secondary" href="{{ $top_comment->getLink() }}">{!! html_entity_decode($top_comment->getBody()) !!}</a>
+          <footer><cite>{{ $top_comment->getAuthor() }}</cite></footer>
         </blockquote>
         <br><br>
     @endif

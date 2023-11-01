@@ -88,7 +88,7 @@
             <a class="uk-button uk-button-small uk-button-default uk-width-1-1 btn-reddit uk-text-nowrap uk-margin-top" href="{{ 'https://www.reddit.com/r/osugame/comments/'.$post->id }}">view on Reddit</a>
         </div>
         <div class="uk-width-expand@m">
-            @if ($top_comment != '')
+            @if ($top_comment ?? null)
                 <blockquote class="uk-text-center">
                   <p class="uk-text-secondary">{!! html_entity_decode($top_comment) !!}</p>
                   <footer><cite>{{ $top_comment_author }}</cite></footer>

@@ -5,7 +5,6 @@ namespace App\Models;
 use App\Models\Api\User;
 use App\Services\ScoreService;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
 use Symfony\Component\Console\Helper\ProgressBar;
 use function Sentry\captureMessage;
 

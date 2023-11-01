@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\Clients\RedditClient;
-use ErrorException;
+use App\Services\RedditService;
 use Illuminate\Support\Facades\DB;
 
 class IndexController extends Controller
@@ -70,37 +69,9 @@ class IndexController extends Controller
             }
         }
 
-        $top_comment = '';
-        $top_comment_author = '';
-        $top_comment_link = '';
-        $top_score = 0;
-
         if ($posts_new_top_score >= 100) {
             //get top comment from top post
-            try {
-                $post_reddit = (new RedditClient())->getComments($posts_new[$posts_new_top]->id);
-            } catch (ErrorException $e) {
-                $post_reddit = null;
-            }
-
-            if ($post_reddit) {
-                $comments = $post_reddit[1]->data->children;
-                foreach ($comments as $comment) {
-                    if (
-                        isset($comment->data->score)
-                        && $comment->data->score > $top_score
-                        && !$comment->data->stickied
-                        && strlen($comment->data->body) < 500
-                        && !stripos($comment->data->body_html, 'http')
-                        && !stripos($comment->data->body_html, 'https')
-                    ) {
-                        $top_comment = $comment->data->body_html;
-                        $top_comment_author = $comment->data->author;
-                        $top_comment_link = 'https://www.reddit.com' . $comment->data->permalink;
-                        $top_score = $comment->data->score;
-                    }
-                }
-            }
+            $topComment = RedditService::getTopCommentForPost($posts_new[$posts_new_top]->id);
         }
 
         return view('index')
@@ -109,8 +80,6 @@ class IndexController extends Controller
             ->with('rank_authors', $rank_authors)
             ->with('posts_authors', $posts_authors)
             ->with('posts_new', $posts_new)
-            ->with('top_comment', $top_comment)
-            ->with('top_comment_author', $top_comment_author)
-            ->with('top_comment_link', $top_comment_link);
+            ->with('top_comment', $topComment ?? null);
     }
 }

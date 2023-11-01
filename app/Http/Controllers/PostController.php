@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Player;
 use App\Models\Post;
-use App\Services\Clients\RedditClient;
-use ErrorException;
 
 class PostController extends Controller
 {
@@ -39,6 +37,7 @@ class PostController extends Controller
         $player = Player::find($post->player_id);
 
         $img = '';
+        /** DISABLED UNTIL PROPER CACHING OLUTION IS FOUND
         $top_comment = '';
         $top_comment_author = '';
         $top_score = 0;
@@ -72,14 +71,16 @@ class PostController extends Controller
                 }
             }
         }
+        **/
 
         return view('profile.post')
             ->with('post', $post)
             ->with('posts_other', $posts_other)
             ->with('posts_other_new', $posts_other_new)
             ->with('player', $player)
-            ->with('img', $img)
-            ->with('top_comment', $top_comment)
-            ->with('top_comment_author', $top_comment_author);
+            ->with('img', $img);
+
+            //->with('top_comment', $top_comment)
+            //->with('top_comment_author', $top_comment_author);
     }
 }
