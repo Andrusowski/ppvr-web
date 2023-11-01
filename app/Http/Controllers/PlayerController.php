@@ -9,12 +9,6 @@ use Illuminate\Support\Facades\DB;
 
 class PlayerController extends Controller
 {
-    //'.config('ranking.scoreSumQuery').'
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function getIndex($id)
     {
         $player = Player::find($id);
@@ -26,7 +20,6 @@ class PlayerController extends Controller
 
         $player_stats = DB::table('posts')
             ->select(DB::raw('(SUM(downs)/SUM(ups))*100 as controversy,
-                               ' . config('ranking.scoreAvgQuery') . ' as score_avg,
                                COUNT(posts.id) as posts'))
             ->where('player_id', $id)
             ->first();
@@ -47,7 +40,7 @@ class PlayerController extends Controller
                                SUM(gold) as gold,
                                SUM(platinum) as platinum'))
             ->where('player_id', $player->id)
-            ->get();
+            ->first();
 
         $posts = DB::table('posts')
             ->select(DB::raw('id,
@@ -84,7 +77,7 @@ class PlayerController extends Controller
             ->with('posts', $posts)
             ->with('player', $player)
             ->with('alias', $alias)
-            ->with('awards', $awards[0])
+            ->with('awards', $awards)
             ->with('posts_new', $posts_new)
             ->with('player_stats', $player_stats)
             ->with('ranks', $ranks);

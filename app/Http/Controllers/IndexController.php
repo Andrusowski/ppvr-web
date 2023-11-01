@@ -7,11 +7,6 @@ use Illuminate\Support\Facades\DB;
 
 class IndexController extends Controller
 {
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\Response
-     */
     public function getIndex()
     {
         $rank_players = 0;

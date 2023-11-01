@@ -7,11 +7,6 @@ use Illuminate\Support\Facades\Request;
 
 class SearchController extends Controller
 {
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function postSearch()
     {
         $name = Request::input('name');

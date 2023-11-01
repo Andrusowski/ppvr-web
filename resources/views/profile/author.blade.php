@@ -3,7 +3,7 @@
 @section('content')
 
     <h1 class="uk-heading-medium">
-        {{ $author_stats->author }}
+        {{ $author->name }}
 
         <!-- Badges -->
         <p class="uk-text-meta">
@@ -27,7 +27,7 @@
                             </tr>
                             <tr>
                                 <td>score:</td>
-                                <td>{{ round($author_stats->score) }}</td>
+                                <td>{{ round($author->score) }}</td>
                             </tr>
                             <tr>
                                 <td>posts:</td>

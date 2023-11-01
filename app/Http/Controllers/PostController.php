@@ -7,11 +7,6 @@ use App\Models\Post;
 
 class PostController extends Controller
 {
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\Response
-     */
     public function getIndex($id)
     {
         $post = Post::find($id);
