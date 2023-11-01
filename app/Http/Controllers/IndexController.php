@@ -3,55 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Services\RedditService;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class IndexController extends Controller
 {
+    private const KEY_CACHE_INDEX_PLAYER_RANKING = 'index_player_ranking';
+    private const KEY_CACHE_INDEX_AUTHOR_RANKING = 'index_author_ranking';
+    private const KEY_CACHE_INDEX_NEW_POSTS = 'index_new_posts';
+
     public function getIndex()
     {
         $rank_players = 0;
-        $posts_players = DB::table('posts')
-            ->select(DB::raw('posts.player_id,
-                              players.name,
-                              (SUM(posts.downs)/SUM(posts.ups))*100 as controversy,
-                              players.score as score,
-                              ' . config('ranking.scoreAvgQuery') . ' as score_avg,
-                              COUNT(posts.id) as posts'))
-            ->join('players', 'posts.player_id', '=', 'players.id')
-            ->groupBy('posts.player_id', 'players.name')
-            ->orderBy('score', 'desc')
-            ->take(5)
-            ->get();
+        $posts_players = $this->getPlayerRanking();
 
         $rank_authors = 0;
-        $posts_authors = DB::table('posts')
-            ->select(DB::raw('author,
-                              (SUM(downs)/SUM(ups))*100 as controversy,
-                              authors.score as score,
-                              ' . config('ranking.scoreAvgQuery') . ' as score_avg,
-                              COUNT(posts.id) as posts'))
-            ->where('author', '!=', '[deleted]')
-            ->join('authors', 'authors.name', '=', 'posts.author')
-            ->having(DB::raw(config('ranking.scoreSumQuery')), '>=', 100)
-            ->groupBy('author')
-            ->orderBy('score', 'desc')
-            ->take(5)
-            ->get();
-
-        $posts_new = DB::table('posts')
-            ->select(DB::raw('posts.id,
-                              players.name,
-                              posts.map_artist,
-                              posts.map_title,
-                              posts.map_diff,
-                              posts.score as score,
-                              (posts.downs/posts.ups)*100 as controversy,
-                              posts.created_utc'))
-            ->join('players', 'posts.player_id', '=', 'players.id')
-            ->groupBy('posts.id')
-            ->orderBy('posts.created_utc', 'desc')
-            ->take(20)
-            ->get();
+        $posts_authors = $this->getAuthorRanking();
+        $posts_new = $this->getNewPosts();
 
         //find top new post
         $posts_new_top = 0;
@@ -76,5 +45,57 @@ class IndexController extends Controller
             ->with('posts_authors', $posts_authors)
             ->with('posts_new', $posts_new)
             ->with('top_comment', $topComment ?? null);
+    }
+
+    private function getPlayerRanking(): Collection
+    {
+        return Cache::remember(static::KEY_CACHE_INDEX_PLAYER_RANKING, now()->addMinutes(5), function () {
+            return DB::table('posts')
+                ->select(DB::raw('posts.player_id,
+                    players.name,
+                    players.score as score,
+                    COUNT(posts.id) as posts'))
+                ->join('players', 'posts.player_id', '=', 'players.id')
+                ->groupBy('posts.player_id', 'players.name')
+                ->orderBy('score', 'desc')
+                ->take(5)
+                ->get();
+        });
+    }
+
+    private function getAuthorRanking(): Collection
+    {
+        return Cache::remember(static::KEY_CACHE_INDEX_AUTHOR_RANKING, now()->addMinutes(5), function () {
+            return DB::table('posts')
+                ->select(DB::raw('author,
+                    authors.score as score,
+                    COUNT(posts.id) as posts'))
+                ->where('author', '!=', '[deleted]')
+                ->join('authors', 'authors.name', '=', 'posts.author')
+                ->having(DB::raw(config('ranking.scoreSumQuery')), '>=', 100)
+                ->groupBy('author')
+                ->orderBy('score', 'desc')
+                ->take(5)
+                ->get();
+        });
+    }
+
+    private function getNewPosts(): Collection
+    {
+        return Cache::remember(static::KEY_CACHE_INDEX_NEW_POSTS, now()->addMinutes(5), function () {
+            return DB::table('posts')
+                ->select(DB::raw('posts.id,
+                    players.name,
+                    posts.map_artist,
+                    posts.map_title,
+                    posts.map_diff,
+                    posts.score as score,
+                    posts.created_utc'))
+                ->join('players', 'posts.player_id', '=', 'players.id')
+                ->groupBy('posts.id')
+                ->orderBy('posts.created_utc', 'desc')
+                ->take(20)
+                ->get();
+        });
     }
 }
