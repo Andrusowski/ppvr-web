@@ -64,7 +64,9 @@ class HighlightsController
 
         $date = date('F Y', strtotime('last month'));
 
-        $html = view('highlight.highlights')
+        Browsershot::url('https://ppvr.andrus.io')->save('highlights.png');
+
+        return view('highlight.highlights')
             ->with('date', $date)
             ->with('top_post_per_player', $top_post_per_player)
             ->with('top_players', $top_players)
@@ -73,7 +75,5 @@ class HighlightsController
             ->with('posts_total_score', $posts_total_score)
             ->with('top_posts', $top_posts)
             ->render();
-
-        Browsershot::url('https://ppvr.andrus.io')->screenshot();
     }
 }
