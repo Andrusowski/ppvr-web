@@ -1,6 +1,6 @@
-# PPVR
+# PPvR
 
-[PPVR](https://ppvr.andrus.io/) is an alternative osu! ranking system based on the scores of scoreposts on the game's subreddit [/r/osugame](https://www.reddit.com/r/osugame/).
+[PPvR](https://ppvr.andrus.io/) is an alternative osu! ranking system based on the scores of scoreposts on the game's subreddit [/r/osugame](https://www.reddit.com/r/osugame/).
 
 This is why: https://twitter.com/bahamete/status/919625209619079170
 

@@ -34,11 +34,17 @@ h1 {
 }
 
 .reddit {
-    color: $reddit;
+    color: $reddit !important;
 }
+
+.osu {
+    color: $osu !important;
+}
+
 
 .btn-reddit {
     background-color: $reddit !important;
+    color: $white !important;
 }
 
 .btn-osu {
@@ -56,6 +62,7 @@ h1 {
 
 .card-image {
     width: 100%;
+    border-radius: 10px;
 }
 
 #footertext {
@@ -96,6 +103,33 @@ h1 {
 
     &__col {
         width: 12px;
+    }
+}
+
+.uk-card {
+    border-radius: 10px;
+}
+
+.uk-button, .uk-search-input {
+    border-radius: 5px;
+}
+
+.highlights {
+    &-bg {
+        background-color: $highlights-bg;
+    }
+
+    .uk-badge {
+        background-color: $reddit !important;
+        color: $white !important;
+    }
+
+    .footer {
+        margin: unset;
+
+        p {
+            margin: unset;
+        }
     }
 }
 

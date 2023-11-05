@@ -31,7 +31,7 @@
 
     <!-- miscellaneous -->
     <meta name="theme-color" content="#ff4500"/>
-    <title>PPVR</title>
+    <title>PPvR</title>
 </head>
 <body>
     <div id="app">
@@ -61,7 +61,7 @@
                     </div>
 
                     <a class="uk-navbar-item uk-logo nunito" href="{{url('/')}}">
-                        PPV<span class="reddit">R</span>
+                        PPv<span class="reddit">R</span>
                     </a>
 
                     <ul class="uk-navbar-nav uk-visible@s">

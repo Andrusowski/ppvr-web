@@ -6,26 +6,26 @@
 
     <ul uk-accordion>
         <li class="uk-open">
-            <a class="uk-accordion-title" href="#">What is PPVR?</a>
+            <a class="uk-accordion-title" href="#">What is PPvR?</a>
             <div class="uk-accordion-content">
-                <p>The idea behind PPVR is based on <a href="https://twitter.com/bahamete/status/919625209619079170?lang=en">this tweet</a>. The tweet describes this pretty well. </p>
+                <p>The idea behind PPvR is based on <a href="https://twitter.com/bahamete/status/919625209619079170?lang=en">this tweet</a>. The tweet describes this pretty well. </p>
                 <p>Data is fetched every 5 minutes from scoreposts on the subreddit <a href="https://www.reddit.com/r/osugame/">r/osugame</a>. The up- and downvotes are then used to calculate a player's "pp" and their rank.</p>
             </div>
         </li>
         <li>
             <a class="uk-accordion-title" href="#">What is a scorepost and what should it look like?</a>
             <div class="uk-accordion-content">
-                <p>To make sure that your scorepost is correctly parsed by PPVR, the title should look something like this:</p>
+                <p>To make sure that your scorepost is correctly parsed by PPvR, the title should look something like this:</p>
                 <p><span class="uk-text-primary">Player Name</span> | <span class="uk-text-success">Song Artist</span> - <span class="uk-text-warning">Song Title</span> [<span class="uk-text-danger">Diff Name</span>] +Mods whateveryouwant</p>
                 <p>For example:</p>
                 <p><span class="uk-text-primary">Cookiezi</span> | <span class="uk-text-success">xi</span> - <span class="uk-text-warning">FREEDOM DiVE</span> [<span class="uk-text-danger">FOUR DIMENSIONS</span>] +HDHR 99.83% FC 800pp *NEW PP RECORD*</p>
-                <p>The +Mods part is irrelevant for PPVR, but other software like <a href="https://github.com/christopher-dG/osu-bot">osu-bot</a> rely on this information.</p>
-                <p>PPVR tries to filter out common Prefixes like "UNNOTICED?", "OFFLINE" or Gamemodes like "OSU!TAIKO", but something unique like "HOLYSHITGODMODE??!1" will likely add your post to the bin of invalid scoreposts. If you feel like adding additional information to your post title, then please add it after the [Diff Name] since that information is not parsed at all.</p>
+                <p>The +Mods part is irrelevant for PPvR, but other software like <a href="https://github.com/christopher-dG/osu-bot">osu-bot</a> rely on this information.</p>
+                <p>PPvR tries to filter out common Prefixes like "UNNOTICED?", "OFFLINE" or Gamemodes like "OSU!TAIKO", but something unique like "HOLYSHITGODMODE??!1" will likely add your post to the bin of invalid scoreposts. If you feel like adding additional information to your post title, then please add it after the [Diff Name] since that information is not parsed at all.</p>
                 <p>For more help, check out <a href="https://www.youtube.com/watch?v=igP42gDnYrc">this video</a> for a visual guide how to create a scorepost.</p>
             </div>
         </li>
         <li>
-            <a class="uk-accordion-title" href="#">My scorepost was not recognized by PPVR. Can I request it to be added manually?</a>
+            <a class="uk-accordion-title" href="#">My scorepost was not recognized by PPvR. Can I request it to be added manually?</a>
             <div class="uk-accordion-content">
                 <p>There are thousands of scoreposts that are not added to the ranking because the title can't be parsed. I decided to not add certain scoreposts manually, since it is a ton of work to do and would be kinda unfair if I would do it only for certain posts.</p>
                 <p>So if you think that your scorepost is formatted correctly and should be displayed here, then feel free to contact me.</p>

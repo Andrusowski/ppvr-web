@@ -9,12 +9,12 @@ return [
     /*
      * The HTML <title> for the generated documentation. If this is empty, Scribe will infer it from config('app.name').
      */
-    'title' => 'PPVR API docs',
+    'title' => 'PPvR API docs',
 
     /*
      * A short description of your API. Will be included in the docs webpage, Postman collection and OpenAPI spec.
      */
-    'description' => 'PPVR public API',
+    'description' => 'PPvR public API',
 
     /*
      * The base URL displayed in the docs. If this is empty, Scribe will use the value of config('app.url').
@@ -247,7 +247,7 @@ return [
      * Text to place in the "Introduction" section, right after the `description`. Markdown and HTML are supported.
      */
     'intro_text' => <<<INTRO
-This is a really basic api to provide most of the data that is provided by PPVR.<br/>
+This is a really basic api to provide most of the data that is provided by PPvR.<br/>
 All API calls are rate limited to <b>60 requests per minute</b> to ensure that the api is used responsibly. This is the only way I can keep it public.
 
 <aside>As you scroll, you'll see code examples for working with the API in different programming languages in the dark area to the right (or as part of the content on mobile).
