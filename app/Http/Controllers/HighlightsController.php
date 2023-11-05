@@ -29,9 +29,9 @@ class HighlightsController
             ->limit(5)
             ->get();
 
-        $top_post_per_player = [];
+        $top_posts_per_player = [];
         foreach ($top_players as $player) {
-            $top_post_per_player[$player->name] = Post::wherePlayerId($player->id)->orderBy('score', 'desc')->limit(3)->get();
+            $top_posts_per_player[$player->name] = Post::wherePlayerId($player->id)->orderBy('score', 'desc')->limit(3)->get();
         }
 
         $top_authors = DB::table('posts')
@@ -62,18 +62,61 @@ class HighlightsController
             ->where('posts.created_utc', '<=', (new Carbon("last day of last month"))->timestamp)
             ->sum('score');
 
-        $date = date('F Y', strtotime('last month'));
+        $unique_players = DB::table('posts')
+            ->selectRaw('COUNT(DISTINCT player_id) as count')
+            ->where('posts.created_utc', '>=', (new Carbon('first day of last month'))->timestamp)
+            ->where('posts.created_utc', '<=', (new Carbon("last day of last month"))->timestamp)
+            ->first();
 
-        Browsershot::url('https://ppvr.andrus.io')->save('highlights.png');
+        $text = $this->convertToText($top_players, $top_posts_per_player, $top_authors, $top_posts);
+
+        $date = date('F Y', strtotime('last month'));
 
         return view('highlight.highlights')
             ->with('date', $date)
-            ->with('top_post_per_player', $top_post_per_player)
+            ->with('top_posts_per_player', $top_posts_per_player)
             ->with('top_players', $top_players)
             ->with('top_authors', $top_authors)
             ->with('posts_count', $posts_count)
             ->with('posts_total_score', $posts_total_score)
             ->with('top_posts', $top_posts)
-            ->render();
+            ->with('unique_players', $unique_players)
+            ->with('text', $text);
+    }
+
+    /**
+     * @param \Illuminate\Support\Collection $top_players
+     * @param Post[] $top_post_per_player
+     * @param \Illuminate\Support\Collection $top_authors
+     * @param \Illuminate\Support\Collection $top_posts
+     *
+     * @return string
+     */
+    private function convertToText(\Illuminate\Support\Collection $top_players, array $top_post_per_player, \Illuminate\Support\Collection $top_authors, \Illuminate\Support\Collection $top_posts): string
+    {
+        $player_rank = 0;
+        $text = '# Top players:' . PHP_EOL;
+        foreach ($top_players as $player) {
+            $text .= sprintf(PHP_EOL . '## \#%d [%s](https://osu.ppy.sh/users/%s) (%d Score, %d Avg. Score, %d Posts)', ++ $player_rank, $player->name, $player->id, $player->score, $player->avg_score, $player->posts) . PHP_EOL;
+            foreach ($top_post_per_player[$player->name] as $post) {
+                $text .= sprintf('* [%s](https://www.reddit.com/r/osugame/comments/%s) (%d points)', $post->map_title . ' [' . $post->map_diff . ']', $post->id, $post->score) . PHP_EOL;
+            }
+        }
+
+        $author_rank = 0;
+        $text .= PHP_EOL . '# Top authors:' . PHP_EOL;
+        foreach ($top_authors as $author) {
+            $text .= sprintf('%d. [%s](https://www.reddit.com/user/%s) (%d Score)', ++$author_rank, $author->author, $author->author, $author->score) . PHP_EOL;
+        }
+
+        $post_rank = 0;
+        $text .= PHP_EOL . '# Top posts:' . PHP_EOL;
+        foreach ($top_posts as $post) {
+            $text .= sprintf('%d. [%s](https://www.reddit.com/r/osugame/comments/%s) (%d Score)', ++$post_rank, $post->map_title . ' [' . $post->map_diff . ']', $post->id, $post->score) . PHP_EOL;
+        }
+
+        $text .= PHP_EOL . '---' . PHP_EOL . 'The all-time ranking can be found at [PPvR](https://ppvr.andrus.io)';
+
+        return $text;
     }
 }

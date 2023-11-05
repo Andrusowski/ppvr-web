@@ -19,7 +19,7 @@
 </head>
 <body>
 <div class="uk-padding uk-light highlights highlights-bg">
-    <h1 class="uk-heading-medium">/r/<span class="osu">osu</span>game Score Post Recap of <span class="osu">{{ $date }}</span></h1>
+    <h1 class="uk-heading-medium">/r/<span class="osu">osu</span>game Scorepost Recap of <span class="osu">{{ $date }}</span></h1>
     <div class="uk-grid">
         <div class="uk-width-3-5">
             <h2>Top players</h2>
@@ -32,8 +32,11 @@
                         <span class="uk-margin-right">Average Score: {{ round($top_player->avg_score) }}</span>
                         <span>Posts: {{ $top_player->posts }}</span>
                     </div>
-                    @foreach($top_post_per_player[$top_player->name] as $post)
-                        <p class="uk-margin-small"><span class="uk-badge uk-margin-small-right">{{$post->score}}</span> {{ $post->map_artist }} - {{ $post->map_title }} [{{ $post->map_diff}}]</p>
+                    @foreach($top_posts_per_player[$top_player->name] as $post)
+                        <div class="uk-flex uk-margin-small uk-margin-left">
+                            <span class="uk-badge">{{$post->score}}</span>
+                            <p class="uk-padding-remove uk-margin-remove"> {{ $post->map_artist }} - {{ $post->map_title }} [{{ $post->map_diff}}]</p>
+                        </div>
                     @endforeach
                 </div>
             @endforeach
@@ -41,9 +44,10 @@
 
         <div class="uk-width-2-5">
             <h2>Top posters</h2>
+            @php($rank_author = 0)
             @foreach($top_authors as $top_author)
                 <div class="uk-card uk-card-body uk-card-secondary uk-margin ">
-                    <h4>{{ $top_author->author }}</h4>
+                    <h4>#{{++$rank_author}} {{ $top_author->author }}</h4>
                     <div>
                         <span class="uk-margin-right">Total Score: {{ $top_author->score }}</span>
                         <span>Posts: {{ $top_author->posts }}</span>
@@ -58,6 +62,9 @@
 
                 <h5>Total Score</h5>
                 <p>{{ $posts_total_score }}</p>
+
+                <h5>Unique Players</h5>
+                <p>{{ $unique_players->count }}</p>
             </div>
         </div>
     </div>
@@ -71,6 +78,10 @@
 
     <div class="uk-align-right footer">
         <p>Powered by PPv<span class="reddit">R</span>.andrus.io</p>
+    </div>
+
+    <div class="uk-hidden">
+        <pre>{{ $text }}</pre>
     </div>
 </div>
 
