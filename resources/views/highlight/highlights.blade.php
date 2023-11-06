@@ -19,7 +19,7 @@
 </head>
 <body>
 <div class="uk-padding uk-light highlights highlights-bg" id="app">
-    <h1>/r/<span class="osu">osu</span>game Scorepost Recap of <span class="osu">{{ $date }}</span></h1>
+    <h1>/r/<span class="osu">osu</span>game Scorepost Recap for <span class="osu">{{ $date }}</span></h1>
     <div class="uk-grid">
         <div class="uk-width-2-3">
             <h2>Top players</h2>
