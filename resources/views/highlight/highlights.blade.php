@@ -36,7 +36,7 @@
                         <div class="uk-flex uk-margin-small uk-margin-left">
                             <span class="uk-badge">{{$post->score}}</span>
                             <p class="uk-padding-remove uk-margin-remove highlights-maptitle-container">
-                                <span class="highlights-maptitle">{{ $post->map_artist }} - {{ $post->map_title }}</span>&nbsp;[{{ $post->map_diff}}]
+                                <span class="highlights-maptitle">{{ $post->map_artist }} - {{ $post->map_title }}</span>&nbsp;<span class="highlights-mapdiff">[{{ $post->map_diff}}]</span>
                             </p>
                         </div>
                     @endforeach

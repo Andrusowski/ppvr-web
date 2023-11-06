@@ -30,7 +30,12 @@ class HighlightsController
 
         $top_posts_per_player = [];
         foreach ($top_players as $player) {
-            $top_posts_per_player[$player->name] = Post::wherePlayerId($player->id)->orderBy('score', 'desc')->limit(3)->get();
+            $top_posts_per_player[$player->name] = Post::wherePlayerId($player->id)
+                ->where('posts.created_utc', '>=', (new Carbon('first day of last month'))->timestamp)
+                ->where('posts.created_utc', '<=', (new Carbon("last day of last month"))->timestamp)
+                ->orderBy('score', 'desc')
+                ->limit(3)
+                ->get();
         }
 
         $top_authors = DB::table('posts')

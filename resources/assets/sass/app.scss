@@ -130,6 +130,12 @@ h1 {
         }
     }
 
+    &-mapdiff {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
     .uk-badge {
         background-color: $reddit !important;
         color: $white !important;
