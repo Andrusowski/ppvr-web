@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2023-11-06
+### Added
+- Added a highlight function to create a highlight post for the previous month
+- Added separate weighted author score values
+- Added ranking- and post caching to index page
+
+### Changed
+- Changed styling of most elements with sharp corners
+
 ## 2023-10-31
 ### Changed
 - Changed author rankings to a weighted system like previously done with player rankings

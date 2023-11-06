@@ -20,22 +20,22 @@
 
     <div class="uk-card uk-card-default uk-card-body uk-card-hover uk-margin">
         <h2 class="uk-card-title">Posts created per Day</h2>
-        <chart
+        <bar-chart
             posts="{{ $postsHistory }}"
             name="postsHistory"
             value-index="postsDaily"
             v-bind:y-axes-display="true">
-        </chart>
+        </bar-chart>
     </div>
 
     <div class="uk-card uk-card-default uk-card-body uk-card-hover uk-margin">
         <h2 class="uk-card-title">Upvotes per Day</h2>
-        <chart
+        <bar-chart
             posts="{{ $upvotesHistory }}"
             name="postsHistory"
             value-index="postsDaily"
             color="rgb(255, 127, 17)"
             v-bind:y-axes-display="true">
-        </chart>
+        </bar-chart>
     </div>
 @endsection

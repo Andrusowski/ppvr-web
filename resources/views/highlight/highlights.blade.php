@@ -18,10 +18,10 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
 </head>
 <body>
-<div class="uk-padding uk-light highlights highlights-bg">
-    <h1 class="uk-heading-medium">/r/<span class="osu">osu</span>game Scorepost Recap of <span class="osu">{{ $date }}</span></h1>
+<div class="uk-padding uk-light highlights highlights-bg" id="app">
+    <h1>/r/<span class="osu">osu</span>game Scorepost Recap of <span class="osu">{{ $date }}</span></h1>
     <div class="uk-grid">
-        <div class="uk-width-3-5">
+        <div class="uk-width-2-3">
             <h2>Top players</h2>
             @php($rank = 0)
             @foreach($top_players as $top_player)
@@ -35,19 +35,21 @@
                     @foreach($top_posts_per_player[$top_player->name] as $post)
                         <div class="uk-flex uk-margin-small uk-margin-left">
                             <span class="uk-badge">{{$post->score}}</span>
-                            <p class="uk-padding-remove uk-margin-remove"> {{ $post->map_artist }} - {{ $post->map_title }} [{{ $post->map_diff}}]</p>
+                            <p class="uk-padding-remove uk-margin-remove highlights-maptitle-container">
+                                <span class="highlights-maptitle">{{ $post->map_artist }} - {{ $post->map_title }}</span>&nbsp;[{{ $post->map_diff}}]
+                            </p>
                         </div>
                     @endforeach
                 </div>
             @endforeach
         </div>
 
-        <div class="uk-width-2-5">
+        <div class="uk-width-1-3">
             <h2>Top posters</h2>
             @php($rank_author = 0)
             @foreach($top_authors as $top_author)
                 <div class="uk-card uk-card-body uk-card-secondary uk-margin ">
-                    <h4>#{{++$rank_author}} {{ $top_author->author }}</h4>
+                    <h5>#{{++$rank_author}} {{ $top_author->author }}</h5>
                     <div>
                         <span class="uk-margin-right">Total Score: {{ $top_author->score }}</span>
                         <span>Posts: {{ $top_author->posts }}</span>
@@ -57,14 +59,24 @@
 
             <h2>Stats</h2>
             <div class="uk-card uk-card-body uk-card-secondary uk-margin ">
-                <h5>Total Scoreposts</h5>
-                <p>{{ $posts_count }}</p>
+                <h5 class="uk-margin-small">Total Scoreposts</h5>
+                <p class="uk-margin-small">{{ $posts_count }}</p>
 
-                <h5>Total Score</h5>
-                <p>{{ $posts_total_score }}</p>
+                <h5 class="uk-margin-small uk-margin-medium-top">Total Score</h5>
+                <p class="uk-margin-small">{{ $posts_total_score }}</p>
 
-                <h5>Unique Players</h5>
-                <p>{{ $unique_players->count }}</p>
+                <h5 class="uk-margin-small uk-margin-medium-top">Unique Players</h5>
+                <p class="uk-margin-small">{{ $unique_players->count }}</p>
+
+                <h5 class="uk-margin-small uk-margin-medium-top">Posts per day</h5>
+                <bar-chart
+                    posts="{{ $score_per_day }}"
+                    name="scoreHistory"
+                    value-index="score_daily"
+                    height="170"
+                    v-bind:y-axes-display="true"
+                >
+                </bar-chart>
             </div>
         </div>
     </div>
@@ -84,5 +96,7 @@
         <pre>{{ $text }}</pre>
     </div>
 </div>
+
+<script type="text/javascript" src="{!! asset('js/app.js') !!}" defer></script>
 
 </body>

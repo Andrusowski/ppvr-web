@@ -25,16 +25,14 @@ class AuthorController extends Controller
             abort(404);
         }
 
-        $ranking = Author::orderBy('score', 'desc')->get();
-
-        $rank = 1;
-        foreach ($ranking as $rankingAuthor) {
-            if ($rankingAuthor->author != $author_stats->author) {
-                $rank++;
-            } else {
-                break;
-            }
-        }
+        $ranking = DB::select("
+            SELECT name, ranking.number
+            FROM (
+                SELECT name, RANK() OVER (ORDER BY score DESC) as number
+                FROM authors
+            ) as ranking
+            WHERE name=:name
+        ", ['name' => $name]);
 
         $posts = DB::table('posts')
             ->select(DB::raw('id,
@@ -63,7 +61,7 @@ class AuthorController extends Controller
 
         return view('profile.author')
             ->with('author', $author)
-            ->with('rank', $rank)
+            ->with('rank', $ranking[0]->number)
             ->with('posts', $posts)
             ->with('posts_new', $posts_new)
             ->with('author_stats', $author_stats);

@@ -9,7 +9,6 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-use Spatie\Browsershot\Browsershot;
 
 class HighlightsController
 {
@@ -68,6 +67,14 @@ class HighlightsController
             ->where('posts.created_utc', '<=', (new Carbon("last day of last month"))->timestamp)
             ->first();
 
+        $score_per_day = DB::table('posts')
+            ->selectRaw('SUM(score) as score_daily, DATE(created_at) as date')
+            ->where('posts.created_utc', '>=', (new Carbon('first day of last month'))->timestamp)
+            ->where('posts.created_utc', '<=', (new Carbon("last day of last month"))->timestamp)
+            ->orderBy('date', 'DESC')
+            ->groupByRaw('date')
+            ->get();
+
         $text = $this->convertToText($top_players, $top_posts_per_player, $top_authors, $top_posts);
 
         $date = date('F Y', strtotime('last month'));
@@ -81,6 +88,7 @@ class HighlightsController
             ->with('posts_total_score', $posts_total_score)
             ->with('top_posts', $top_posts)
             ->with('unique_players', $unique_players)
+            ->with('score_per_day', $score_per_day)
             ->with('text', $text);
     }
 
@@ -97,7 +105,7 @@ class HighlightsController
         $player_rank = 0;
         $text = '# Top players:' . PHP_EOL;
         foreach ($top_players as $player) {
-            $text .= sprintf(PHP_EOL . '## \#%d [%s](https://osu.ppy.sh/users/%s) (%d Score, %d Avg. Score, %d Posts)', ++ $player_rank, $player->name, $player->id, $player->score, $player->avg_score, $player->posts) . PHP_EOL;
+            $text .= sprintf(PHP_EOL . '## \#%d [%s](https://osu.ppy.sh/users/%s) (%d Score, %d Avg. Score, %d Posts)', ++$player_rank, $player->name, $player->id, $player->score, $player->avg_score, $player->posts) . PHP_EOL;
             foreach ($top_post_per_player[$player->name] as $post) {
                 $text .= sprintf('* [%s](https://www.reddit.com/r/osugame/comments/%s) (%d points)', $post->map_title . ' [' . $post->map_diff . ']', $post->id, $post->score) . PHP_EOL;
             }

@@ -119,6 +119,17 @@ h1 {
         background-color: $highlights-bg;
     }
 
+    &-maptitle {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+
+        &-container {
+            display: flex;
+            max-width: 87%;
+        }
+    }
+
     .uk-badge {
         background-color: $reddit !important;
         color: $white !important;
