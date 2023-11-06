@@ -105,7 +105,7 @@
     <script type="text/javascript">
         let base_url = {!! json_encode(url('/')) !!}
     </script>
-    <script type="text/javascript" src="{!! asset('js/app.js') !!}" defer></script>
+    <script type="text/javascript" src="{!! mix('js/app.js') !!}" defer></script>
 
     <!-- UIkit JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.2.0/js/uikit.min.js"></script>
