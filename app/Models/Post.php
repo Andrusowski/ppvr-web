@@ -98,7 +98,7 @@ class Post extends Model
 
         $this->ups = round($jsonPost->score * $jsonPost->upvote_ratio);
         $this->downs = round($jsonPost->score * (1 - $jsonPost->upvote_ratio));
-        $this->score = $this->ups - $this->downs;
+        $this->score = $jsonPost->score;
 
         // update if needed
         if ($scorePre !== $this->score) {
