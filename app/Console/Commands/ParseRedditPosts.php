@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Services\RedditParser;
+use DateTime;
 use Illuminate\Console\Command;
 
 class ParseRedditPosts extends Command
@@ -12,7 +13,7 @@ class ParseRedditPosts extends Command
      *
      * @var string
      */
-    protected $signature = 'parse:reddit {--archive} {--update} {--update-min-score=}';
+    protected $signature = 'parse:reddit {--archive} {--update} {--update-min-score=} {--update-min-time=}';
 
     /**
      * The console command description.
@@ -43,11 +44,13 @@ class ParseRedditPosts extends Command
         $archiveFirstPost = $this->option('archive');
         $update = $this->option('update');
         $updateMinScore = (int)$this->option('update-min-score');
+        $minTimeRaw = $this->option('update-min-time');
+        $minTime = $minTimeRaw ? new DateTime('@' . strtotime($minTimeRaw)) : null;
 
         if ($archiveFirstPost) {
             $redditParser->archive();
         } elseif ($update) {
-            $redditParser->updateFromTop($updateMinScore);
+            $redditParser->updateFromTop($updateMinScore, $minTime);
         } else {
             $redditParser->new();
         }

@@ -15,6 +15,7 @@ use App\Models\Tmppost;
 use App\Services\Clients\OsuClient;
 use App\Services\Clients\RedditClient;
 use Carbon\Carbon;
+use DateTime;
 use Illuminate\Console\OutputStyle;
 use Illuminate\Support\Facades\Artisan;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -179,11 +180,16 @@ class RedditParser
         }
     }
 
-    public function updateFromTop(int $minScore = 0)
+    public function updateFromTop(int $minScore = 0, ?DateTime $minTime = null)
     {
         $accessToken = $this->redditClient->getAccessToken();
 
-        $existingPostIds = Post::orderByDesc('score')->where('score', '>', $minScore)->pluck('id')->toArray();
+        $postsQuery = Post::orderByDesc('score')->where('score', '>', $minScore);
+        if ($minTime) {
+            $postsQuery->where('created_at', '>', $minTime);
+        }
+
+        $existingPostIds = $postsQuery->pluck('id')->toArray();
 
         $this->bar = $this->output->createProgressBar(count($existingPostIds));
         $this->bar->setFormat('custom');
