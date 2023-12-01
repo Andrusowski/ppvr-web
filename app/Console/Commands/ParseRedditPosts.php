@@ -12,7 +12,7 @@ class ParseRedditPosts extends Command
      *
      * @var string
      */
-    protected $signature = 'parse:reddit {--archive}';
+    protected $signature = 'parse:reddit {--archive} {--update} {--update-min-score=}';
 
     /**
      * The console command description.
@@ -41,9 +41,13 @@ class ParseRedditPosts extends Command
     public function handle(RedditParser $redditParser)
     {
         $archiveFirstPost = $this->option('archive');
+        $update = $this->option('update');
+        $updateMinScore = (int)$this->option('update-min-score');
 
         if ($archiveFirstPost) {
             $redditParser->archive();
+        } elseif ($update) {
+            $redditParser->updateFromTop($updateMinScore);
         } else {
             $redditParser->new();
         }

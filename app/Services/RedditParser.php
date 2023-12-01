@@ -14,6 +14,7 @@ use App\Models\Post;
 use App\Models\Tmppost;
 use App\Services\Clients\OsuClient;
 use App\Services\Clients\RedditClient;
+use Carbon\Carbon;
 use Illuminate\Console\OutputStyle;
 use Illuminate\Support\Facades\Artisan;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -149,20 +150,56 @@ class RedditParser
 
     public function new()
     {
-        $jsonPosts = $this->redditClient->getNewPosts();
+        $accessToken = $this->redditClient->getAccessToken();
+        $jsonPosts = $this->redditClient->getNewPosts($accessToken);
 
-        $this->bar = $this->output->createProgressBar(count($jsonPosts->data->children));
-        $this->bar->setFormat('custom');
-        $this->bar->setMessage('Reading from reddit...');
+        $latestPostPreAdd = Post::orderByDesc(Post::CREATED_AT)->first();
+        $newPostIds = [];
 
         foreach ($jsonPosts->data->children as $jsonPost) {
-            $this->prepareParse($jsonPost->data, false);
+            $postId = $jsonPost->data->id;
+            if (!Post::where('id', '=', $postId)->exists()) {
+                $newPostIds[] = $postId;
+            }
+        }
+
+        if ($latestPostPreAdd) {
+            $existingPostIds = Post::whereBetween(Post::CREATED_AT, [new Carbon('-2 days'), $latestPostPreAdd->created_at])->pluck('id')->toArray();
+            $postsIdsToUpdate = array_merge($newPostIds, $existingPostIds);
+
+            $this->bar = $this->output->createProgressBar(count($postsIdsToUpdate));
+            $this->bar->setFormat('custom');
+            $this->bar->setMessage('Updating existing posts...');
+
+            foreach ($postsIdsToUpdate as $postsId) {
+                $apiPostData = (new RedditClient())->getComments($postsId, $accessToken);
+                $this->prepareParse($apiPostData, false);
+                $this->bar->advance();
+            }
+        }
+    }
+
+    public function updateFromTop(int $minScore = 0)
+    {
+        $accessToken = $this->redditClient->getAccessToken();
+
+        $existingPostIds = Post::orderByDesc('score')->where('score', '>', $minScore)->pluck('id')->toArray();
+
+        $this->bar = $this->output->createProgressBar(count($existingPostIds));
+        $this->bar->setFormat('custom');
+        $this->bar->setMessage('Updating existing posts...');
+
+        foreach ($existingPostIds as $postsId) {
+            $apiPostData = (new RedditClient())->getComments($postsId, $accessToken);
+            $this->prepareParse($apiPostData, false);
             $this->bar->advance();
         }
     }
 
-    private function prepareParse($jsonPost, $archive)
+    public function prepareParse($postData, $archive)
     {
+        $jsonPost = $postData[0]->data->children[0]->data;
+
         //check if post already exists
         $tmpPost = Tmppost::where('id', '=', $jsonPost->id)->first();
         $post = Post::where('id', '=', $jsonPost->id)->first();
@@ -170,26 +207,24 @@ class RedditParser
         $age = time() - $jsonPost->created_utc;
 
         if ($post === null && $tmpPost === null) {
-            //determine if post is final (>48h old)
-            $isFinal = $age >= 48 * 60 * 60;
-            $this->parsePost($jsonPost, $isFinal, false);
-        } elseif (!$archive && $post && $post->final == 0) { // update non-final post, if it already exists in the database (only in non-archive mode)
-            $jsonPostDetail = $this->redditClient->getComments($jsonPost->id)[0]->data->children[0]->data;
-            if (!$jsonPostDetail) {
-                return;
-            }
+            $this->parsePost($postData);
 
-            $isFinalUpdate = $age >= 24 * 60 * 60;
+            return;
+        }
+
+        if (!$archive) { // update post if it already exists in the database (only in non-archive mode)
             $postToUpdate = Post::whereId($jsonPost->id)->first();
             if (!$postToUpdate) {
                 throw new PostNotFoundException('No message found to update');
             }
-            $postToUpdate->updatePost($jsonPostDetail, $isFinalUpdate, $this->bar);
+            $postToUpdate->updatePost($jsonPost, $this->bar);
         }
     }
 
-    private function parsePost($jsonPost, $final, $archive)
+    private function parsePost($postData)
     {
+        $jsonPost = $postData[0]->data->children[0]->data;
+
         /* check for characteristic characters from the already established format
         Player Name | Song Artist - Song Title [Diff Name] +Mods */
         $postTitle = $jsonPost->title;
@@ -243,16 +278,16 @@ class RedditParser
             $parsedPost->map_title . ' [' .
             $parsedPost->map_diff . "]");
 
-        $jsonPostDetail = $this->redditClient->getComments($jsonPost->id)[0]->data->children[0]->data;
+        $jsonPostDetail = $postData[0]->data->children[0]->data;
         if (!$jsonPostDetail) {
             return false;
         }
-        $this->preparePost($jsonPostDetail, $parsedPost, $playerName, $final);
+        $this->preparePost($jsonPostDetail, $parsedPost, $playerName);
 
         return true;
     }
 
-    private function preparePost($jsonPost, Post $parsedPost, $playerName, $final)
+    private function preparePost($jsonPost, Post $parsedPost, $playerName)
     {
         $apiPlayer = $this->osuClient->getUser($playerName);
 
@@ -264,7 +299,7 @@ class RedditParser
             }
 
             $this->updatePlayer($apiPlayer, $dbPlayer);
-            $parsedPost->addPost($jsonPost, $apiPlayer, $final);
+            $parsedPost->addPost($jsonPost, $apiPlayer);
         } else {
             /* else check if the username exists in the DB as an alias and retry
                the osu!api call using the alias */
@@ -272,7 +307,7 @@ class RedditParser
             if ($alias !== null) {
                 $userByAlias = $this->osuClient->getUser(urlencode($alias->alias));
                 if ($userByAlias !== null) {
-                    $parsedPost->addPost($jsonPost, $userByAlias, $final);
+                    $parsedPost->addPost($jsonPost, $userByAlias);
                 }
             } else {
                 Tmppost::addTmpPost($jsonPost);

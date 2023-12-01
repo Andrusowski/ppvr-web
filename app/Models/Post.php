@@ -67,7 +67,7 @@ class Post extends Model
         return $this->belongsTo('App\Models\Player', 'player_id', 'id');
     }
 
-    public function addPost($jsonPost, User $user, bool $final)
+    public function addPost($jsonPost, User $user)
     {
         $this->id = $jsonPost->id;
         $this->player_id = $user->getId();
@@ -75,7 +75,7 @@ class Post extends Model
         $this->ups = round($jsonPost->score * $jsonPost->upvote_ratio);
         $this->downs = round($jsonPost->score * (1 - $jsonPost->upvote_ratio));
         $this->score = $this->ups - $this->downs;
-        $this->final = $final;
+        $this->final = 0; // deprecated, can be removed in future versions
         $this->created_utc = $jsonPost->created_utc;
 
         //post platin and silver update
@@ -92,7 +92,7 @@ class Post extends Model
         }
     }
 
-    public function updatePost($jsonPost, bool $final, ProgressBar $bar)
+    public function updatePost($jsonPost, ProgressBar $bar)
     {
         $scorePre = $this->score;
 
@@ -102,7 +102,7 @@ class Post extends Model
 
         // update if needed
         if ($scorePre !== $this->score) {
-            $this->final = $final ? 1 : 0;
+            $this->final = 0;
 
             //post platin and silver update
             if (isset($jsonPost->gildings)) {

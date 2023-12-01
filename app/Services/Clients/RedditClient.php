@@ -35,11 +35,12 @@ class RedditClient
     }
 
     /**
+     * @param string $accessToken
      * @return mixed
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \JsonException
      */
-    public function getNewPosts()
+    public function getNewPosts(string $accessToken)
     {
         $response = $this->createRedditClient()->request('GET', '/r/osugame/search.json', [
             'query' => [
@@ -48,6 +49,9 @@ class RedditClient
                 'restrict_sr' => 'on',
                 't' => 'all',
             ],
+            'headers' => [
+                'Authorization' => "Bearer {$accessToken}",
+            ],
         ])->getBody()->getContents();
 
         return json_decode($response, false, 512, JSON_THROW_ON_ERROR);
@@ -55,24 +59,50 @@ class RedditClient
 
     /**
      * @param string $id
+     * @param string $accessToken
      *
      * @return mixed
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \JsonException
      */
-    public function getComments(string $id)
+    public function getComments(string $id, string $accessToken)
     {
         try {
             $response = $this->createRedditClient()
-                ->request('GET', '/r/osugame/comments/' . $id . '.json')
-                ->withHeader('User-Agent', 'ppvr')
-                ->getBody()
-                ->getContents();
+                ->request('GET', '/r/osugame/comments/' . $id . '.json', [
+                    'headers' => [
+                        'Authorization' => "Bearer {$accessToken}",
+                    ],
+                ]);
+
+            $ratelimitRemaining = (int)$response->getHeader('x-ratelimit-remaining')[0];
+            if ($ratelimitRemaining === 0) {
+                $ratelimitReset = (int)$response->getHeader('x-ratelimit-reset')[0];
+                sleep($ratelimitReset);
+            }
+
+            $content = $response->getBody()
+                                ->getContents();
         } catch (ServerException $serverException) {
             return null;
         }
 
-        return json_decode($response, false, 512, JSON_THROW_ON_ERROR);
+        return json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+    }
+
+    public function getAccessToken(): string
+    {
+        $response = $this->createRedditClient()->request('POST', '/api/v1/access_token', [
+            'form_params' => [
+                'grant_type' => 'client_credentials',
+            ],
+            'auth' => [
+                env('REDDIT_CLIENT_ID'),
+                env('REDDIT_CLIENT_SECRET'),
+            ],
+        ])->getBody()->getContents();
+
+        return json_decode($response, false, 512, JSON_THROW_ON_ERROR)->access_token;
     }
 
     /**
@@ -88,6 +118,11 @@ class RedditClient
      */
     private function createRedditClient(): Client
     {
-        return new Client(['base_uri' => 'https://www.reddit.com']);
+        return new Client([
+            'base_uri' => 'https://oauth.reddit.com',
+            'headers' => [
+                'User-Agent' => 'laravel:Andrusowski/ppvr-web (by /u/Andruz)',
+            ],
+        ]);
     }
 }
