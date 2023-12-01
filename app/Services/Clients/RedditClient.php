@@ -42,13 +42,7 @@ class RedditClient
      */
     public function getNewPosts(string $accessToken)
     {
-        $response = $this->createRedditClient()->request('GET', '/r/osugame/search.json', [
-            'query' => [
-                //'q' => 'flair:Gameplay', TODO: remove if parsing works well enough without the flair
-                'sort' => 'new',
-                'restrict_sr' => 'on',
-                't' => 'all',
-            ],
+        $response = $this->createRedditClient()->request('GET', '/r/osugame/new.json', [
             'headers' => [
                 'Authorization' => "Bearer {$accessToken}",
             ],
