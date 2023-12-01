@@ -68,7 +68,7 @@
                 <h5 class="uk-margin-small uk-margin-medium-top">Unique Players</h5>
                 <p class="uk-margin-small">{{ $unique_players->count }}</p>
 
-                <h5 class="uk-margin-small uk-margin-medium-top">Posts per Day</h5>
+                <h5 class="uk-margin-small uk-margin-medium-top">Score per Day</h5>
                 <bar-chart
                     posts="{{ $score_per_day }}"
                     name="scoreHistory"
