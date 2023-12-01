@@ -74,7 +74,7 @@ class Post extends Model
         $this->author = $jsonPost->author;
         $this->ups = round($jsonPost->score * $jsonPost->upvote_ratio);
         $this->downs = round($jsonPost->score * (1 - $jsonPost->upvote_ratio));
-        $this->score = $this->ups - $this->downs;
+        $this->score = $jsonPost->score;
         $this->final = 0; // deprecated, can be removed in future versions
         $this->created_utc = $jsonPost->created_utc;
 
