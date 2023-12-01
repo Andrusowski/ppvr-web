@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2023-12-01
+### Added
+- Added oauth authentication to all reddit api requests
+
+### Changed
+- Refactored the scorepost parsing logic to use the reddit comment api for each post
+- Added an update command to be able to update old scorepost scores
+
+### Removed
+- Removed the gameplay flair requirement for scoreposts since the new fetching algorithm is not limited by the amount of the search api results
+
 ## 2023-11-06
 ### Added
 - Added a highlight function to create a highlight post for the previous month
