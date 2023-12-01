@@ -44,7 +44,7 @@ class RedditClient
     {
         $response = $this->createRedditClient()->request('GET', '/r/osugame/search.json', [
             'query' => [
-                'q' => 'flair:Gameplay',
+                //'q' => 'flair:Gameplay', TODO: remove if parsing works well enough without the flair
                 'sort' => 'new',
                 'restrict_sr' => 'on',
                 't' => 'all',
