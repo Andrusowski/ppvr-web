@@ -16,6 +16,7 @@ use App\Services\Clients\OsuClient;
 use App\Services\Clients\RedditClient;
 use Carbon\Carbon;
 use DateTime;
+use Doctrine\DBAL\Query\QueryException;
 use Illuminate\Console\OutputStyle;
 use Illuminate\Support\Facades\Artisan;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -174,7 +175,16 @@ class RedditParser
 
             foreach ($postsIdsToUpdate as $postsId) {
                 $apiPostData = (new RedditClient())->getComments($postsId, $accessToken);
-                $this->prepareParse($apiPostData, false);
+                try {
+                    $this->prepareParse($apiPostData, false);
+                } catch (QueryException $exception) {
+                    if ($exception->getCode() === 1205) {
+                        // lock exception, try later
+                        continue;
+                    }
+
+                    throw $exception;
+                }
                 $this->bar->advance();
             }
         }
@@ -202,8 +212,12 @@ class RedditParser
         }
     }
 
-    public function prepareParse($postData, $archive)
+    public function prepareParse(?array $postData, bool $archive)
     {
+        if (!$postData) {
+            return;
+        }
+
         $jsonPost = $postData[0]->data->children[0]->data;
 
         //check if post already exists
@@ -227,7 +241,7 @@ class RedditParser
         }
     }
 
-    private function parsePost($postData)
+    private function parsePost(array $postData)
     {
         $jsonPost = $postData[0]->data->children[0]->data;
 
