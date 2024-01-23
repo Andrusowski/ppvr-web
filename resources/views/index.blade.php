@@ -13,7 +13,7 @@
     <p class="uk-text-center uk-text-lead">Select Ranking</p>
 
     <div class="uk-column-1-2@m">
-        <a class="uk-button uk-button-primary uk-width-1-1 uk-margin-small-bottom" href="{{ url('/ranking/player/') }}">Player</a>
+        <a class="uk-button uk-button-primary uk-width-1-1 uk-margin-small-bottom uk-margin-large-top uk-margin-remove-top@m" href="{{ url('/ranking/player/') }}">Player</a>
 
         <div class="uk-card uk-card-default uk-card-hover uk-padding-small">
             <table class="uk-table uk-table-small uk-table-divider uk-table-middle">
@@ -39,7 +39,7 @@
             </table>
         </div>
 
-        <a class="uk-button uk-button-primary uk-width-1-1 uk-margin-small-bottom" href="{{ url('/ranking/author/') }}">Author</a>
+        <a class="uk-button uk-button-primary uk-width-1-1 uk-margin-small-bottom uk-margin-large-top uk-margin-small-top@m" href="{{ url('/ranking/author/') }}">Author</a>
 
         <div class="uk-card uk-card-default uk-card-hover uk-padding-small">
             <table class="uk-table uk-table-small uk-table-divider uk-table-middle">
