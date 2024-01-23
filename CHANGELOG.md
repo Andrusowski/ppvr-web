@@ -3,8 +3,11 @@
 All notable changes to this project will be documented in this file.
 
 ## 2032-01-23
+### Added
+- Added animation to the Title on the index page
+
 ### Changed
-- Changed the look of most table elements
+- Changed the look of most of the table elements
 
 ### Removed
 - Removed awards from profile pages
