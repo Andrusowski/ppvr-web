@@ -4,7 +4,7 @@
 
     <h1 class="uk-heading-small uk-text-center">FAQ</h1>
 
-    <ul uk-accordion>
+    <ul uk-accordion class="uk-card uk-card-default uk-card-hover uk-padding">
         <li class="uk-open">
             <a class="uk-accordion-title" href="#">What is PPvR?</a>
             <div class="uk-accordion-content">

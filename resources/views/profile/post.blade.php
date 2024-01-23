@@ -93,13 +93,14 @@
                   <p class="uk-text-secondary">{!! html_entity_decode($top_comment) !!}</p>
                   <footer><cite>{{ $top_comment_author }}</cite></footer>
                 </blockquote>
+
+                <br>
             @endif
 
-            <br>
-
-            <p class="uk-text-lead">Top posts for the same map</p>
+            <p class="uk-text-lead ">Top posts for the same map</p>
+            <div class="uk-card uk-card-default uk-card-hover uk-padding-small">
                 <table class="uk-table uk-table-small uk-table-justify">
-                <thead>
+                    <thead>
                     <tr>
                         <th class="uk-padding-remove-vertical"></th>
                         <th class="uk-padding-remove-vertical">Played by</th>
@@ -107,9 +108,9 @@
                         <th class="uk-padding-remove-vertical">Score</th>
                         <th class="uk-padding-remove-vertical">spicy</th>
                     </tr>
-                </thead>
+                    </thead>
 
-                <tbody>
+                    <tbody>
                     @foreach($posts_other as $post)
                         <tr>
                             <td class="uk-padding-remove-vertical">
@@ -129,15 +130,18 @@
                             <td class="uk-padding-remove-vertical">{{ ($post->downs == 0) ? 0 : round(($post->downs / $post->ups) * 100) }}%</td>
                         </tr>
                     @endforeach
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
+
             @if (count($posts_other) >= 10)
                 <br>
 
                 <p class="uk-text-lead">Newest posts for the same map</p>
 
-                <table class="uk-table uk-table-small uk-table-justify">
-                    <thead>
+                <div class="uk-card uk-card-default uk-card-hover uk-padding-small">
+                    <table class="uk-table uk-table-small uk-table-justify">
+                        <thead>
                         <tr>
                             <th class="uk-padding-remove-vertical"></th>
                             <th class="uk-padding-remove-vertical">Played by</th>
@@ -145,9 +149,9 @@
                             <th class="uk-padding-remove-vertical">Score</th>
                             <th class="uk-padding-remove-vertical">spicy</th>
                         </tr>
-                    </thead>
+                        </thead>
 
-                    <tbody>
+                        <tbody>
                         @foreach($posts_other_new as $post)
                             <tr>
                                 <td class="uk-padding-remove-vertical">
@@ -169,8 +173,9 @@
                                 <td class="uk-padding-remove-vertical">{{ ($post->downs == 0) ? 0 : round(($post->downs / $post->ups) * 100) }}%</td>
                             </tr>
                         @endforeach
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
             @endif
         </div>
     </div>

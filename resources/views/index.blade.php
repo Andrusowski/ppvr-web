@@ -15,51 +15,55 @@
     <div class="uk-column-1-2@m">
         <a class="uk-button uk-button-primary uk-width-1-1 uk-margin-small-bottom" href="{{ url('/ranking/player/') }}">Player</a>
 
-        <table class="uk-table uk-table-small uk-table-divider uk-table-middle">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Name</th>
-                    <th>Posts</th>
-                    <th>Score</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                @foreach($posts_players as $post)
+        <div class="uk-card uk-card-default uk-card-hover uk-padding-small">
+            <table class="uk-table uk-table-small uk-table-divider uk-table-middle">
+                <thead>
                     <tr>
-                        <td>{{ ++$rank_players }}</td>
-                        <td><a href="{{ url('/player/'.$post->player_id) }}" class="text-body" style="text-decoration: none">{{ $post->name }}</a></td>
-                        <td>{{ $post->posts }}</td>
-                        <td>{{ round($post->score) }}</td>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Posts</th>
+                        <th>Score</th>
                     </tr>
-                @endforeach
-            </tbody>
-        </table>
+                </thead>
+
+                <tbody>
+                    @foreach($posts_players as $post)
+                        <tr>
+                            <td>{{ ++$rank_players }}</td>
+                            <td><a href="{{ url('/player/'.$post->player_id) }}" class="text-body" style="text-decoration: none">{{ $post->name }}</a></td>
+                            <td>{{ $post->posts }}</td>
+                            <td>{{ round($post->score) }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
 
         <a class="uk-button uk-button-primary uk-width-1-1 uk-margin-small-bottom" href="{{ url('/ranking/author/') }}">Author</a>
 
-        <table class="uk-table uk-table-small uk-table-divider uk-table-middle">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Name</th>
-                    <th>Posts</th>
-                    <th>Score</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                @foreach($posts_authors as $post)
+        <div class="uk-card uk-card-default uk-card-hover uk-padding-small">
+            <table class="uk-table uk-table-small uk-table-divider uk-table-middle">
+                <thead>
                     <tr>
-                        <td>{{ ++$rank_authors }}</td>
-                        <td><a href="{{ url('/author/'.$post->author) }}" class="text-body" style="text-decoration: none">{{ $post->author }}</a></td>
-                        <td>{{ $post->posts }}</td>
-                        <td>{{ round($post->score) }}</td>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Posts</th>
+                        <th>Score</th>
                     </tr>
-                @endforeach
-            </tbody>
-        </table>
+                </thead>
+
+                <tbody>
+                    @foreach($posts_authors as $post)
+                        <tr>
+                            <td>{{ ++$rank_authors }}</td>
+                            <td><a href="{{ url('/author/'.$post->author) }}" class="text-body" style="text-decoration: none">{{ $post->author }}</a></td>
+                            <td>{{ $post->posts }}</td>
+                            <td>{{ round($post->score) }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
     </div>
     <br><br>
 
@@ -72,29 +76,31 @@
         <br><br>
     @endif
 
-    <p class="uk-text-center">Newest Posts</p>
+    <div class="uk-card uk-card-default uk-card-hover uk-padding-small">
+        <p class="uk-text-center">Newest Posts</p>
 
-    <table class="uk-table uk-table-small uk-table-divider uk-table-middle">
-        <tbody>
+        <table class="uk-table uk-table-small uk-table-divider uk-table-middle">
+            <tbody>
             @php ($i = 0)
             @foreach($posts_new as $post)
                 @if ($i < 5)
-                <tr>
-                    <td>
-                        <a href="{{ url('/post/'.$post->id) }}" class="text-body link">
-                            {{ $post->name.' | '.$post->map_artist.' - '.$post->map_title.' ['.$post->map_diff.']' }}
-                        </a>
-                    </td>
-                    @if (time() - $post->created_utc < (60 * 60))
-                        <td class="uk-text-nowrap">{{ round((time() - $post->created_utc) / 60) }}min ago</td>
-                    @else
-                        <td class="uk-text-nowrap">{{ round((time() - $post->created_utc) / 60 / 60) }}h ago</td>
-                    @endif
-                </tr>
+                    <tr>
+                        <td>
+                            <a href="{{ url('/post/'.$post->id) }}" class="text-body link">
+                                {{ $post->name.' | '.$post->map_artist.' - '.$post->map_title.' ['.$post->map_diff.']' }}
+                            </a>
+                        </td>
+                        @if (time() - $post->created_utc < (60 * 60))
+                            <td class="uk-text-nowrap">{{ round((time() - $post->created_utc) / 60) }}min ago</td>
+                        @else
+                            <td class="uk-text-nowrap">{{ round((time() - $post->created_utc) / 60 / 60) }}h ago</td>
+                        @endif
+                    </tr>
                 @endif
 
                 @php ($i++)
             @endforeach
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    </div>
 @endsection

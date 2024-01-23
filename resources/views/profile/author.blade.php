@@ -79,33 +79,7 @@
         </div>
         <div class="uk-width-expand@m">
             <p class="uk-text-lead">Top posts</p>
-            <table class="uk-table uk-table-small uk-table-justify">
-                <thead>
-                <tr>
-                    <th class="uk-padding-remove-vertical">Map</th>
-                    <th class="uk-padding-remove-vertical">Score</th>
-                    <th class="uk-padding-remove-vertical">spicy</th>
-                </tr>
-                </thead>
-
-                <tbody>
-                @foreach($posts as $post)
-                    <tr>
-                        <td class="uk-padding-remove-vertical">
-                            <a href="{{ url('/post/'.$post->id) }}" class="text-body" style="text-decoration: none">
-                                {{ $post->map_artist }} - {{ $post->map_title }} [{{ $post->map_diff }}]
-                                <a href="{{ 'https://www.reddit.com/r/osugame/comments/'.$post->id }}" class="fab fa-reddit-alien reddit" style="text-decoration: none"></a>
-                            </a>
-                        </td>
-                        <td class="uk-padding-remove-vertical">{{ round($post->score) }}</td>
-                        <td class="uk-padding-remove-vertical">{{ round($post->controversy) }}%</td>
-                    </tr>
-                @endforeach
-                </tbody>
-            </table>
-
-            @if (count($posts) >= 10)
-                <p class="uk-text-lead">Newest posts</p>
+            <div class="uk-card uk-card-default uk-card-hover uk-padding-small">
                 <table class="uk-table uk-table-small uk-table-justify">
                     <thead>
                     <tr>
@@ -116,7 +90,7 @@
                     </thead>
 
                     <tbody>
-                    @foreach($posts_new as $post)
+                    @foreach($posts as $post)
                         <tr>
                             <td class="uk-padding-remove-vertical">
                                 <a href="{{ url('/post/'.$post->id) }}" class="text-body" style="text-decoration: none">
@@ -130,6 +104,36 @@
                     @endforeach
                     </tbody>
                 </table>
+            </div>
+
+            @if (count($posts) >= 10)
+                <p class="uk-text-lead">Newest posts</p>
+                <div class="uk-card uk-card-default uk-card-hover uk-padding-small">
+                    <table class="uk-table uk-table-small uk-table-justify">
+                        <thead>
+                        <tr>
+                            <th class="uk-padding-remove-vertical">Map</th>
+                            <th class="uk-padding-remove-vertical">Score</th>
+                            <th class="uk-padding-remove-vertical">spicy</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        @foreach($posts_new as $post)
+                            <tr>
+                                <td class="uk-padding-remove-vertical">
+                                    <a href="{{ url('/post/'.$post->id) }}" class="text-body" style="text-decoration: none">
+                                        {{ $post->map_artist }} - {{ $post->map_title }} [{{ $post->map_diff }}]
+                                        <a href="{{ 'https://www.reddit.com/r/osugame/comments/'.$post->id }}" class="fab fa-reddit-alien reddit" style="text-decoration: none"></a>
+                                    </a>
+                                </td>
+                                <td class="uk-padding-remove-vertical">{{ round($post->score) }}</td>
+                                <td class="uk-padding-remove-vertical">{{ round($post->controversy) }}%</td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                </div>
             @endif
         </div>
     </div>

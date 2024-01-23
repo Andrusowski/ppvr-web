@@ -81,6 +81,7 @@
         <div class="uk-width-expand@m">
             <p class="uk-text-lead">Rank History</p>
             <chart
+                class="uk-card uk-card-default uk-card-hover uk-padding-small"
                 posts="{{ $ranks }}"
                 name="rankHistory"
                 value-index="rank"
@@ -89,16 +90,17 @@
             </chart>
 
             <p class="uk-text-lead">Top posts</p>
-            <table class="uk-table uk-table-small uk-table-justify">
-                <thead>
+            <div class="uk-card uk-card-default uk-card-hover uk-padding-small">
+                <table class="uk-table uk-table-small uk-table-justify">
+                    <thead>
                     <tr>
                         <th class="uk-padding-remove-vertical">Map</th>
                         <th class="uk-padding-remove-vertical">Score</th>
                         <th class="uk-padding-remove-vertical">spicy</th>
                     </tr>
-                </thead>
+                    </thead>
 
-                <tbody>
+                    <tbody>
                     @foreach($posts as $post)
                         <tr>
                             <td class="uk-padding-remove-vertical">
@@ -111,21 +113,23 @@
                             <td class="uk-padding-remove-vertical">{{ round($post->controversy) }}%</td>
                         </tr>
                     @endforeach
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
 
             @if (count($posts) >= 10)
                 <p class="uk-text-lead">Newest posts</p>
-                <table class="uk-table uk-table-small uk-table-justify">
-                    <thead>
+                <div class="uk-card uk-card-default uk-card-hover uk-padding-small">
+                    <table class="uk-table uk-table-small uk-table-justify">
+                        <thead>
                         <tr>
                             <th class="uk-padding-remove-vertical">Map</th>
                             <th class="uk-padding-remove-vertical">Score</th>
                             <th class="uk-padding-remove-vertical">spicy</th>
                         </tr>
-                    </thead>
+                        </thead>
 
-                    <tbody>
+                        <tbody>
                         @foreach($posts_new as $post)
                             <tr>
                                 <td class="uk-padding-remove-vertical">
@@ -138,8 +142,9 @@
                                 <td class="uk-padding-remove-vertical">{{ round($post->controversy) }}%</td>
                             </tr>
                         @endforeach
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
             @endif
         </div>
     </div>
