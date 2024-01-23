@@ -14,8 +14,7 @@
         "laravel/tinker": "^2.5",
         "predis/predis": "^2.2",
         "sentry/sentry-laravel": "^3.8.2",
-        "spatie/browsershot": "^3.59",
-        "squizlabs/php_codesniffer": "*"
+        "spatie/browsershot": "^3.59"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
@@ -26,7 +25,8 @@
         "phpstan/phpstan": "^0.12.87",
         "phpunit/phpunit": "^9.3.3",
         "slevomat/coding-standard": "^7.0",
-        "spatie/laravel-ignition": "^2.0"
+        "spatie/laravel-ignition": "^2.0",
+        "squizlabs/php_codesniffer": "*"
     },
     "autoload": {
         "psr-4": {

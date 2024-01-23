@@ -15,7 +15,7 @@
 
     <div uk-grid>
         <div class="uk-width-1-4@m">
-            <div class="uk-card uk-card-default">
+            <div class="uk-card uk-card-default uk-card-hover">
                 <div class="uk-card-body uk-padding-small">
                     <h5 class="uk-card-title">Stats</h5>
 
@@ -43,33 +43,6 @@
                                 <td>{{ round($author_stats->controversy) }}%</td>
                             </tr>
                             -->
-                        </tbody>
-                    </table>
-
-                    <table class="uk-table uk-table-small uk-table-justify uk-table-middle">
-                        <thead>
-                            <th>
-                                <object data="{{ URL::asset('/icons/medal-f.svg') }} " type="image/svg+xml" class="medal-silver" title="Silver"></object>
-                            </th>
-                            <th>
-                                <object data="{{ URL::asset('/icons/medal-f.svg') }} " type="image/svg+xml" class="medal-gold" title="Gold"></object>
-                            </th>
-                            <th>
-                                <object data="{{ URL::asset('/icons/medal-f.svg') }} " type="image/svg+xml" class="medal-platinum" title="Platinum"></object>
-                            </th>
-                        </thead>
-                        <tbody>
-                        <tr class="uk-text-center@m">
-                            <td>
-                                {{ $author_stats->silver }}
-                            </td>
-                            <td>
-                                {{ $author_stats->gold }}
-                            </td>
-                            <td>
-                                {{ $author_stats->platinum }}
-                            </td>
-                        </tr>
                         </tbody>
                     </table>
                 </div>

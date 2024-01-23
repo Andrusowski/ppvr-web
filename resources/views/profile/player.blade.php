@@ -23,7 +23,7 @@
 
     <div uk-grid>
         <div class="uk-width-1-4@m">
-            <div class="uk-card uk-card-default">
+            <div class="uk-card uk-card-default uk-card-hover">
                 <div class="uk-card-media-top">
                     <img class="card-image" src="{{ 'https://a.ppy.sh/'.$player->id }}" alt="osu! profile picture" style="background-color:#333333;">
                 </div>
@@ -43,33 +43,6 @@
                             <tr>
                                 <td>spicy:</td>
                                 <td>{{ round($player_stats->controversy) }}%</td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <table class="uk-table uk-table-small uk-table-justify uk-table-middle">
-                        <thead>
-                            <th>
-                                <object data="{{ URL::asset('/icons/medal-f.svg') }} " type="image/svg+xml" class="medal-silver uk-align-center uk-margin-remove-bottom" title="Silver"></object>
-                            </th>
-                            <th>
-                                <object data="{{ URL::asset('/icons/medal-f.svg') }} " type="image/svg+xml" class="medal-gold uk-align-center uk-margin-remove-bottom" title="Gold"></object>
-                            </th>
-                            <th>
-                                <object data="{{ URL::asset('/icons/medal-f.svg') }} " type="image/svg+xml" class="medal-platinum uk-align-center uk-margin-remove-bottom" title="Platinum"></object>
-                            </th>
-                        </thead>
-                        <tbody>
-                            <tr class="uk-text-center">
-                                <td>
-                                    {{ $awards->silver }}
-                                </td>
-                                <td>
-                                    {{ $awards->gold }}
-                                </td>
-                                <td>
-                                    {{ $awards->platinum }}
-                                </td>
                             </tr>
                         </tbody>
                     </table>

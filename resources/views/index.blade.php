@@ -3,7 +3,7 @@
 @section('content')
 
 
-    <h1 class="uk-heading-medium uk-text-center">PPv<span class="reddit">R</span></h1>
+    <h1 class="uk-heading-medium uk-text-center index-title">PPv<span class="reddit">R</span></h1>
     <p class="uk-text-center">
         Alternative osu! ranking based on posts from /r/osugame
     </p>

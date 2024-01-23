@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2032-01-23
+### Changed
+- Changed the look of most table elements
+
+### Removed
+- Removed awards from profile pages
+
 ## 2023-12-01
 ### Added
 - Added oauth authentication to all reddit api requests

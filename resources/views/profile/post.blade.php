@@ -28,7 +28,7 @@
 
     <div uk-grid>
         <div class="uk-width-1-3@m">
-            <div class="uk-card uk-card-default">
+            <div class="uk-card uk-card-default uk-card-hover">
                 @if ($img != '')
                     <div class="uk-card-media-top" uk-lightbox="animation: slide">
                         <a href="{{ $img }}">
@@ -53,33 +53,6 @@
                                 <td>Downvotes:</td>
                                 <td>{{ $post->downs }}</td>
                             </tr>
-                        </tbody>
-                    </table>
-
-                    <table class="uk-table uk-table-small uk-table-justify uk-table-middle">
-                        <thead>
-                        <th>
-                            <object data="{{ URL::asset('/icons/medal-f.svg') }} " type="image/svg+xml" class="medal-silver uk-align-center uk-margin-remove-bottom" title="Silver"></object>
-                        </th>
-                        <th>
-                            <object data="{{ URL::asset('/icons/medal-f.svg') }} " type="image/svg+xml" class="medal-gold uk-align-center uk-margin-remove-bottom" title="Gold"></object>
-                        </th>
-                        <th>
-                            <object data="{{ URL::asset('/icons/medal-f.svg') }} " type="image/svg+xml" class="medal-platinum uk-align-center uk-margin-remove-bottom" title="Platinum"></object>
-                        </th>
-                        </thead>
-                        <tbody>
-                        <tr class="uk-text-center">
-                            <td>
-                                {{ $post->silver }}
-                            </td>
-                            <td>
-                                {{ $post->gold }}
-                            </td>
-                            <td>
-                                {{ $post->platinum }}
-                            </td>
-                        </tr>
                         </tbody>
                     </table>
                 </div>

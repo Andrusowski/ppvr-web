@@ -14,10 +14,6 @@
     <!-- my CSS -->
     <link rel="stylesheet" href="{!! mix('/css/app.css') !!}" type="text/css">
 
-    <!-- Fonts -->
-    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet" type="text/css">
-
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
 
@@ -97,6 +93,8 @@
                 <object data="{{ URL::asset('/icons/osu-logo-white.svg') }} " type="image/svg+xml" class="link text-secondary footer-icon" title="osu! logo"></object>
             </a>
             <a href="https://github.com/Andrusowski" target="_blank" rel="noopener noreferrer"><i class="fab fa-github link text-secondary"></i></a>
+            <a href="{{url('/legal/notice')}}" class="link text-secondary uk-margin-small-left">Legal Notice</a>
+            <a href="{{url('/legal/privacy')}}" class="link text-secondary uk-margin-small-left">Privacy Policy</a>
         </p>
     </div>
 
