@@ -23,4 +23,6 @@ Route::get('/search', 'SearchController@postSearch');
 Route::get('/changelog', 'ChangelogController@getIndex');
 Route::get('/faq', 'FaqController@getIndex');
 Route::get('/stats', 'StatsController@getIndex');
+Route::get('/legal/notice', 'LegalController@getNotice');
+Route::get('/legal/privacy', 'LegalController@getPrivacy');
 Route::get('/highlights', 'HighlightsController@getIndex');
