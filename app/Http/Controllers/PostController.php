@@ -4,35 +4,28 @@ namespace App\Http\Controllers;
 
 use App\Models\Player;
 use App\Models\Post;
+use App\Services\Controller\PostControllerService;
 
 class PostController extends Controller
 {
     public function getIndex($id)
     {
+        $controllerService = new PostControllerService();
+
         $post = Post::find($id);
         if (!$post) {
             abort(404);
         }
 
-        $posts_other = Post::where([['map_title', 'LIKE', $post->map_title],
-                                    ['map_diff', 'LIKE', $post->map_diff]])
-            ->orderBy('score', 'desc')
-            ->take(10)
-            ->get();
+        $posts_other = $controllerService->getPostsOther($post);
 
         $posts_other_new = [];
         if (count($posts_other) >= 10) {
-            $posts_other_new = Post::where([['map_title', 'LIKE', $post->map_title],
-                                            ['map_diff', 'LIKE', $post->map_diff]])
-                ->orderBy('created_at', 'desc')
-                ->take(10)
-                ->get();
+            $posts_other_new = $controllerService->getPostsOtherNew($post);
         }
 
-        $player = Player::find($post->player_id);
-
         $img = '';
-        /** DISABLED UNTIL PROPER CACHING OLUTION IS FOUND
+        /** DISABLED UNTIL PROPER CACHING SOLUTION IS FOUND
         $top_comment = '';
         $top_comment_author = '';
         $top_score = 0;
@@ -72,7 +65,7 @@ class PostController extends Controller
             ->with('post', $post)
             ->with('posts_other', $posts_other)
             ->with('posts_other_new', $posts_other_new)
-            ->with('player', $player)
+            ->with('player', Player::find($post->player_id))
             ->with('img', $img);
 
             //->with('top_comment', $top_comment)

@@ -4,34 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use App\Models\Tmppost;
-use Illuminate\Support\Facades\DB;
+use App\Services\Controller\StatsControllerService;
 
 class StatsController extends Controller
 {
     # Simple HTML page for now. Move changelog into the DB later when it gets huge.
     public function getIndex()
     {
-        $postsTotal = Post::count();
-        $tmpPostsTotal = Tmppost::count();
-
-        $postsHistory = DB::table('posts')
-            ->select(DB::raw('COUNT(id) as postsDaily'), DB::raw('DATE(created_at) as date'))
-            ->groupBy('date')
-            ->orderBy('date', 'DESC')
-            ->limit(90)
-            ->get();
-
-        $upvotesHistory = DB::table('posts')
-            ->select(DB::raw('SUM(score) as postsDaily'), DB::raw('DATE(created_at) as date'))
-            ->groupBy('date')
-            ->orderBy('date', 'DESC')
-            ->limit(90)
-            ->get();
+        $controllerService = new StatsControllerService();
 
         return view('content.stats')
-            ->with('postsTotal', $postsTotal)
-            ->with('tmpPostsTotal', $tmpPostsTotal)
-            ->with('postsHistory', $postsHistory)
-            ->with('upvotesHistory', $upvotesHistory);
+            ->with('postsTotal', Post::count())
+            ->with('tmpPostsTotal', Tmppost::count())
+            ->with('postsHistory', $controllerService->getPostsHistory())
+            ->with('upvotesHistory', $controllerService->getUpvotesHistory());
     }
 }
