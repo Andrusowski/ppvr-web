@@ -232,12 +232,8 @@ class RedditParser
             return;
         }
 
-        if (!$archive) { // update post if it already exists in the database (only in non-archive mode)
-            $postToUpdate = Post::whereId($jsonPost->id)->first();
-            if (!$postToUpdate) {
-                throw new PostNotFoundException('No message found to update');
-            }
-            $postToUpdate->updatePost($jsonPost, $this->bar);
+        if (!$archive && $post) { // update post if it already exists in the database (only in non-archive mode)
+            $post->updatePost($jsonPost, $this->bar);
         }
     }
 

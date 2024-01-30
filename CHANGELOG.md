@@ -2,7 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
-## 2032-01-23
+## 2024-01-30
+### Fixed
+- Fixed the trigger for updating an existing post 
+
+## 2024-01-23
 ### Added
 - Added animation to the Title on the index page
 
