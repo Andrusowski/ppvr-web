@@ -2,13 +2,9 @@
 
 [PPvR](https://ppvr.andrus.io/) is an alternative osu! ranking system based on the scores of scoreposts on the game's subreddit [/r/osugame](https://www.reddit.com/r/osugame/).
 
-This is why: https://twitter.com/bahamete/status/919625209619079170
 
-
-This was originally a university project, and consists of two parts. The first one is this Laravel-based ranking website and the [other](https://github.com/Andrusowski/ppvr-bot) is a vanilla PHP skript which parses new reddit posts and puts them in a database.
-
+PPVR parses the scoreposts of the subreddit and calculates a score for each player based on the scores (up- and downvotes) of the scoreposts related to them. A ranking for scorepost authors is also available. For more details, check the [FAQ](https://ppvr.andrus.io/faq).
 ## Problems
-Everything should be in a usable state, but there are still some minor features like more stats and graphs that I still have to implement.
 
 If you can't find certain scoreposts, then there are severeal reasons why:
 - The Player had a namechange before the launchdate of ppvr (17.09.2018)
@@ -25,4 +21,4 @@ Big thanks to pushshift.io, which made it possible to archive old scoreposts. Al
 - [Eva Icons](https://akveo.github.io/eva-icons/)
 
 ## Contact
-You can contact me on [Discord](https://discordapp.com/users/86760014068355072), [Reddit](https://www.reddit.com/message/compose?to=Andruz) or [osu!](https://osu.ppy.sh/home/messages/users/2924006)
+You can contact me on [Reddit](https://www.reddit.com/message/compose?to=Andruz) or [osu!](https://osu.ppy.sh/home/messages/users/2924006)
