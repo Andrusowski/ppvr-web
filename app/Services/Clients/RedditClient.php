@@ -52,6 +52,31 @@ class RedditClient
     }
 
     /**
+     * @param string $accessToken
+     * @param string $after
+     * @param string $t
+     *
+     * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \JsonException
+     */
+    public function getTopPosts(string $accessToken, string $after = '', string $t = 'year')
+    {
+        $response = $this->createRedditClient()->request('GET', '/r/osugame/top.json', [
+            'headers' => [
+                'Authorization' => "Bearer {$accessToken}",
+            ],
+            'query' => [
+                'after' => $after,
+                't' => $t,
+                'limit' => '100',
+            ],
+        ])->getBody()->getContents();
+
+        return json_decode($response, false, 512, JSON_THROW_ON_ERROR);
+    }
+
+    /**
      * @param string $id
      * @param string $accessToken
      *

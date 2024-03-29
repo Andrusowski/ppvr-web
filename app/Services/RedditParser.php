@@ -6,7 +6,6 @@
 
 namespace App\Services;
 
-use App\Exceptions\PostNotFoundException;
 use App\Models\Alias;
 use App\Models\Api\User;
 use App\Models\Player;
@@ -30,6 +29,7 @@ class RedditParser
     private const TIMESTAMP_FIRST_SCOREPOST = 1426668291; // Timestamp of the first valid scorepost
     private const TIME_MONTH = 2629743;
     private const TIME_DAY = 86400;
+    private const MAX_POSTS_ARCHIVE_TOP = 1000; // limit set by reddit
 
     private const REGEX_SCOREPOST = '/.*\|.*\-.*\[.*\].*/';
     private const REGEX_POST_TITLE = '/([\[\(]\#.*[\]\)])/U';
@@ -148,6 +148,60 @@ class RedditParser
         }
 
         $this->bar->finish();
+    }
+
+    public function archiveTop(string $topBy)
+    {
+        $this->bar = $this->output->createProgressBar(static::MAX_POSTS_ARCHIVE_TOP);
+        $this->bar->setFormat('custom');
+
+        $accessToken = $this->redditClient->getAccessToken();
+
+        $postsProcessed = 0;
+        $after = '';
+        while ($postsProcessed < static::MAX_POSTS_ARCHIVE_TOP) {
+            $jsonPosts = $this->redditClient->getTopPosts($accessToken, $after, $topBy);
+
+            $postIds = array_map(function ($post) {
+                return $post->data->id;
+            }, $jsonPosts->data->children);
+
+            if (empty($postIds)) {
+                return; // early return in case less than 1000 posts are available
+            }
+
+            foreach ($jsonPosts->data->children as $post) {
+                // wrap post in array to match the structure of the getComments response
+                $post = [
+                    [
+                        'data' => [
+                            'children' => [
+                                $post,
+                            ],
+                        ],
+                    ],
+                ];
+                $post = json_decode(json_encode($post), false);
+
+                $newAfter = $post[0]->data->children[0]->data->name;
+                if ($newAfter === $after) {
+                    return;
+                }
+                $after = $newAfter;
+
+                try {
+                    $this->prepareParse($post, false);
+                } catch (QueryException $exception) {
+                    if ($exception->getCode() === 1205) {
+                        // lock exception, try later
+                        continue;
+                    }
+
+                    throw $exception;
+                }
+                $this->bar->advance();
+            }
+        }
     }
 
     public function new()

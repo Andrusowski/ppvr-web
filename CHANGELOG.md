@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2024-03-29
+### Added
+- Added a way to set an alert banner in redis
+- Added an option to the post parsing command to be able to parse the top posts of a given timeframe (e.g. year, month, week)
+
 ## 2024-01-30
 ### Fixed
 - Fixed the trigger for updating an existing post 

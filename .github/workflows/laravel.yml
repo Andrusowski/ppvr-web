@@ -28,3 +28,7 @@ jobs:
       run: |
         mkdir -p database
         touch database/database.sqlite
+    - name: Run migrations
+      run: php artisan migrate
+    - name: Check codestyle
+      run: composer phpcs
