@@ -31,6 +31,16 @@
 </head>
 <body>
     <div id="app">
+        @php ($alert = Cache::get('alert'))
+        @php ($alertType = Cache::get('alert:type'))
+        @if ($alert)
+            <div class="uk-alert-{{ $alertType ?? 'warning' }}" uk-alert>
+                <div class="uk-container uk-container-small">
+                    <p>{{ $alert }}</p>
+                </div>
+            </div>
+        @endif
+
         <!-- Player not found -->
         @if ($errors->any())
             <div class="uk-alert-warning" uk-alert>
