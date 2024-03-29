@@ -17,8 +17,7 @@ class CreatePlayersTable extends Migration
             $table->integer('id')->unsigned()->primary();
             $table->string('name', 16);
             $table->integer('score')->default('0');
-            $table->timestamp('created_at')->useCurrent();
-            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+            $table->timestamps();
         });
     }
 

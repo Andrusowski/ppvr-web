@@ -28,8 +28,7 @@ class CreatePostsTable extends Migration
             $table->integer('platinum')->unsigned()->default('0');
             $table->integer('created_utc')->unsigned();
             $table->boolean('final');
-            $table->timestamp('created_at')->useCurrent()->index();
-            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+            $table->timestamps();
 
             $table->foreign('player_id')->references('id')->on('players');
         });

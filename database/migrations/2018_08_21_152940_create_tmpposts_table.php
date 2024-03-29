@@ -18,8 +18,7 @@ class CreateTmppostsTable extends Migration
             $table->string('title', 300);
             $table->string('author', 20);
             $table->integer('score')->index();
-            $table->timestamp('created_at')->useCurrent()->index();
-            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+            $table->timestamps();
         });
     }
 
