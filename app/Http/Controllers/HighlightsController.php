@@ -12,6 +12,7 @@ class HighlightsController
 {
     public function getIndex()
     {
+        date_default_timezone_set('Etc/UCT');
         $controllerService = new HighlightsControllerService();
 
         $top_players = $controllerService->getTopPlayers();

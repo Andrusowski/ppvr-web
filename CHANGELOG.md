@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2024-04-01
+### Changed
+- Changed highlights page to use UTC time
+
 ## 2024-03-29
 ### Added
 - Added a way to set an alert banner in redis
