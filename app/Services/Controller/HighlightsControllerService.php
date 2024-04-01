@@ -8,11 +8,31 @@ namespace App\Services\Controller;
 
 use App\Models\Post;
 use Carbon\Carbon;
+use DateTime;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class HighlightsControllerService
 {
+    private int $timestampFrom;
+    private int $timestampTo;
+
+    public function __construct()
+    {
+        $this->timestampFrom = (new Carbon('first day of last month'))
+            ->setHour(0)
+            ->setMinute(0)
+            ->setSecond(0)
+            ->setTimezone('UTC')
+            ->timestamp;
+        $this->timestampTo = (new Carbon('last day of last month'))
+            ->setHour(23)
+            ->setMinute(59)
+            ->setSecond(59)
+            ->setTimezone('UTC')
+            ->timestamp;
+    }
+
     /**
      * @param \Illuminate\Support\Collection $top_players
      * @param Post[] $top_post_per_player
@@ -61,8 +81,8 @@ class HighlightsControllerService
                 AVG(posts.score) as avg_score,
                 COUNT(posts.id) as posts'))
                          ->join('players', 'posts.player_id', '=', 'players.id')
-                         ->where('posts.created_utc', '>=', ( new Carbon('first day of last month') )->timestamp)
-                         ->where('posts.created_utc', '<=', ( new Carbon("last day of last month") )->timestamp)
+                         ->where('posts.created_utc', '>=', $this->timestampFrom)
+                         ->where('posts.created_utc', '<=', $this->timestampTo)
                          ->groupBy('posts.player_id', 'players.name')
                          ->orderBy('score', 'desc')
                          ->limit(5)
@@ -79,8 +99,8 @@ class HighlightsControllerService
     public function getTopPostsForPlayer(mixed $player): Collection
     {
         return Post::wherePlayerId($player->id)
-                   ->where('posts.created_utc', '>=', ( new Carbon('first day of last month') )->timestamp)
-                   ->where('posts.created_utc', '<=', ( new Carbon("last day of last month") )->timestamp)
+                   ->where('posts.created_utc', '>=', $this->timestampFrom)
+                   ->where('posts.created_utc', '<=', $this->timestampTo)
                    ->orderBy('score', 'desc')
                    ->limit(3)
                    ->get();
@@ -95,8 +115,8 @@ class HighlightsControllerService
                  ->select(DB::raw('posts.author as author,
                 SUM(posts.score) as score,
                 COUNT(posts.id) as posts'))
-                 ->where('posts.created_utc', '>=', ( new Carbon('first day of last month') )->timestamp)
-                 ->where('posts.created_utc', '<=', ( new Carbon("last day of last month") )->timestamp)
+                 ->where('posts.created_utc', '>=', $this->timestampFrom)
+                 ->where('posts.created_utc', '<=', $this->timestampTo)
                  ->groupBy('posts.author')
                  ->orderBy('score', 'desc')
                  ->limit(5)
@@ -111,8 +131,8 @@ class HighlightsControllerService
         return Post::select('posts.*')
                    ->addSelect('players.name as player_name')
                    ->join('players', 'posts.player_id', '=', 'players.id')
-                   ->where('posts.created_utc', '>=', ( new Carbon('first day of last month') )->timestamp)
-                   ->where('posts.created_utc', '<=', ( new Carbon("last day of last month") )->timestamp)
+                   ->where('posts.created_utc', '>=', $this->timestampFrom)
+                   ->where('posts.created_utc', '<=', $this->timestampTo)
                    ->orderBy('posts.score', 'desc')
                    ->limit(5)
                    ->get();
@@ -123,8 +143,8 @@ class HighlightsControllerService
      */
     public function getPostsCount(): int
     {
-        return Post::where('posts.created_utc', '>=', ( new Carbon('first day of last month') )->timestamp)
-                   ->where('posts.created_utc', '<=', ( new Carbon("last day of last month") )->timestamp)
+        return Post::where('posts.created_utc', '>=', $this->timestampFrom)
+                   ->where('posts.created_utc', '<=', $this->timestampTo)
                    ->count();
     }
 
@@ -133,8 +153,8 @@ class HighlightsControllerService
      */
     public function getPostsTotalScore(): mixed
     {
-        return Post::where('posts.created_utc', '>=', ( new Carbon('first day of last month') )->timestamp)
-                   ->where('posts.created_utc', '<=', ( new Carbon("last day of last month") )->timestamp)
+        return Post::where('posts.created_utc', '>=', $this->timestampFrom)
+                   ->where('posts.created_utc', '<=', $this->timestampTo)
                    ->sum('score');
     }
 
@@ -145,8 +165,8 @@ class HighlightsControllerService
     {
         return DB::table('posts')
                  ->selectRaw('COUNT(DISTINCT player_id) as count')
-                 ->where('posts.created_utc', '>=', ( new Carbon('first day of last month') )->timestamp)
-                 ->where('posts.created_utc', '<=', ( new Carbon("last day of last month") )->timestamp)
+                 ->where('posts.created_utc', '>=', $this->timestampFrom)
+                 ->where('posts.created_utc', '<=', $this->timestampTo)
                  ->first();
     }
 
@@ -157,8 +177,8 @@ class HighlightsControllerService
     {
         return DB::table('posts')
                  ->selectRaw('SUM(score) as score_daily, DATE(created_at) as date')
-                 ->where('posts.created_utc', '>=', ( new Carbon('first day of last month') )->timestamp)
-                 ->where('posts.created_utc', '<=', ( new Carbon("last day of last month") )->timestamp)
+                 ->where('posts.created_utc', '>=', $this->timestampFrom)
+                 ->where('posts.created_utc', '<=', $this->timestampTo)
                  ->orderBy('date', 'DESC')
                  ->groupByRaw('date')
                  ->get();
