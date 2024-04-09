@@ -76,6 +76,23 @@ class RedditClient
         return json_decode($response, false, 512, JSON_THROW_ON_ERROR);
     }
 
+    public function getPostsForAuthor(string $accessToken, string $author, string $after = '', string $sort = 'top', string $t = 'all')
+    {
+        $response = $this->createRedditClient()->request('GET', '/user/' . $author . '/submitted.json', [
+            'headers' => [
+                'Authorization' => "Bearer {$accessToken}",
+            ],
+            'query' => [
+                'after' => $after,
+                't' => $t,
+                'limit' => '100',
+                'sort' => $sort,
+            ],
+        ])->getBody()->getContents();
+
+        return json_decode($response, false, 512, JSON_THROW_ON_ERROR);
+    }
+
     /**
      * @param string $id
      * @param string $accessToken

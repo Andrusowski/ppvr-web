@@ -8,6 +8,7 @@ namespace App\Services;
 
 use App\Models\Alias;
 use App\Models\Api\User;
+use App\Models\Author;
 use App\Models\Player;
 use App\Models\Post;
 use App\Models\Tmppost;
@@ -16,6 +17,7 @@ use App\Services\Clients\RedditClient;
 use Carbon\Carbon;
 use DateTime;
 use Doctrine\DBAL\Query\QueryException;
+use GuzzleHttp\Exception\ClientException;
 use Illuminate\Console\OutputStyle;
 use Illuminate\Support\Facades\Artisan;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -121,7 +123,7 @@ class RedditParser
 
         $this->bar = $this->output->createProgressBar(time() - self::TIMESTAMP_FIRST_SCOREPOST);
         $this->bar->setFormat('custom');
-        $this->bar->setMessage('Reading from archive...');
+        $this->outputMessage('Reading from archive...');
 
         while ($after < time() - 60 * 60) { //stop archiving, when posts are younger than an hour
             $jsonPosts = $this->redditClient->getArchiveAfter($after);
@@ -161,10 +163,7 @@ class RedditParser
         $after = '';
         while ($postsProcessed < static::MAX_POSTS_ARCHIVE_TOP) {
             $jsonPosts = $this->redditClient->getTopPosts($accessToken, $after, $topBy);
-
-            $postIds = array_map(function ($post) {
-                return $post->data->id;
-            }, $jsonPosts->data->children);
+            $postIds = $this->extractPostIds($jsonPosts);
 
             if (empty($postIds)) {
                 return; // early return in case less than 1000 posts are available
@@ -172,19 +171,11 @@ class RedditParser
 
             foreach ($jsonPosts->data->children as $post) {
                 // wrap post in array to match the structure of the getComments response
-                $post = [
-                    [
-                        'data' => [
-                            'children' => [
-                                $post,
-                            ],
-                        ],
-                    ],
-                ];
-                $post = json_decode(json_encode($post), false);
+                $post = $this->wrapPostInGetCommentsStructure($post);
 
                 $newAfter = $post[0]->data->children[0]->data->name;
                 if ($newAfter === $after) {
+                    // reached last post
                     return;
                 }
                 $after = $newAfter;
@@ -193,15 +184,80 @@ class RedditParser
                     $this->prepareParse($post, false);
                 } catch (QueryException $exception) {
                     if ($exception->getCode() === 1205) {
-                        // lock exception, try later
+                        // lock exception, ignore
                         continue;
                     }
 
                     throw $exception;
                 }
+                $postsProcessed++;
                 $this->bar->advance();
             }
         }
+
+        $this->bar->finish();
+    }
+
+    public function archiveTopUsers(string $sort = 'top', string $topBy = 'year')
+    {
+        $authors = Author::orderBy('score', 'desc')->get()->all();
+
+        $this->bar = $this->output->createProgressBar(count($authors));
+        $this->bar->setFormat('custom');
+        $this->outputMessage('Processing authors...');
+
+        foreach ($authors as $author) {
+            $accessToken = $this->redditClient->getAccessToken(); // get new access token for each author to prevent expiration
+            $this->outputMessage('Processing author: ' . $author->name);
+            $this->bar->advance(1);
+
+            $postsProcessed = 0;
+            $after = '';
+            while ($postsProcessed < static::MAX_POSTS_ARCHIVE_TOP) {
+                try {
+                    $jsonPosts = $this->redditClient->getPostsForAuthor($accessToken, $author->name, $after, 'top', $topBy);
+                } catch (ClientException $exception) {
+                    if ($exception->getCode() === 404 || $exception->getCode() === 403) {
+                        // user deleted or banned. Ignore for now
+                        // TODO: decide whether to delete the author from the db
+                        continue 2;
+                    }
+
+                    throw $exception;
+                }
+
+                $postIds = $this->extractPostIds($jsonPosts);
+                if (empty($postIds)) {
+                    continue 2;
+                }
+
+                foreach ($jsonPosts->data->children as $post) {
+                    // wrap post in array to match the structure of the getComments response
+                    $post = $this->wrapPostInGetCommentsStructure($post);
+
+                    $newAfter = $post[0]->data->children[0]->data->name;
+                    if ($newAfter === $after) {
+                        // reached last post
+                        continue 3;
+                    }
+                    $after = $newAfter;
+
+                    try {
+                        $this->prepareParse($post, true);
+                    } catch (QueryException $exception) {
+                        if ($exception->getCode() === 1205) {
+                            // lock exception, try later
+                            continue;
+                        }
+
+                        throw $exception;
+                    }
+                    $postsProcessed++;
+                }
+            }
+        }
+
+        $this->bar->finish();
     }
 
     public function new()
@@ -225,7 +281,7 @@ class RedditParser
 
             $this->bar = $this->output->createProgressBar(count($postsIdsToUpdate));
             $this->bar->setFormat('custom');
-            $this->bar->setMessage('Updating existing posts...');
+            $this->outputMessage('Updating existing posts...');
 
             foreach ($postsIdsToUpdate as $postsId) {
                 $apiPostData = (new RedditClient())->getComments($postsId, $accessToken);
@@ -244,6 +300,12 @@ class RedditParser
         }
     }
 
+    public function single(string $postId) {
+        $accessToken = $this->redditClient->getAccessToken();
+        $apiPostData = (new RedditClient())->getComments($postId, $accessToken);
+        $this->prepareParse($apiPostData, false);
+    }
+
     public function updateFromTop(int $minScore = 0, ?DateTime $minTime = null)
     {
         $accessToken = $this->redditClient->getAccessToken();
@@ -257,7 +319,7 @@ class RedditParser
 
         $this->bar = $this->output->createProgressBar(count($existingPostIds));
         $this->bar->setFormat('custom');
-        $this->bar->setMessage('Updating existing posts...');
+        $this->outputMessage('Updating existing posts...');
 
         foreach ($existingPostIds as $postsId) {
             $apiPostData = (new RedditClient())->getComments($postsId, $accessToken);
@@ -299,6 +361,7 @@ class RedditParser
         Player Name | Song Artist - Song Title [Diff Name] +Mods */
         $postTitle = $jsonPost->title;
         if (!preg_match(self::REGEX_SCOREPOST, $postTitle)) {
+            $this->outputMessage(sprintf('Post %s does not match the scorepost format', $jsonPost->id));
             return false;
         }
 
@@ -315,6 +378,7 @@ class RedditParser
         $match = preg_match(self::REGEX_POST_PLAYER_NAME, $postTitle, $matches);
         if ($match === false || count($matches) !== 2) {
             Tmppost::addTmpPost($jsonPost);
+            $this->outputMessage(sprintf('Post %s does not have a valid player name', $jsonPost->id));
 
             return false;
         }
@@ -324,6 +388,7 @@ class RedditParser
         $match = preg_match(self::REGEX_POST_MAP_DATA, $postTitle, $matches);
         if ($match === false || count($matches) !== 2) {
             Tmppost::addTmpPost($jsonPost);
+            $this->outputMessage(sprintf('Post %s does not have valid a map data format', $jsonPost->id));
 
             return false;
         }
@@ -334,6 +399,7 @@ class RedditParser
         $match = preg_match(self::REGEX_POST_MAP_DATA_GROUPS, $tmpMap, $matches);
         if ($match === false || count($matches) !== 4) {
             Tmppost::addTmpPost($jsonPost);
+            $this->outputMessage(sprintf('Post %s does not have a valid artist, maptitle or diff', $jsonPost->id));
 
             return false;
         }
@@ -343,10 +409,11 @@ class RedditParser
         $parsedPost->map_diff = htmlspecialchars_decode(trim($matches[3]));
 
         //check some additional stuff before marking as final
-        $this->bar->setMessage('Parsed: ' . $playerName . ' | ' .
+        $message = 'Parsed: ' . $playerName . ' | ' .
             $parsedPost->map_artist . ' - ' .
             $parsedPost->map_title . ' [' .
-            $parsedPost->map_diff . "]");
+            $parsedPost->map_diff . "]";
+        $this->outputMessage($message);
 
         $jsonPostDetail = $postData[0]->data->children[0]->data;
         if (!$jsonPostDetail) {
@@ -376,7 +443,7 @@ class RedditParser
             $alias = Alias::where('alias', '=', $playerName)->orderBy('created_at', 'DESC')->first();
             if ($alias !== null) {
                 $userByAlias = $this->osuClient->getUser(urlencode($alias->alias));
-                if ($userByAlias !== null) {
+                if ($userByAlias !== null && $userByAlias->getId() !== null) {
                     $parsedPost->addPost($jsonPost, $userByAlias);
                 }
             } else {
@@ -397,8 +464,40 @@ class RedditParser
 
             $dbPlayer->name = $apiPlayer->getName();
             if ($dbPlayer->save()) {
-                $this->bar->setMessage("Player \"" . $alias->alias . "\" updated successfully! New name:" . $dbPlayer->name);
+                $this->outputMessage("Player \"" . $alias->alias . "\" updated successfully! New name:" . $dbPlayer->name);
             }
+        }
+    }
+
+    private function wrapPostInGetCommentsStructure(mixed $post): array
+    {
+        $post = [
+            [
+                'data' => [
+                    'children' => [
+                        $post,
+                    ],
+                ],
+            ],
+        ];
+
+        return json_decode(json_encode($post), false, 512, JSON_THROW_ON_ERROR);
+    }
+
+    private function extractPostIds(mixed $jsonPosts): array
+    {
+        $postIds = array_map(function ($post) {
+            return $post->data->id;
+        }, $jsonPosts->data->children);
+
+        return $postIds;
+    }
+
+    private function outputMessage(string $message) {
+        if ($this->bar) {
+            $this->bar->setMessage($message);
+        } else {
+            $this->output->writeln($message);
         }
     }
 }

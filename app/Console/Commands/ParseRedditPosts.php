@@ -13,7 +13,7 @@ class ParseRedditPosts extends Command
      *
      * @var string
      */
-    protected $signature = 'parse:reddit {--archive} {--archive-top=} {--update} {--update-min-score=} {--update-min-time=}';
+    protected $signature = 'parse:reddit {--single= } {--archive} {--archive-top} {--archive-users} {--sort=} {--top-by=} {--update} {--update-min-score=} {--update-min-time=}';
 
     /**
      * The console command description.
@@ -41,17 +41,25 @@ class ParseRedditPosts extends Command
      */
     public function handle(RedditParser $redditParser)
     {
+        $singlePostId = $this->option('single');
+
         $archiveFirstPost = $this->option('archive');
-        $archiveTopBy = $this->option('archive-top');
+        $sort = $this->option('sort');
+        $topBy = $this->option('top-by');
+
         $update = $this->option('update');
         $updateMinScore = (int)$this->option('update-min-score');
         $minTimeRaw = $this->option('update-min-time');
         $minTime = $minTimeRaw ? new DateTime('@' . strtotime($minTimeRaw)) : null;
 
-        if ($archiveFirstPost) {
+        if ($singlePostId) {
+            $redditParser->single($singlePostId);
+        } elseif ($archiveFirstPost) {
             $redditParser->archive();
-        } elseif ($archiveTopBy) {
-            $redditParser->archiveTop($archiveTopBy);
+        } elseif ($this->option('archive-users')) {
+            $redditParser->archiveTopUsers($sort, $topBy);
+        } elseif ($this->option('archive-top')) {
+            $redditParser->archiveTop($topBy);
         } elseif ($update) {
             $redditParser->updateFromTop($updateMinScore, $minTime);
         } else {

@@ -92,7 +92,7 @@ class Post extends Model
         }
     }
 
-    public function updatePost($jsonPost, ProgressBar $bar)
+    public function updatePost($jsonPost, ?ProgressBar $bar)
     {
         $scorePre = $this->score;
 
@@ -113,7 +113,7 @@ class Post extends Model
 
             if ($this->save()) {
                 $this->updateScores();
-                $bar->setMessage('Updated: ' .
+                $bar?->setMessage('Updated: ' .
                     $this->map_artist . ' - ' .
                     $this->map_title . ' [' .
                     $this->map_diff . "] " .
