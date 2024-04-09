@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2024-04-09
+### Added
+- Added CLI commands for crawling reddit users or importing a single post
+
+### Changed
+- Replaced redis alerts with an env variable
+
 ## 2024-04-01
 ### Changed
 - Changed highlights page to use UTC time
