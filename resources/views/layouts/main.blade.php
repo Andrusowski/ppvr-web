@@ -31,12 +31,10 @@
 </head>
 <body>
     <div id="app">
-        @php ($alert = Cache::get('alert'))
-        @php ($alertType = Cache::get('alert:type'))
-        @if ($alert)
-            <div class="uk-alert-{{ $alertType ?? 'warning' }}" uk-alert>
+        @if (config('motd.message'))
+            <div class="uk-alert-{{ config('motd.type') }}" uk-alert>
                 <div class="uk-container uk-container-small">
-                    <p>{{ $alert }}</p>
+                    <p>{!! config('motd.message') !!}</p>
                 </div>
             </div>
         @endif
@@ -96,15 +94,15 @@
 
         <br><br>
 
-        <p class="uk-text-center uk-text-meta uk-margin-remove-bottom uk-padding-small" id="footertext">
-            made by Andrus
+        <p class="uk-text-center uk-margin-remove-bottom uk-padding-small" id="footertext">
+            <span class="uk-text-meta">made by Andrus</span>
             <!--<a class="uk-margin-small-right uk-margin-small-left" href="https://osu.ppy.sh/users/2924006"><i class="fab fa-discord link text-secondary"></i></a>-->
-            <a class="uk-margin-small-right uk-margin-small-left footer-link" href="https://osu.ppy.sh/users/2924006" target="_blank" rel="noopener noreferrer">
+            <a class="uk-margin-small-right uk-margin-small-left footer-link uk-text-meta" href="https://osu.ppy.sh/users/2924006" target="_blank" rel="noopener noreferrer">
                 <object data="{{ URL::asset('/icons/osu-logo-white.svg') }} " type="image/svg+xml" class="link text-secondary footer-icon" title="osu! logo"></object>
             </a>
-            <a href="https://github.com/Andrusowski" target="_blank" rel="noopener noreferrer"><i class="fab fa-github link text-secondary"></i></a>
-            <a href="{{url('/legal/notice')}}" class="link text-secondary uk-margin-small-left">Legal Notice</a>
-            <a href="{{url('/legal/privacy')}}" class="link text-secondary uk-margin-small-left">Privacy Policy</a>
+            <a href="https://discord.gg/HjtcbrEB" target="_blank" rel="noopener noreferrer" class="uk-badge"><span class="uk-margin-small-left uk-margin-small-right"><i class="fab fa-discord link uk-margin-small-right"></i> NEW!</span></a>
+            <a href="{{url('/legal/notice')}}" class="link text-secondary uk-margin-small-left uk-text-meta">Legal Notice</a>
+            <a href="{{url('/legal/privacy')}}" class="link text-secondary uk-margin-small-left uk-text-meta">Privacy Policy</a>
         </p>
     </div>
 
