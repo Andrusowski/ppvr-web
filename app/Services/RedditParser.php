@@ -300,7 +300,8 @@ class RedditParser
         }
     }
 
-    public function single(string $postId) {
+    public function single(string $postId)
+    {
         $accessToken = $this->redditClient->getAccessToken();
         $apiPostData = (new RedditClient())->getComments($postId, $accessToken);
         $this->prepareParse($apiPostData, false);
@@ -362,6 +363,7 @@ class RedditParser
         $postTitle = $jsonPost->title;
         if (!preg_match(self::REGEX_SCOREPOST, $postTitle)) {
             $this->outputMessage(sprintf('Post %s does not match the scorepost format', $jsonPost->id));
+
             return false;
         }
 
@@ -493,7 +495,8 @@ class RedditParser
         return $postIds;
     }
 
-    private function outputMessage(string $message) {
+    private function outputMessage(string $message)
+    {
         if ($this->bar) {
             $this->bar->setMessage($message);
         } else {

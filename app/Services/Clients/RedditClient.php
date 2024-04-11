@@ -166,6 +166,7 @@ class RedditClient
         $stack->setHandler(new CurlHandler());
         $stack->push(Middleware::mapResponse(function (ResponseInterface $response) {
             $this->runPostResponseHook($response);
+
             return $response;
         }));
 
@@ -186,7 +187,7 @@ class RedditClient
     private function runPostResponseHook(\Psr\Http\Message\ResponseInterface $response): void
     {
         if ($response->hasHeader('x-ratelimit-remaining') && (int)$response->getHeader('x-ratelimit-remaining')[0] === 0) {
-            $ratelimitReset = (int)$response->getHeader('x-ratelimit-reset')[0];
+            $this->rateLimitReset = (int)$response->getHeader('x-ratelimit-reset')[0];
         }
     }
 
