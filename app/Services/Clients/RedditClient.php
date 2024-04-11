@@ -8,10 +8,16 @@ namespace App\Services\Clients;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ServerException;
+use GuzzleHttp\Handler\CurlHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
+use Psr\Http\Message\ResponseInterface;
 
 class RedditClient
 {
     public const TIME_FIRST_POST = 1426668291;
+
+    private int $rateLimitReset = 0;
 
     /**
      * @param int|null $after
@@ -154,11 +160,43 @@ class RedditClient
      */
     private function createRedditClient(): Client
     {
+        $this->runPreRequestHook();
+
+        $stack = new HandlerStack();
+        $stack->setHandler(new CurlHandler());
+        $stack->push(Middleware::mapResponse(function (ResponseInterface $response) {
+            $this->runPostResponseHook($response);
+            return $response;
+        }));
+
         return new Client([
             'base_uri' => 'https://oauth.reddit.com',
             'headers' => [
                 'User-Agent' => 'laravel:Andrusowski/ppvr-web (by /u/Andruz)',
             ],
+            'handler' => $stack,
         ]);
+    }
+
+    /**
+     * @param \Psr\Http\Message\ResponseInterface $response
+     *
+     * @return void
+     */
+    private function runPostResponseHook(\Psr\Http\Message\ResponseInterface $response): void
+    {
+        if ($response->hasHeader('x-ratelimit-remaining') && (int)$response->getHeader('x-ratelimit-remaining')[0] === 0) {
+            $ratelimitReset = (int)$response->getHeader('x-ratelimit-reset')[0];
+        }
+    }
+
+    /**
+     * @return void
+     */
+    private function runPreRequestHook(): void
+    {
+        if ($this->rateLimitReset > 0) {
+            sleep($this->rateLimitReset);
+        }
     }
 }
