@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Author;
 use App\Models\Player;
 use Illuminate\Support\Facades\Request;
 
@@ -12,15 +13,20 @@ class SearchController extends Controller
         $name = Request::input('name');
 
         if ($name) {
-            $player = Player::where('name', 'LIKE', $name)->first();
+            $player = Player::where('name', 'LIKE', "$name%")->first();
+            $author = Author::where('name', 'LIKE', "$name%")->first();
 
-            if ($player != null) {
-                $player_id = $player->id;
-
-                return redirect('player/' . $player_id);
+            if ($player != null || $author != null) {
+                return response()->json([
+                    'player' => $player ? [
+                        'id' => $player->id,
+                        'name' => $player->name,
+                    ] : null,
+                    'author' => $author?->name,
+                ]);
             }
         }
 
-        return back()->withErrors(['The requested user does not exist or has no Reddit posts yet.']);
+        return response()->json(['error' => 'The requested user does not exist or has no Reddit posts yet.']);
     }
 }

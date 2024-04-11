@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2024-04-11
+## Added
+- Added a ratelimiter to the reddit client
+- Added a simple search modal to select between player and author search results (limited to 1 each for now)
+
 ## 2024-04-09
 ### Added
 - Added CLI commands for crawling reddit users or importing a single post

@@ -80,10 +80,7 @@
 
                 <div class="uk-navbar-right">
                     <!-- search -->
-                    <form class="uk-search uk-search-default" action="{{url('search/')}}">
-                        <span uk-search-icon></span>
-                        <input class="uk-search-input" name="name" type="search" placeholder="Search Player">
-                    </form>
+                    <Search search-url="{{url('search/')}}"></Search>
                 </div>
             </nav>
 
