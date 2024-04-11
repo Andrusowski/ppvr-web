@@ -16,6 +16,7 @@ use App\Services\Clients\OsuClient;
 use App\Services\Clients\RedditClient;
 use Carbon\Carbon;
 use DateTime;
+use DB;
 use Doctrine\DBAL\Query\QueryException;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Console\OutputStyle;
@@ -213,6 +214,7 @@ class RedditParser
 
             $postsProcessed = 0;
             $after = '';
+            DB::beginTransaction();
             while ($postsProcessed < static::MAX_POSTS_ARCHIVE_TOP) {
                 try {
                     $jsonPosts = $this->redditClient->getPostsForAuthor($accessToken, $author->name, $after, 'top', $topBy);
@@ -244,7 +246,7 @@ class RedditParser
 
                     try {
                         $this->prepareParse($post, true);
-                    } catch (QueryException $exception) {
+                    } catch (Throwable $exception) {
                         if ($exception->getCode() === 1205) {
                             // lock exception, try later
                             continue;
@@ -255,6 +257,7 @@ class RedditParser
                     $postsProcessed++;
                 }
             }
+            DB::commit();
         }
 
         $this->bar->finish();
