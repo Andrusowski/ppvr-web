@@ -162,8 +162,7 @@ class RedditClient
     {
         $this->runPreRequestHook();
 
-        $stack = new HandlerStack();
-        $stack->setHandler(new CurlHandler());
+        $stack = HandlerStack::create();
         $stack->push(Middleware::mapResponse(function (ResponseInterface $response) {
             $this->runPostResponseHook($response);
 
