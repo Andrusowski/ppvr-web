@@ -214,50 +214,52 @@ class RedditParser
 
             $postsProcessed = 0;
             $after = '';
-            DB::beginTransaction();
-            while ($postsProcessed < static::MAX_POSTS_ARCHIVE_TOP) {
-                try {
-                    $jsonPosts = $this->redditClient->getPostsForAuthor($accessToken, $author->name, $after, 'top', $topBy);
-                } catch (ClientException $exception) {
-                    if ($exception->getCode() === 404 || $exception->getCode() === 403) {
-                        // user deleted or banned. Ignore for now
-                        // TODO: decide whether to delete the author from the db
-                        continue 2;
-                    }
-
-                    throw $exception;
-                }
-
-                $postIds = $this->extractPostIds($jsonPosts);
-                if (empty($postIds)) {
-                    continue 2;
-                }
-
-                foreach ($jsonPosts->data->children as $post) {
-                    // wrap post in array to match the structure of the getComments response
-                    $post = $this->wrapPostInGetCommentsStructure($post);
-
-                    $newAfter = $post[0]->data->children[0]->data->name;
-                    if ($newAfter === $after) {
-                        // reached last post
-                        continue 3;
-                    }
-                    $after = $newAfter;
-
+            DB::transaction(function () use ($accessToken, $author, $topBy, &$postsProcessed, &$after) {
+                while ($postsProcessed < static::MAX_POSTS_ARCHIVE_TOP) {
                     try {
-                        $this->prepareParse($post, true);
-                    } catch (Throwable $exception) {
-                        if ($exception->getCode() === 1205) {
-                            // lock exception, try later
-                            continue;
+                        $jsonPosts = $this->redditClient->getPostsForAuthor($accessToken, $author->name, $after, 'top', $topBy);
+                    } catch (ClientException $exception) {
+                        if ($exception->getCode() === 404 || $exception->getCode() === 403) {
+                            // user deleted or banned. Ignore for now
+                            // TODO: decide whether to delete the author from the db
+                            return;
                         }
 
                         throw $exception;
                     }
-                    $postsProcessed++;
+
+                    $postIds = $this->extractPostIds($jsonPosts);
+                    if (empty($postIds)) {
+                        return;
+                    }
+
+                    foreach ($jsonPosts->data->children as $post) {
+                        // wrap post in array to match the structure of the getComments response
+                        $post = $this->wrapPostInGetCommentsStructure($post);
+
+                        $newAfter = $post[0]->data->children[0]->data->name;
+                        if ($newAfter === $after) {
+                            // reached last post
+                            return;
+                        }
+                        $after = $newAfter;
+
+                        try {
+                            $this->prepareParse($post, true);
+                        } catch (Throwable $exception) {
+                            if ($exception->getCode() === 1205) {
+                                // lock exception, try later
+                                continue;
+                            }
+
+                            dd($exception); // Remove after debugging
+
+                            throw $exception;
+                        }
+                        $postsProcessed++;
+                    }
                 }
-            }
-            DB::commit();
+            }, 5);
         }
 
         $this->bar->finish();
