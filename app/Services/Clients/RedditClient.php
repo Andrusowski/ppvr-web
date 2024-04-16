@@ -8,7 +8,6 @@ namespace App\Services\Clients;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ServerException;
-use GuzzleHttp\Handler\CurlHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use Psr\Http\Message\ResponseInterface;
