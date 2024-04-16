@@ -200,6 +200,7 @@ class RedditClient
         if ($this->rateLimitReset > 0) {
             echo('Sleeping for ' . ($this->rateLimitReset + 1) . " seconds\n"); // Remove after debugging
             sleep($this->rateLimitReset + 1);
+            $this->rateLimitReset = 0;
         }
     }
 }
