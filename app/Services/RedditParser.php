@@ -252,8 +252,6 @@ class RedditParser
                                 continue;
                             }
 
-                            dd($exception); // Remove after debugging
-
                             throw $exception;
                         }
                         $postsProcessed++;
@@ -290,16 +288,18 @@ class RedditParser
 
             foreach ($postsIdsToUpdate as $postsId) {
                 $apiPostData = (new RedditClient())->getComments($postsId, $accessToken);
-                try {
-                    $this->prepareParse($apiPostData, false);
-                } catch (QueryException $exception) {
-                    if ($exception->getCode() === 1205) {
-                        // lock exception, try later
-                        continue;
-                    }
+                DB::transaction(function () use ($apiPostData) {
+                    try {
+                        $this->prepareParse($apiPostData, false);
+                    } catch (QueryException $exception) {
+                        if ($exception->getCode() === 1205) {
+                            // lock exception, try later
+                            return;
+                        }
 
-                    throw $exception;
-                }
+                        throw $exception;
+                    }
+                }, 5);
                 $this->bar->advance();
             }
         }
