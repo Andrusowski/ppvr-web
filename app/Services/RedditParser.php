@@ -207,7 +207,12 @@ class RedditParser
         $this->bar->setFormat('custom');
         $this->outputMessage('Processing authors...');
 
+        /** @var Author $author */
         foreach ($authors as $author) {
+            if ($author->name === '[deleted]') {
+                continue;
+            }
+
             $accessToken = $this->redditClient->getAccessToken(); // get new access token for each author to prevent expiration
             $this->outputMessage('Processing author: ' . $author->name);
             $this->bar->advance(1);
