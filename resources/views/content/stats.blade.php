@@ -21,7 +21,7 @@
     <div class="uk-card uk-card-default uk-card-body uk-card-hover uk-margin">
         <h2 class="uk-card-title">Posts created per Day</h2>
         <bar-chart
-            posts="{{ $postsHistory }}"
+            posts="{{ json_encode($postsHistory) }}"
             name="postsHistory"
             value-index="postsDaily"
             v-bind:y-axes-display="true">
@@ -31,7 +31,7 @@
     <div class="uk-card uk-card-default uk-card-body uk-card-hover uk-margin">
         <h2 class="uk-card-title">Upvotes per Day</h2>
         <bar-chart
-            posts="{{ $upvotesHistory }}"
+            posts="{{ json_encode($upvotesHistory) }}"
             name="postsHistory"
             value-index="postsDaily"
             color="rgb(255, 127, 17)"

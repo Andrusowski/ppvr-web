@@ -17,7 +17,7 @@ class StatsControllerService
     public function getPostsHistory(): Collection
     {
         return DB::table('posts')
-                 ->select(DB::raw('COUNT(id) as postsDaily'), DB::raw('DATE(created_at) as date'))
+                 ->select(DB::raw('COUNT(id) as postsDaily'), DB::raw('DATE(FROM_UNIXTIME(created_utc)) as date'))
                  ->groupBy('date')
                  ->orderBy('date', 'DESC')
                  ->limit(90)
@@ -30,7 +30,7 @@ class StatsControllerService
     public function getUpvotesHistory(): Collection
     {
         return DB::table('posts')
-                 ->select(DB::raw('SUM(score) as postsDaily'), DB::raw('DATE(created_at) as date'))
+                 ->select(DB::raw('SUM(score) as postsDaily'), DB::raw('DATE(FROM_UNIXTIME(created_utc)) as date'))
                  ->groupBy('date')
                  ->orderBy('date', 'DESC')
                  ->limit(90)

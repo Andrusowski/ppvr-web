@@ -16,7 +16,7 @@ class StatsController extends Controller
         return view('content.stats')
             ->with('postsTotal', Post::count())
             ->with('tmpPostsTotal', Tmppost::count())
-            ->with('postsHistory', $controllerService->getPostsHistory())
-            ->with('upvotesHistory', $controllerService->getUpvotesHistory());
+            ->with('postsHistory', array_reverse($controllerService->getPostsHistory()->toArray()))
+            ->with('upvotesHistory', array_reverse($controllerService->getUpvotesHistory()->toArray()));
     }
 }
