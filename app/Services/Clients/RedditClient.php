@@ -184,6 +184,9 @@ class RedditClient
      */
     private function runPostResponseHook(\Psr\Http\Message\ResponseInterface $response): void
     {
+        if ($response->hasHeader('x-ratelimit-remaining')) {
+            echo($response->getHeader('x-ratelimit-remaining')[0]."\n"); // Remove after debugging
+        }
         if ($response->hasHeader('x-ratelimit-remaining') && (int)$response->getHeader('x-ratelimit-remaining')[0] === 1) {
             $this->rateLimitReset = (int)$response->getHeader('x-ratelimit-reset')[0];
         }
@@ -195,6 +198,7 @@ class RedditClient
     private function runPreRequestHook(): void
     {
         if ($this->rateLimitReset > 0) {
+            echo('Sleeping for ' . ($this->rateLimitReset + 1) . " seconds\n"); // Remove after debugging
             sleep($this->rateLimitReset + 1);
         }
     }
