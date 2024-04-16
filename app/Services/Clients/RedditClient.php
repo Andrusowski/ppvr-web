@@ -187,7 +187,7 @@ class RedditClient
         if ($response->hasHeader('x-ratelimit-remaining')) {
             echo($response->getHeader('x-ratelimit-remaining')[0]."\n"); // Remove after debugging
         }
-        if ($response->hasHeader('x-ratelimit-remaining') && (int)$response->getHeader('x-ratelimit-remaining')[0] === 1) {
+        if ($response->hasHeader('x-ratelimit-remaining') && (int)$response->getHeader('x-ratelimit-remaining')[0] < 10) {
             $this->rateLimitReset = (int)$response->getHeader('x-ratelimit-reset')[0];
         }
     }
