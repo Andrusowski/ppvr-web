@@ -234,6 +234,10 @@ class RedditParser
                     }
 
                     foreach ($jsonPosts->data->children as $post) {
+                        if ($post->data->subreddit !== 'osugame') {
+                            continue;
+                        }
+
                         // wrap post in array to match the structure of the getComments response
                         $post = $this->wrapPostInGetCommentsStructure($post);
 
