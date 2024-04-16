@@ -239,10 +239,6 @@ class RedditParser
                     }
 
                     foreach ($jsonPosts->data->children as $post) {
-                        if ($post->data->subreddit !== 'osugame') {
-                            continue;
-                        }
-
                         // wrap post in array to match the structure of the getComments response
                         $post = $this->wrapPostInGetCommentsStructure($post);
 
@@ -252,6 +248,11 @@ class RedditParser
                             return;
                         }
                         $after = $newAfter;
+
+                        $postsProcessed++;
+                        if ($post[0]->data->children[0]->data->subreddit !== 'osugame') {
+                            continue;
+                        }
 
                         try {
                             $this->prepareParse($post, true);
@@ -263,7 +264,6 @@ class RedditParser
 
                             throw $exception;
                         }
-                        $postsProcessed++;
                     }
                 }
             }, 5);
