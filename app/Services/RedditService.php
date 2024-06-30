@@ -15,8 +15,12 @@ class RedditService
 {
     private const KEY_CACHED_TOP_COMMENT = 'cached_top_comment';
 
-    public static function getTopCommentForPost(string $postId): ?Comment
+    public static function getTopCommentForPost(string $postId, bool $disableCache = false): ?Comment
     {
+        if ($disableCache) {
+            return static::fetchTopComment($postId);
+        }
+
         return Cache::remember(static::KEY_CACHED_TOP_COMMENT, now()->addMinutes(10), function () use ($postId) {
             return static::fetchTopComment($postId);
         });
@@ -24,8 +28,9 @@ class RedditService
 
     private static function fetchTopComment(string $postId): ?Comment
     {
+        $redditClient = new RedditClient();
         try {
-            $post_reddit = (new RedditClient())->getComments($postId);
+            $post_reddit = $redditClient->getComments($postId, $redditClient->getAccessToken());
         } catch (Throwable $e) {
             // ignore, most likely too many requests for now
             $post_reddit = null;
