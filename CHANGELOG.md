@@ -2,8 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2024-06-30
+### Added
+- Added a basic trend indicator for the general stats on the highlights page
+
+### Fixed
+- Fixed the top comments not displaying on the homepage
+
 ## 2024-04-11
-## Added
+### Added
 - Added a ratelimiter to the reddit client
 - Added a simple search modal to select between player and author search results (limited to 1 each for now)
 
