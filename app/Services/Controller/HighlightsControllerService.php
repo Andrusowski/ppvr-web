@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) basecom GmbH & Co. KG
  * Licensed under the MIT License
@@ -16,19 +17,25 @@ class HighlightsControllerService
     private int $timestampFrom;
     private int $timestampTo;
 
+    private int $previousTimestampFrom;
+    private int $previousTimestampTo;
+
     public function __construct()
     {
-        $this->timestampFrom = (new Carbon('first day of last month'))
+        $timestampFrom = (new Carbon('first day of last month'))
             ->setHour(0)
             ->setMinute(0)
             ->setSecond(0)
-            ->setTimezone('UTC')
+            ->setTimezone('UTC');
+
+        $this->timestampFrom = $timestampFrom->timestamp;
+        $this->timestampTo = (clone $timestampFrom)->endOfMonth()->timestamp;
+        $this->previousTimestampFrom = (clone $timestampFrom)
+            ->subMonth()
             ->timestamp;
-        $this->timestampTo = (new Carbon('last day of last month'))
-            ->setHour(23)
-            ->setMinute(59)
-            ->setSecond(59)
-            ->setTimezone('UTC')
+        $this->previousTimestampTo = (clone $timestampFrom)
+            ->subMonth()
+            ->endOfMonth()
             ->timestamp;
     }
 
@@ -68,118 +75,102 @@ class HighlightsControllerService
         return $text;
     }
 
-    /**
-     * @return \Illuminate\Support\Collection
-     */
-    public function getTopPlayers(): Collection
+    public function getTopPlayers(bool $previousTimeframe = false): Collection
     {
         $top_players = DB::table('posts')
-                         ->select(DB::raw('posts.player_id as id,
+            ->select(DB::raw('posts.player_id as id,
                 players.name as name,
                 SUM(posts.score) as score,
                 AVG(posts.score) as avg_score,
                 COUNT(posts.id) as posts'))
-                         ->join('players', 'posts.player_id', '=', 'players.id')
-                         ->where('posts.created_utc', '>=', $this->timestampFrom)
-                         ->where('posts.created_utc', '<=', $this->timestampTo)
-                         ->groupBy('posts.player_id', 'players.name')
-                         ->orderBy('score', 'desc')
-                         ->limit(5)
-                         ->get();
+            ->join('players', 'posts.player_id', '=', 'players.id')
+            ->where('posts.created_utc', '>=', $this->getTimestampFrom($previousTimeframe))
+            ->where('posts.created_utc', '<=', $this->getTimestampTo($previousTimeframe))
+            ->groupBy('posts.player_id', 'players.name')
+            ->orderBy('score', 'desc')
+            ->limit(5)
+            ->get();
 
         return $top_players;
     }
 
-    /**
-     * @param mixed $player
-     *
-     * @return Post[]|\Illuminate\Support\Collection
-     */
-    public function getTopPostsForPlayer(mixed $player): Collection
+    public function getTopPostsForPlayer(mixed $player, bool $previousTimeframe = false): Collection
     {
         return Post::wherePlayerId($player->id)
-                   ->where('posts.created_utc', '>=', $this->timestampFrom)
-                   ->where('posts.created_utc', '<=', $this->timestampTo)
-                   ->orderBy('score', 'desc')
-                   ->limit(3)
-                   ->get();
+            ->where('posts.created_utc', '>=', $this->getTimestampFrom($previousTimeframe))
+            ->where('posts.created_utc', '<=', $this->getTimestampTo($previousTimeframe))
+            ->orderBy('score', 'desc')
+            ->limit(3)
+            ->get();
     }
 
-    /**
-     * @return \Illuminate\Support\Collection
-     */
-    public function getTopAuthors(): Collection
+    public function getTopAuthors(bool $previousTimeframe = false): Collection
     {
         return DB::table('posts')
-                 ->select(DB::raw('posts.author as author,
+            ->select(DB::raw('posts.author as author,
                 SUM(posts.score) as score,
                 COUNT(posts.id) as posts'))
-                 ->where('posts.created_utc', '>=', $this->timestampFrom)
-                 ->where('posts.created_utc', '<=', $this->timestampTo)
-                 ->groupBy('posts.author')
-                 ->orderBy('score', 'desc')
-                 ->limit(5)
-                 ->get();
+            ->where('posts.created_utc', '>=', $this->getTimestampFrom($previousTimeframe))
+            ->where('posts.created_utc', '<=', $this->getTimestampTo($previousTimeframe))
+            ->groupBy('posts.author')
+            ->orderBy('score', 'desc')
+            ->limit(5)
+            ->get();
     }
 
-    /**
-     * @return \Illuminate\Support\Collection
-     */
-    public function getTopPosts(): Collection
+    public function getTopPosts(bool $previousTimeframe = false): Collection
     {
         return Post::select('posts.*')
-                   ->addSelect('players.name as player_name')
-                   ->join('players', 'posts.player_id', '=', 'players.id')
-                   ->where('posts.created_utc', '>=', $this->timestampFrom)
-                   ->where('posts.created_utc', '<=', $this->timestampTo)
-                   ->orderBy('posts.score', 'desc')
-                   ->limit(5)
-                   ->get();
+            ->addSelect('players.name as player_name')
+            ->join('players', 'posts.player_id', '=', 'players.id')
+            ->where('posts.created_utc', '>=', $this->getTimestampFrom($previousTimeframe))
+            ->where('posts.created_utc', '<=', $this->getTimestampTo($previousTimeframe))
+            ->orderBy('posts.score', 'desc')
+            ->limit(5)
+            ->get();
     }
 
-    /**
-     * @return int
-     */
-    public function getPostsCount(): int
+    public function getPostsCount(bool $previousTimeframe = false): int
     {
-        return Post::where('posts.created_utc', '>=', $this->timestampFrom)
-                   ->where('posts.created_utc', '<=', $this->timestampTo)
-                   ->count();
+        return Post::where('posts.created_utc', '>=', $this->getTimestampFrom($previousTimeframe))
+            ->where('posts.created_utc', '<=', $this->getTimestampTo($previousTimeframe))
+            ->count();
     }
 
-    /**
-     * @return int|mixed
-     */
-    public function getPostsTotalScore(): mixed
+    public function getPostsTotalScore(bool $previousTimeframe = false): mixed
     {
-        return Post::where('posts.created_utc', '>=', $this->timestampFrom)
-                   ->where('posts.created_utc', '<=', $this->timestampTo)
-                   ->sum('score');
+        return Post::where('posts.created_utc', '>=', $this->getTimestampFrom($previousTimeframe))
+            ->where('posts.created_utc', '<=', $this->getTimestampTo($previousTimeframe))
+            ->sum('score');
     }
 
-    /**
-     * @return object
-     */
-    public function getUniquePlayersCount(): object
+    public function getUniquePlayersCount(bool $previousTimeframe = false): object
     {
         return DB::table('posts')
-                 ->selectRaw('COUNT(DISTINCT player_id) as count')
-                 ->where('posts.created_utc', '>=', $this->timestampFrom)
-                 ->where('posts.created_utc', '<=', $this->timestampTo)
-                 ->first();
+            ->selectRaw('COUNT(DISTINCT player_id) as count')
+            ->where('posts.created_utc', '>=', $this->getTimestampFrom($previousTimeframe))
+            ->where('posts.created_utc', '<=', $this->getTimestampTo($previousTimeframe))
+            ->first();
     }
 
-    /**
-     * @return \Illuminate\Support\Collection
-     */
-    public function getScorePerDay(): Collection
+    public function getScorePerDay(bool $previousTimeframe = false): Collection
     {
         return DB::table('posts')
-                 ->selectRaw('SUM(score) as score_daily, DATE(created_at) as date')
-                 ->where('posts.created_utc', '>=', $this->timestampFrom)
-                 ->where('posts.created_utc', '<=', $this->timestampTo)
-                 ->orderBy('date', 'DESC')
-                 ->groupByRaw('date')
-                 ->get();
+            ->selectRaw('SUM(score) as score_daily, DATE(created_at) as date')
+            ->where('posts.created_utc', '>=', $this->getTimestampFrom($previousTimeframe))
+            ->where('posts.created_utc', '<=', $this->getTimestampTo($previousTimeframe))
+            ->orderBy('date', 'DESC')
+            ->groupByRaw('date')
+            ->get();
+    }
+
+    private function getTimestampFrom(bool $previousTimeframe = false): int
+    {
+        return $previousTimeframe ? $this->previousTimestampFrom : $this->timestampFrom;
+    }
+
+    private function getTimestampTo(bool $previousTimeframe = false): int
+    {
+        return $previousTimeframe ? $this->previousTimestampTo : $this->timestampTo;
     }
 }

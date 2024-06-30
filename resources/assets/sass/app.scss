@@ -85,6 +85,11 @@ h1 {
 .footer-link {
     display: flex;
     justify-content: center;
+
+    &-fab {
+        display: flex !important;
+        align-items: center !important;
+    }
 }
 
 .footer-icon {
@@ -147,6 +152,16 @@ h1 {
         color: $white !important;
         padding: 13px;
         margin-right: 10px;
+    }
+
+    .trend {
+        &-up {
+            color: $green;
+        }
+
+        &-down {
+            color: red;
+        }
     }
 
     .footer {
