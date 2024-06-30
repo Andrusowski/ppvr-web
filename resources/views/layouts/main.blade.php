@@ -97,7 +97,9 @@
             <a class="uk-margin-small-right uk-margin-small-left footer-link uk-text-meta" href="https://osu.ppy.sh/users/2924006" target="_blank" rel="noopener noreferrer">
                 <object data="{{ URL::asset('/icons/osu-logo-white.svg') }} " type="image/svg+xml" class="link text-secondary footer-icon" title="osu! logo"></object>
             </a>
-            <a href="https://discord.gg/HjtcbrEB" target="_blank" rel="noopener noreferrer" class="uk-badge"><span class="uk-margin-small-left uk-margin-small-right"><i class="fab fa-discord link uk-margin-small-right"></i> NEW!</span></a>
+            <a class="uk-margin-small-right uk-margin-small-left footer-link uk-text-meta" href="https://discord.gg/HjtcbrEB" target="_blank" rel="noopener noreferrer">
+                <i class="fab fa-discord link footer-link-fab"></i>
+            </a>
             <a href="{{url('/legal/notice')}}" class="link text-secondary uk-margin-small-left uk-text-meta">Legal Notice</a>
             <a href="{{url('/legal/privacy')}}" class="link text-secondary uk-margin-small-left uk-text-meta">Privacy Policy</a>
         </p>
