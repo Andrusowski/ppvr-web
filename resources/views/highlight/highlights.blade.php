@@ -69,9 +69,9 @@
                         {{ $posts_count }}
 
                         @if ($posts_count > $posts_count_previous)
-                            <i class="fas fa-chevron-up trend-up"></i>
+                            <span class="uk-margin-small-left trend-up"><i class="fas fa-chevron-up"></i> {{ round(100 - $posts_count / $posts_count_previous * 100, 1) }}%</span>
                         @elseif ($posts_count < $posts_count_previous)
-                            <i class="fas fa-chevron-down trend-down"></i>
+                            <span class="uk-margin-small-left trend-down"><i class="fas fa-chevron-down"></i> -{{ round(100 - $posts_count / $posts_count_previous * 100, 1) }}%</span>
                         @endif
                     </p>
 
@@ -80,9 +80,9 @@
                         {{ $posts_total_score }}
 
                         @if ($posts_total_score > $posts_total_score_previous)
-                            <i class="fas fa-chevron-up trend-up"></i>
+                            <span class="uk-margin-small-left trend-up"><i class="fas fa-chevron-up"></i> {{ round(100 - $posts_total_score_previous / $posts_total_score * 100, 1) }}%</span>
                         @elseif ($posts_total_score < $posts_total_score_previous)
-                            <i class="fas fa-chevron-down trend-down"></i>
+                            <span class="uk-margin-small-left trend-down"><i class="fas fa-chevron-down"></i> -{{ round(100 - $posts_total_score / $posts_total_score_previous * 100, 1) }}%</span>
                         @endif
                     </p>
 
@@ -91,9 +91,9 @@
                         {{ $unique_players->count }}
 
                         @if ($unique_players->count > $unique_players_previous->count)
-                            <i class="fas fa-chevron-up trend-up"></i>
+                            <span class="uk-margin-small-left trend-up"><i class="fas fa-chevron-up"></i> {{ round(100 - $unique_players_previous->count / $unique_players->count * 100, 1) }}%</span>
                         @elseif ($unique_players->count < $unique_players_previous->count)
-                            <i class="fas fa-chevron-down trend-down"></i>
+                            <span class="uk-margin-small-left trend-down"><i class="fas fa-chevron-down"></i> -{{ round(100 - $unique_players->count / $unique_players_previous->count * 100, 1) }}%</span>
                         @endif
                     </p>
 
