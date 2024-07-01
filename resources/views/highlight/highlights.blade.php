@@ -69,7 +69,7 @@
                         {{ $posts_count }}
 
                         @if ($posts_count > $posts_count_previous)
-                            <span class="uk-margin-small-left trend-up"><i class="fas fa-chevron-up"></i> {{ round(100 - $posts_count / $posts_count_previous * 100, 1) }}%</span>
+                            <span class="uk-margin-small-left trend-up"><i class="fas fa-chevron-up"></i> {{ round(100 - $posts_count_previous / $posts_count * 100, 1) }}%</span>
                         @elseif ($posts_count < $posts_count_previous)
                             <span class="uk-margin-small-left trend-down"><i class="fas fa-chevron-down"></i> -{{ round(100 - $posts_count / $posts_count_previous * 100, 1) }}%</span>
                         @endif
