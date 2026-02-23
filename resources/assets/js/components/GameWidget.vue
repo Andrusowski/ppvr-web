@@ -91,6 +91,23 @@
                     <p>You got all {{ totalRounds }} rounds correct!</p>
                     <p class="uk-text-meta">Come back tomorrow for a new challenge.</p>
                 </div>
+                <div class="post-links uk-margin-top">
+                    <p class="uk-text-muted">Posts in today's game:</p>
+                    <div class="uk-flex uk-flex-column uk-flex-middle">
+                        <a
+                            v-for="post in posts"
+                            :key="post.id"
+                            :href="'/post/' + post.id"
+                            class="post-link-button"
+                        >
+                            <span class="post-link-title">{{ post.title }}</span>
+                            <span class="post-link-meta">
+                                <span class="post-link-score">{{ post.score }} points</span>
+                                <span class="post-link-author">by u/{{ post.author }}</span>
+                            </span>
+                        </a>
+                    </div>
+                </div>
             </div>
         </Transition>
 
@@ -101,6 +118,23 @@
                     <h2 class="uk-card-title">Game Over</h2>
                     <p>You made it to round {{ currentRound }} of {{ totalRounds }}.</p>
                     <p class="uk-text-meta">Come back tomorrow for another try!</p>
+                </div>
+                <div class="post-links uk-margin-top">
+                    <p class="uk-text-muted">Posts you encountered:</p>
+                    <div class="uk-flex uk-flex-column uk-flex-middle">
+                        <a
+                            v-for="post in playedPosts"
+                            :key="post.id"
+                            :href="'/post/' + post.id"
+                            class="post-link-button"
+                        >
+                            <span class="post-link-title">{{ post.title }}</span>
+                            <span class="post-link-meta">
+                                <span class="post-link-score">{{ post.score }} points</span>
+                                <span class="post-link-author">posted by u/{{ post.author }}</span>
+                            </span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </Transition>
@@ -154,6 +188,11 @@ export default {
 
         const rightPost = computed(() => {
             return posts.value[currentRound.value] || {};
+        });
+
+        // Posts encountered so far (for loss modal - shows posts up to and including current round)
+        const playedPosts = computed(() => {
+            return posts.value.slice(0, currentRound.value + 1);
         });
 
         function formatDate(timestamp) {
@@ -264,8 +303,10 @@ export default {
         return {
             currentRound,
             totalRounds,
+            posts,
             leftPost,
             rightPost,
+            playedPosts,
             gameState,
             selectedPost,
             showResult,
@@ -413,5 +454,59 @@ export default {
         opacity: 1;
         transform: scale(1);
     }
+}
+
+/* Post link buttons for win/loss modals */
+.post-links {
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.post-link-button {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.5rem;
+    background-color: #f8f8f8;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    text-decoration: none;
+    color: inherit;
+    transition: background-color 0.2s, border-color 0.2s, transform 0.2s;
+}
+
+.post-link-button:hover {
+    background-color: #fff;
+    border-color: #1e87f0;
+    transform: translateX(4px);
+    text-decoration: none;
+}
+
+.post-link-title {
+    font-size: 0.9rem;
+    color: #333;
+    font-weight: 500;
+    line-height: 1.3;
+    word-wrap: break-word;
+    text-align: left;
+}
+
+.post-link-meta {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+}
+
+.post-link-score {
+    color: #ff4500;
+    font-weight: 500;
+}
+
+.post-link-author {
+    color: #999;
 }
 </style>
