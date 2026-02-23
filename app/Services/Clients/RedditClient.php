@@ -102,6 +102,53 @@ class RedditClient
      * @param string $id
      * @param string $accessToken
      *
+     * @return mixed Returns object with 'post' and 'comments' properties
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \JsonException
+     */
+    public function getPostWithComments(string $id, string $accessToken)
+    {
+        try {
+            $response = $this->createRedditClient()
+                ->request('GET', '/r/osugame/comments/' . $id . '.json', [
+                    'headers' => [
+                        'Authorization' => "Bearer {$accessToken}",
+                    ],
+                    'query' => [
+                        'limit' => 10,
+                        'sort' => 'top',
+                    ],
+                ]);
+
+            $content = $response->getBody()->getContents();
+            $data = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+
+            $result = new \stdClass();
+            $result->post = null;
+            $result->comments = [];
+
+            // The post data is in the first listing's children
+            if (isset($data[0]->data->children[0]->data)) {
+                $result->post = $data[0]->data->children[0]->data;
+            }
+
+            // Comments are in the second listing's children
+            if (isset($data[1]->data->children)) {
+                $result->comments = $data[1]->data->children;
+            }
+
+            return $result;
+        } catch (ServerException $serverException) {
+            return null;
+        }
+
+        return null;
+    }
+
+    /**
+     * @param string $id
+     * @param string $accessToken
+     *
      * @return mixed
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \JsonException

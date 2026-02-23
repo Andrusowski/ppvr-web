@@ -26,3 +26,5 @@ Route::get('/stats', 'StatsController@getIndex');
 Route::get('/legal/notice', 'LegalController@getNotice');
 Route::get('/legal/privacy', 'LegalController@getPrivacy');
 Route::get('/highlights', 'HighlightsController@getIndex');
+Route::get('/game', 'GameController@getIndex');
+Route::post('/game/validate', 'GameController@validateChoice');

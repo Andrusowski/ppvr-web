@@ -8,7 +8,6 @@
 namespace App\Http\Controllers;
 
 use App\Services\Controller\HighlightsControllerService;
-use App\Services\RedditService;
 
 class HighlightsController
 {

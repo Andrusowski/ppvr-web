@@ -3,6 +3,7 @@ import Chart from "./components/Chart.vue";
 import BarChart from "./components/BarChart.vue";
 import VerticalChart from "./components/VerticalChart.vue";
 import Search from "./components/Search.vue";
+import GameWidget from "./components/GameWidget.vue";
 import axios from 'axios';
 import VueAxios from 'vue-axios';
 
@@ -15,6 +16,7 @@ app.use(VueAxios, axios)
     .component('bar-chart', BarChart)
     .component('vertical-chart', VerticalChart)
     .component('search', Search)
+    .component('game-widget', GameWidget)
     .mount('#app');
 
 function search() {

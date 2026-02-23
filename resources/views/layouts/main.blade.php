@@ -58,6 +58,7 @@
                         <ul class="uk-nav uk-dropdown-nav">
                             <!-- menu -->
                             <li><a href="{{url('/stats')}}">Stats</a></li>
+                            <li><a href="{{url('/game')}}">DLE</a></li>
                             <li><a href="{{url('/faq')}}">FAQ</a></li>
                             <li><a href="{{url('/docs')}}">API</a></li>
                             <li><a href="https://github.com/Andrusowski/ppvr-web/blob/master/CHANGELOG.md">Changelog</a></li>
@@ -71,6 +72,7 @@
                     <ul class="uk-navbar-nav uk-visible@s">
                         <!-- menu -->
                         <li><a href="{{url('/stats')}}">Stats</a></li>
+                        <li><a href="{{url('/game')}}">DLE</a></li>
                         <li><a href="{{url('/faq')}}">FAQ</a></li>
                         <li><a href="{{url('/docs')}}">API</a></li>
                         <li><a href="https://github.com/Andrusowski/ppvr-web/blob/master/CHANGELOG.md">Changelog</a></li>
@@ -118,7 +120,7 @@
 
     @env(['production'])
         <!-- Ackee -->
-        <script async src="https://ackee.gymir.andrus.io/cooltrack.js" data-ackee-server="https://ackee.gymir.andrus.io" data-ackee-domain-id="{{ env('ACKEE_DOMAIN_ID') }}" data-ackee-opts='{ "detailed": true }'></script>
+        <script async src="https://ackee.gymir.andrus.io/cooltrack.js" data-ackee-server="https://ackee.gymir.andrus.io" data-ackee-domain-id="{{ env('ACKEE_DOMAIN_ID') }}"></script>
     @endenv
 </body>
 </html>
