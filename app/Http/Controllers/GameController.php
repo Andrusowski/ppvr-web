@@ -16,11 +16,19 @@ class GameController extends Controller
     public function getIndex()
     {
         $controllerService = new GameControllerService();
-        $game = $controllerService->getOrCreateDailyGame();
+        $game = $controllerService->getDailyGame();
+
+        if (!$game) {
+            return view('game.index')
+                ->with('gameData', null)
+                ->with('noGame', true);
+        }
+
         $gameData = $controllerService->getGameData($game);
 
         return view('game.index')
-            ->with('gameData', $gameData);
+            ->with('gameData', $gameData)
+            ->with('noGame', false);
     }
 
     /**
@@ -31,7 +39,15 @@ class GameController extends Controller
     public function getGameData(): JsonResponse
     {
         $controllerService = new GameControllerService();
-        $game = $controllerService->getOrCreateDailyGame();
+        $game = $controllerService->getDailyGame();
+
+        if (!$game) {
+            return response()->json([
+                'error' => 'No game available',
+                'message' => 'Today\'s game has not been created yet. Please try again later.',
+            ], 404);
+        }
+
         $gameData = $controllerService->getGameData($game);
 
         return response()->json($gameData);
@@ -57,7 +73,15 @@ class GameController extends Controller
         }
 
         $controllerService = new GameControllerService();
-        $game = $controllerService->getOrCreateDailyGame();
+        $game = $controllerService->getDailyGame();
+
+        if (!$game) {
+            return response()->json([
+                'valid' => false,
+                'error' => 'No game available',
+            ], 404);
+        }
+
         $result = $controllerService->validateChoice($game, $round, $chosenPostId);
 
         return response()->json($result);

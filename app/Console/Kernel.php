@@ -35,6 +35,9 @@ class Kernel extends ConsoleKernel
         $schedule->command('parse:author:score')
                  ->dailyAt('3:40')
                  ->withoutOverlapping(30);
+        $schedule->command('game:create-daily')
+                 ->dailyAt('00:00')
+                 ->timezone('UTC');
     }
 
     /**

@@ -117,7 +117,10 @@
                 <div class="uk-card uk-card-primary uk-card-body result-card">
                     <h2 class="uk-card-title">Victory!</h2>
                     <p>You got all {{ totalRounds }} rounds correct!</p>
-                    <p class="uk-text-meta">Come back tomorrow for a new challenge.</p>
+                    <div v-if="countdown" class="countdown-container">
+                        <p class="uk-text-meta">Next game in:</p>
+                        <p class="countdown-timer">{{ countdown }}</p>
+                    </div>
                 </div>
                 <div class="post-links uk-margin-top">
                     <p class="uk-text-muted">Posts in today's game:</p>
@@ -145,7 +148,10 @@
                 <div class="uk-card uk-card-secondary uk-card-body result-card">
                     <h2 class="uk-card-title">Game Over</h2>
                     <p>You made it to round {{ currentRound }} of {{ totalRounds }}.</p>
-                    <p class="uk-text-meta">Come back tomorrow for another try!</p>
+                    <div v-if="countdown" class="countdown-container">
+                        <p class="uk-text-meta">Next game in:</p>
+                        <p class="countdown-timer">{{ countdown }}</p>
+                    </div>
                 </div>
                 <div class="post-links uk-margin-top">
                     <p class="uk-text-muted">Posts you encountered:</p>
@@ -173,14 +179,17 @@
                 <h2 class="uk-card-title">Already Played Today</h2>
                 <p v-if="savedResult === 'won'">You won today's game!</p>
                 <p v-else>You reached round {{ savedRound }} of {{ totalRounds }}.</p>
-                <p class="uk-text-meta">Come back tomorrow for a new challenge.</p>
+                <div v-if="countdown" class="countdown-container">
+                    <p class="uk-text-meta">Next game in:</p>
+                    <p class="countdown-timer">{{ countdown }}</p>
+                </div>
             </div>
         </div>
     </div>
 </template>
 
 <script>
-import { ref, computed, onMounted, inject } from 'vue';
+import { ref, computed, onMounted, onUnmounted, inject } from 'vue';
 
 export default {
     name: 'GameWidget',
@@ -207,6 +216,8 @@ export default {
         const savedRound = ref(null);
         const revealedPostIds = ref(new Set());
         const isTransitioning = ref(false);
+        const countdown = ref('');
+        let countdownInterval = null;
 
         const storageKey = `ppvr_game_${props.gameData.date}`;
 
@@ -276,6 +287,39 @@ export default {
                 result: result,
             };
             localStorage.setItem(storageKey, JSON.stringify(data));
+            startCountdown();
+        }
+
+        function updateCountdown() {
+            const now = new Date();
+            const nextMidnightUtc = new Date(Date.UTC(
+                now.getUTCFullYear(),
+                now.getUTCMonth(),
+                now.getUTCDate() + 1,
+                0, 0, 0, 0
+            ));
+            const diff = nextMidnightUtc - now;
+
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            countdown.value = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function startCountdown() {
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+            }
+            updateCountdown();
+            countdownInterval = setInterval(updateCountdown, 1000);
+        }
+
+        function stopCountdown() {
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+                countdownInterval = null;
+            }
         }
 
         async function selectPost(side) {
@@ -330,7 +374,14 @@ export default {
         }
 
         onMounted(() => {
-            loadProgress();
+            const alreadyPlayed = loadProgress();
+            if (alreadyPlayed) {
+                startCountdown();
+            }
+        });
+
+        onUnmounted(() => {
+            stopCountdown();
         });
 
         return {
@@ -348,6 +399,7 @@ export default {
             savedRound,
             revealedPostIds,
             isTransitioning,
+            countdown,
             formatDate,
             selectPost,
         };
@@ -617,5 +669,19 @@ export default {
 
 .post-link-author {
     color: #999;
+}
+
+/* Countdown timer styles */
+.countdown-container {
+    margin-top: 1rem;
+}
+
+.countdown-timer {
+    font-size: 2rem;
+    font-weight: bold;
+    font-family: 'Courier New', Courier, monospace;
+    color: #1e87f0;
+    margin: 0.5rem 0 0 0;
+    letter-spacing: 2px;
 }
 </style>

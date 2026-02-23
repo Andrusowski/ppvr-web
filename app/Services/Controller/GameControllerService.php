@@ -23,13 +23,46 @@ class GameControllerService
     }
 
     /**
+     * Get the daily game for today (UTC). Returns null if not created yet.
+     *
+     * @return DailyGame|null
+     */
+    public function getDailyGame(): ?DailyGame
+    {
+        $today = Carbon::now('UTC')->toDateString();
+
+        return DailyGame::whereGameDate($today)->first();
+    }
+
+    /**
+     * Create a daily game for a specific date. Used by the scheduled command.
+     *
+     * @param string $date
+     *
+     * @return array{created: bool, game: DailyGame}
+     */
+    public function createDailyGameForDate(string $date): array
+    {
+        $existingGame = DailyGame::whereGameDate($date)->first();
+
+        if ($existingGame) {
+            return ['created' => false, 'game' => $existingGame];
+        }
+
+        $game = $this->createDailyGame($date);
+
+        return ['created' => true, 'game' => $game];
+    }
+
+    /**
      * Get or create the daily game for today.
+     * @deprecated Use getDailyGame() instead. Games should be created by scheduled command.
      *
      * @return DailyGame
      */
     public function getOrCreateDailyGame(): DailyGame
     {
-        $today = Carbon::today()->toDateString();
+        $today = Carbon::now('UTC')->toDateString();
 
         $game = DailyGame::whereGameDate($today)->first();
 
@@ -184,7 +217,7 @@ class GameControllerService
                 $result['title'] = $postData->post->title;
             }
 
-            // Find the top comment that is NOT from "osu-bot"
+            // Find the top comment that is NOT from "osu-bot" or "[deleted]"
             if ($postData && !empty($postData->comments)) {
                 foreach ($postData->comments as $comment) {
                     if (!isset($comment->data)) {
@@ -193,8 +226,8 @@ class GameControllerService
 
                     $commentData = $comment->data;
 
-                    // Skip if author is "osu-bot"
-                    if (isset($commentData->author) && strtolower($commentData->author) === 'osu-bot') {
+                    // Skip if author is "osu-bot" or "[deleted]"
+                    if (isset($commentData->author) && (strtolower($commentData->author) === 'osu-bot' || strtolower($commentData->author) === '[deleted]')) {
                         continue;
                     }
 
