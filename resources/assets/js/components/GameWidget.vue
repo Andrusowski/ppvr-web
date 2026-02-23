@@ -5,82 +5,110 @@
             <div class="uk-text-center uk-margin-small-bottom">
                 Round {{ currentRound }} / {{ totalRounds }}
             </div>
-            <progress class="uk-progress" :value="currentRound - 1" :max="totalRounds"></progress>
+            <progress class="uk-progress" :value="gameState === 'won' ? totalRounds :currentRound - 1" :max="totalRounds"></progress>
         </div>
 
         <!-- Game area -->
         <div v-if="gameState === 'playing'" class="game-area">
-            <TransitionGroup name="slide" tag="div" class="uk-grid uk-grid-small uk-child-width-1-2@s" uk-grid>
-                <!-- Left post -->
-                <div :key="'left-' + leftPost.id" class="post-wrapper">
-                    <div
-                        class="uk-card uk-card-default uk-card-hover post-card"
-                        :class="{
-                            'selected': selectedPost === 'left',
-                            'correct': showResult && leftPost.score >= rightPost.score,
-                            'incorrect': showResult && leftPost.score < rightPost.score
-                        }"
-                        @click="selectPost('left')"
-                    >
-                        <div class="uk-card-body">
-                            <h4 class="uk-card-title reddit-title">
-                                {{ leftPost.reddit_title || leftPost.title }}
-                            </h4>
-                            <div v-if="leftPost.top_comment" class="top-comment uk-margin-small-top">
-                                <span class="comment-label">
-                                    Top comment
-                                    <span v-if="leftPost.top_comment_author"> by u/{{ leftPost.top_comment_author }}</span>:
-                                </span>
-                                <p class="comment-body">{{ leftPost.top_comment }}</p>
-                            </div>
-                            <hr class="uk-divider-small">
-                            <p class="uk-text-meta uk-margin-small-top">
-                                posted by u/{{ leftPost.author }} on {{ formatDate(leftPost.created_at) }}
-                            </p>
-                            <Transition name="fade">
-                                <p v-if="showResult || revealedPostIds.has(leftPost.id)" class="uk-text-bold score-reveal">
-                                    Score: {{ leftPost.score }}
+            <div class="posts-grid" :class="{ 'transitioning': isTransitioning || showResult }">
+                <!-- Left post (fades out during transition) -->
+                <div class="post-slot post-slot-left">
+                    <div class="post-wrapper" :class="{ 'fade-out': isTransitioning }">
+                        <div
+                            class="uk-card uk-card-default uk-card-hover post-card"
+                            :class="{
+                                'selected': selectedPost === 'left',
+                                'correct': showResult && leftPost.score >= rightPost.score,
+                                'incorrect': showResult && leftPost.score < rightPost.score
+                            }"
+                            @click="selectPost('left')"
+                        >
+                            <div class="uk-card-body">
+                                <h4 class="uk-card-title reddit-title">
+                                    {{ leftPost.reddit_title || leftPost.title }}
+                                </h4>
+                                <div v-if="leftPost.top_comment" class="top-comment uk-margin-small-top">
+                                    <span class="comment-label">
+                                        Top comment
+                                        <span v-if="leftPost.top_comment_author"> by u/{{ leftPost.top_comment_author }}</span>:
+                                    </span>
+                                    <p class="comment-body">{{ leftPost.top_comment }}</p>
+                                </div>
+                                <hr class="uk-divider-small">
+                                <p class="uk-text-meta uk-margin-small-top">
+                                    posted by u/{{ leftPost.author }} on {{ formatDate(leftPost.created_at) }}
                                 </p>
-                            </Transition>
+                                <Transition name="fade">
+                                    <p v-if="showResult || revealedPostIds.has(leftPost.id)" class="uk-text-bold score-reveal">
+                                        Score: {{ leftPost.score }}
+                                    </p>
+                                </Transition>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Right post -->
-                <div :key="'right-' + rightPost.id" class="post-wrapper">
-                    <div
-                        class="uk-card uk-card-default uk-card-hover post-card"
-                        :class="{
-                            'selected': selectedPost === 'right',
-                            'correct': showResult && rightPost.score >= leftPost.score,
-                            'incorrect': showResult && rightPost.score < leftPost.score
-                        }"
-                        @click="selectPost('right')"
-                    >
-                        <div class="uk-card-body">
-                            <h4 class="uk-card-title reddit-title">
-                                {{ rightPost.reddit_title || rightPost.title }}
-                            </h4>
-                            <div v-if="rightPost.top_comment" class="top-comment uk-margin-small-top">
-                                <span class="comment-label">
-                                    Top comment
-                                    <span v-if="rightPost.top_comment_author"> by u/{{ rightPost.top_comment_author }}</span>:
-                                </span>
-                                <p class="comment-body">{{ rightPost.top_comment }}</p>
-                            </div>
-                            <hr class="uk-divider-small">
-                            <p class="uk-text-meta uk-margin-small-top">
-                                posted by u/{{ rightPost.author }} on {{ formatDate(rightPost.created_at) }}
-                            </p>
-                            <Transition name="fade">
-                                <p v-if="showResult" class="uk-text-bold score-reveal">
-                                    Score: {{ rightPost.score }}
+                <!-- Right post (slides to left position during transition) -->
+                <div class="post-slot post-slot-right" :class="{ 'slide-to-left': isTransitioning }">
+                    <div class="post-wrapper">
+                        <div
+                            class="uk-card uk-card-default uk-card-hover post-card"
+                            :class="{
+                                'selected': selectedPost === 'right',
+                                'correct': showResult && rightPost.score >= leftPost.score,
+                                'incorrect': showResult && rightPost.score < leftPost.score
+                            }"
+                            @click="selectPost('right')"
+                        >
+                            <div class="uk-card-body">
+                                <h4 class="uk-card-title reddit-title">
+                                    {{ rightPost.reddit_title || rightPost.title }}
+                                </h4>
+                                <div v-if="rightPost.top_comment" class="top-comment uk-margin-small-top">
+                                    <span class="comment-label">
+                                        Top comment
+                                        <span v-if="rightPost.top_comment_author"> by u/{{ rightPost.top_comment_author }}</span>:
+                                    </span>
+                                    <p class="comment-body">{{ rightPost.top_comment }}</p>
+                                </div>
+                                <hr class="uk-divider-small">
+                                <p class="uk-text-meta uk-margin-small-top">
+                                    posted by u/{{ rightPost.author }} on {{ formatDate(rightPost.created_at) }}
                                 </p>
-                            </Transition>
+                                <Transition name="fade">
+                                    <p v-if="showResult" class="uk-text-bold score-reveal">
+                                        Score: {{ rightPost.score }}
+                                    </p>
+                                </Transition>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </TransitionGroup>
+
+                <!-- Incoming post (slides in from right during transition) -->
+                <div v-if="isTransitioning && incomingPost" class="post-slot post-slot-incoming slide-in-right">
+                    <div class="post-wrapper">
+                        <div class="uk-card uk-card-default uk-card-hover post-card">
+                            <div class="uk-card-body">
+                                <h4 class="uk-card-title reddit-title">
+                                    {{ incomingPost.reddit_title || incomingPost.title }}
+                                </h4>
+                                <div v-if="incomingPost.top_comment" class="top-comment uk-margin-small-top">
+                                    <span class="comment-label">
+                                        Top comment
+                                        <span v-if="incomingPost.top_comment_author"> by u/{{ incomingPost.top_comment_author }}</span>:
+                                    </span>
+                                    <p class="comment-body">{{ incomingPost.top_comment }}</p>
+                                </div>
+                                <hr class="uk-divider-small">
+                                <p class="uk-text-meta uk-margin-small-top">
+                                    posted by u/{{ incomingPost.author }} on {{ formatDate(incomingPost.created_at) }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Victory modal -->
@@ -195,6 +223,11 @@ export default {
             return posts.value.slice(0, currentRound.value + 1);
         });
 
+        // The post that will slide in from the right during transition
+        const incomingPost = computed(() => {
+            return posts.value[currentRound.value + 1] || null;
+        });
+
         function formatDate(timestamp) {
             if (!timestamp) return '';
             const date = new Date(timestamp * 1000);
@@ -271,16 +304,16 @@ export default {
                             gameState.value = 'won';
                             saveResult('won');
                         } else {
-                            // Next round with transition
+                            // Start transition animation
                             isTransitioning.value = true;
-                            currentRound.value++;
-                            selectedPost.value = null;
-                            showResult.value = false;
-                            saveProgress();
 
-                            // Reset transition state after animation completes
+                            // After animation completes, update the round
                             setTimeout(() => {
+                                currentRound.value++;
+                                selectedPost.value = null;
+                                showResult.value = false;
                                 isTransitioning.value = false;
+                                saveProgress();
                             }, 500);
                         }
                     }, 1500);
@@ -306,6 +339,7 @@ export default {
             posts,
             leftPost,
             rightPost,
+            incomingPost,
             playedPosts,
             gameState,
             selectedPost,
@@ -331,8 +365,107 @@ export default {
     position: relative;
 }
 
+.posts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.transitioning {
+    pointer-events: none;
+}
+
+/* Mobile: stack vertically */
+@media (max-width: 639px) {
+    .posts-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.post-slot {
+    position: relative;
+    min-height: 200px;
+}
+
 .post-wrapper {
-    transition: all 0.5s ease;
+    height: 100%;
+}
+
+/* Left post fade out animation */
+.post-wrapper.fade-out {
+    animation: fadeOut 0.5s ease forwards;
+}
+
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+    }
+}
+
+/* Right post slides to left position */
+.post-slot-right.slide-to-left {
+    animation: slideToLeft 0.5s ease forwards;
+}
+
+@keyframes slideToLeft {
+    to {
+        transform: translateX(calc(-100% - 1rem));
+    }
+}
+
+/* Mobile: slide up instead of left */
+@media (max-width: 639px) {
+    @keyframes slideToLeft {
+        to {
+            transform: translateY(calc(-100% - 1rem));
+        }
+    }
+}
+
+/* Incoming post slides in from right */
+.post-slot-incoming {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: calc(50% - 0.5rem);
+}
+
+.post-slot-incoming.slide-in-right {
+    animation: slideInRight 0.5s ease forwards;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Mobile: incoming post slides in from bottom */
+@media (max-width: 639px) {
+    .post-slot-incoming {
+        position: absolute;
+        top: auto;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        width: 100%;
+    }
+
+    @keyframes slideInRight {
+        from {
+            transform: translateY(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
 }
 
 .post-card {
@@ -404,30 +537,6 @@ export default {
 
 .result-card {
     animation: pop-in 0.4s ease-out;
-}
-
-/* Slide transition for posts */
-.slide-move {
-    transition: transform 0.5s ease;
-}
-
-.slide-enter-active {
-    transition: all 0.5s ease;
-}
-
-.slide-leave-active {
-    transition: all 0.5s ease;
-    position: absolute;
-}
-
-.slide-enter-from {
-    opacity: 0;
-    transform: translateX(100%);
-}
-
-.slide-leave-to {
-    opacity: 0;
-    transform: translateX(-100%);
 }
 
 /* Fade transition for scores and modals */
