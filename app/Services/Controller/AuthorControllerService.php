@@ -18,13 +18,23 @@ class AuthorControllerService
      */
     public function getAuthorStats(string $name): object
     {
-        return DB::table('posts')
-                 ->select(DB::raw('author,
+        $result = DB::table('posts')
+                    ->select(DB::raw('author,
                              (SUM(downs)/SUM(ups))*100 as controversy,
                              COUNT(posts.id) as posts'))
-                 ->where('author', $name)
-                 ->groupBy('author')
-                 ->first();
+                    ->where('author', $name)
+                    ->groupBy('author')
+                    ->first();
+
+        if ($result === null) {
+            return (object) [
+                'author' => $name,
+                'controversy' => 0,
+                'posts' => 0,
+            ];
+        }
+
+        return $result;
     }
 
     /**

@@ -23,6 +23,16 @@ class GameControllerService
     }
 
     /**
+     * Get the most recent daily game. Returns null if no games exist.
+     *
+     * @return DailyGame|null
+     */
+    public function getLatestGame(): ?DailyGame
+    {
+        return DailyGame::orderBy('game_date', 'desc')->first();
+    }
+
+    /**
      * Get the daily game for today (UTC). Returns null if not created yet.
      *
      * @return DailyGame|null

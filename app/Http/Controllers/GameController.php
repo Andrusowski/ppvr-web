@@ -16,7 +16,7 @@ class GameController extends Controller
     public function getIndex()
     {
         $controllerService = new GameControllerService();
-        $game = $controllerService->getDailyGame();
+        $game = $controllerService->getLatestGame();
 
         if (!$game) {
             return view('game.index')
@@ -39,12 +39,12 @@ class GameController extends Controller
     public function getGameData(): JsonResponse
     {
         $controllerService = new GameControllerService();
-        $game = $controllerService->getDailyGame();
+        $game = $controllerService->getLatestGame();
 
         if (!$game) {
             return response()->json([
                 'error' => 'No game available',
-                'message' => 'Today\'s game has not been created yet. Please try again later.',
+                'message' => 'No games have been created yet. Please try again later.',
             ], 404);
         }
 
@@ -73,7 +73,7 @@ class GameController extends Controller
         }
 
         $controllerService = new GameControllerService();
-        $game = $controllerService->getDailyGame();
+        $game = $controllerService->getLatestGame();
 
         if (!$game) {
             return response()->json([
