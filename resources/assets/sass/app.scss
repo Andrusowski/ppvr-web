@@ -1,4 +1,5 @@
 
+
 // Fonts
 @font-face {
     font-family: 'Nunito';
@@ -14,6 +15,40 @@
 // Variables
 @import 'variables';
 
+// CSS Custom Properties for theming
+:root {
+    --bg-color: #{$body-bg};
+    --text-color: #333;
+    --text-muted: #666;
+    --text-secondary: #222;
+    --card-bg: #{$white};
+    --card-border: #e5e5e5;
+    --navbar-bg: transparent;
+    --input-bg: #{$white};
+    --input-border: #e5e5e5;
+    --dropdown-bg: #{$white};
+    --footer-text: #999;
+    --link-color: #1e87f0;
+    --table-stripe: rgba(0, 0, 0, 0.03);
+}
+
+// Dark mode styles
+[data-theme="dark"] {
+    --bg-color: #{$dark-bg};
+    --text-color: #{$dark-text};
+    --text-muted: #{$dark-text-muted};
+    --text-secondary: #{$dark-text-secondary};
+    --card-bg: #{$dark-card};
+    --card-border: #{$dark-border};
+    --navbar-bg: transparent;
+    --input-bg: #{$dark-surface};
+    --input-border: #{$dark-border};
+    --dropdown-bg: #{$dark-surface};
+    --footer-text: #{$dark-text-muted};
+    --link-color: #5eb3ff;
+    --table-stripe: rgba(255, 255, 255, 0.03);
+}
+
 html {
     height: 100%;
     box-sizing: border-box;
@@ -25,10 +60,182 @@ html {
     font-family: 'Nunito', sans-serif !important;
 }
 
+[data-theme="dark"] html,
+html[data-theme="dark"] {
+    background-color: var(--bg-color);
+}
+
 body {
     min-height: 100%;
     position: relative;
     margin: 0;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+[data-theme="dark"] body {
+    background-color: var(--bg-color);
+}
+
+// Dark mode specific overrides
+[data-theme="dark"] {
+    // UIkit cards
+    .uk-card,
+    .uk-card-default {
+        background-color: var(--card-bg) !important;
+        color: var(--text-color) !important;
+        border-color: var(--card-border) !important;
+    }
+
+    .uk-card-title,
+    .uk-card-body {
+        color: var(--text-color) !important;
+    }
+
+    // Navbar
+    .uk-navbar-container {
+        background-color: var(--navbar-bg) !important;
+    }
+
+    .uk-navbar-nav > li > a,
+    .uk-navbar-item,
+    .uk-navbar-toggle {
+        color: var(--text-color) !important;
+    }
+
+    .uk-navbar-nav > li > a:hover {
+        color: $reddit !important;
+    }
+
+    // Dropdowns
+    .uk-dropdown {
+        background-color: var(--dropdown-bg) !important;
+        border-color: var(--card-border) !important;
+    }
+
+    .uk-dropdown-nav > li > a {
+        color: var(--text-color) !important;
+    }
+
+    .uk-dropdown-nav > li > a:hover {
+        color: $reddit !important;
+    }
+
+    // Search input
+    .uk-search-input {
+        background-color: var(--input-bg) !important;
+        color: var(--text-color) !important;
+        border-color: var(--input-border) !important;
+    }
+
+    .uk-search-input::placeholder {
+        color: var(--text-muted) !important;
+    }
+
+    // Tables
+    .uk-table {
+        color: var(--text-color) !important;
+    }
+
+    .uk-table-striped tbody tr:nth-of-type(odd) {
+        background-color: var(--table-stripe) !important;
+    }
+
+    .uk-table th {
+        color: var(--text-color) !important;
+    }
+
+    // Links
+    a:not(.uk-navbar-item):not(.uk-logo):not(.btn-reddit):not(.btn-osu) {
+        color: var(--link-color);
+    }
+
+    // Text
+    .uk-text-meta,
+    .uk-text-muted {
+        color: var(--text-muted) !important;
+    }
+
+    .uk-text-secondary {
+        color: var(--text-secondary) !important;
+    }
+
+    // Alerts
+    .uk-alert {
+        background-color: var(--card-bg) !important;
+        color: var(--text-color) !important;
+    }
+
+    // Modals
+    .uk-modal-dialog {
+        background-color: var(--card-bg) !important;
+        color: var(--text-color) !important;
+    }
+
+    .uk-modal-title {
+        color: var(--text-color) !important;
+    }
+
+    // Footer
+    #footertext {
+        color: var(--footer-text) !important;
+
+        .uk-text-meta {
+            color: var(--footer-text) !important;
+        }
+    }
+
+    // Tabs
+    .uk-tab > li > a {
+        color: var(--text-muted) !important;
+    }
+
+    .uk-tab > li.uk-active > a {
+        color: var(--text-color) !important;
+        border-color: var(--text-color) !important;
+    }
+
+    // Badges
+    .uk-badge {
+        background-color: $reddit !important;
+    }
+
+    // Lists
+    .uk-list > li {
+        color: var(--text-color);
+    }
+
+    // Headings
+    h1, h2, h3, h4, h5, h6, .uk-text-lead {
+        color: var(--text-color) !important;
+    }
+
+    // Icons (UIkit)
+    [uk-icon],
+    .uk-icon {
+        color: var(--text-color) !important;
+    }
+
+    [uk-search-icon] {
+        color: var(--text-muted) !important;
+    }
+
+    // Buttons
+    .uk-button-default {
+        background-color: var(--input-bg) !important;
+        color: var(--text-color) !important;
+        border-color: var(--input-border) !important;
+    }
+
+    .uk-button-default:hover {
+        background-color: var(--card-bg) !important;
+        color: var(--text-color) !important;
+    }
+
+    .uk-button-primary {
+        color: var(--text-color) !important;
+    }
 }
 
 .nunito {
@@ -49,13 +256,21 @@ h1 {
 
 
 .btn-reddit {
-    background-color: $reddit !important;
-    color: $white !important;
+    background-color: $reddit;
+    color: $white;
+    border-color: var(--input-border);
+    font-weight: 600;
+}
+
+.btn-reddit:hover {
+    color: #ffffff;
 }
 
 .btn-osu {
-    background-color: $osu !important;
+    background-color: $osu;
     color: #ffffff;
+    border-color: var(--input-border);
+    font-weight: 600;
 }
 
 .btn-osu:hover {
@@ -74,10 +289,7 @@ h1 {
 #footertext {
     display: flex;
     justify-content: center;
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    left: 0;
+    align-items: center;
     padding: 1rem;
     text-align: center;
 }
@@ -94,7 +306,6 @@ h1 {
 
 .footer-icon {
     width: 15px;
-    z-index: -1;
 }
 
 .medal-platinum {
@@ -223,6 +434,29 @@ h1 {
     }
 }
 
+// Dark mode toggle styles
+.dark-mode-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    margin-left: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.3s ease;
+    font-size: 1.2rem;
 
+    &:hover {
+        color: $reddit;
+    }
 
+    &:focus {
+        outline: none;
+    }
 
+    .toggle-icon {
+        width: 20px;
+        height: 20px;
+    }
+}

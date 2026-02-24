@@ -28,6 +28,16 @@
     <!-- miscellaneous -->
     <meta name="theme-color" content="#ff4500"/>
     <title>PPvR</title>
+
+    <!-- Dark mode initialization (prevent flash) -->
+    <script>
+        (function() {
+            var stored = localStorage.getItem('ppvr-dark-mode');
+            if (stored === 'dark' || (!stored && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        })();
+    </script>
 </head>
 <body>
     <div id="app">
@@ -83,6 +93,8 @@
                 <div class="uk-navbar-right">
                     <!-- search -->
                     <Search search-url="{{url('search/')}}"></Search>
+                    <!-- dark mode toggle -->
+                    <dark-mode-toggle></dark-mode-toggle>
                 </div>
             </nav>
 
@@ -91,15 +103,12 @@
             <br>
         </div>
 
-        <br><br>
-
         <p class="uk-text-center uk-margin-remove-bottom uk-padding-small" id="footertext">
-            <span class="uk-text-meta">made by Andrus</span>
-            <!--<a class="uk-margin-small-right uk-margin-small-left" href="https://osu.ppy.sh/users/2924006"><i class="fab fa-discord link text-secondary"></i></a>-->
-            <a class="uk-margin-small-right uk-margin-small-left footer-link uk-text-meta" href="https://osu.ppy.sh/users/2924006" target="_blank" rel="noopener noreferrer">
-                <object data="{{ URL::asset('/icons/osu-logo-white.svg') }} " type="image/svg+xml" class="link text-secondary footer-icon" title="osu! logo"></object>
+            <span><span class="uk-text-meta">made by</span> <a href="https://andrus.io" class="uk-link uk-text-small" target="_blank">Andrus</a></span>
+            <a class="uk-margin-small-left footer-link uk-text-meta" href="https://osu.ppy.sh/users/2924006" target="_blank" rel="noopener noreferrer">
+                <img src="{{ asset('/icons/osu-logo-white.svg') }}" alt="osu! logo" class="link text-secondary footer-icon">
             </a>
-            <a class="uk-margin-small-right uk-margin-small-left footer-link uk-text-meta" href="https://discord.gg/HjtcbrEB" target="_blank" rel="noopener noreferrer">
+            <a class="uk-margin-small-right uk-margin-small-left footer-link uk-text-meta" href="https://discord.gg/F84zg7UXpK" target="_blank" rel="noopener noreferrer">
                 <i class="fab fa-discord link footer-link-fab"></i>
             </a>
             <a href="{{url('/legal/notice')}}" class="link text-secondary uk-margin-small-left uk-text-meta">Legal Notice</a>

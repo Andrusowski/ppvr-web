@@ -107,6 +107,8 @@
                         x: {
                             type: 'linear',
                             position: 'bottom',
+                            min: 0,
+                            max: chartdata.length - 1,
                             ticks: {
                                 precision:1
                             },

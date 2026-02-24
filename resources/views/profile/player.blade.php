@@ -49,12 +49,12 @@
                 </div>
             </div>
 
-            <a class="uk-button uk-button-default uk-width-1-1 btn-osu uk-text-nowrap uk-margin-top" href="{{ 'https://osu.ppy.sh/users/'.$player->id }}">osu! Profile</a>
+            <a class="uk-button uk-width-1-1 btn-osu uk-text-nowrap uk-margin-top" href="{{ 'https://osu.ppy.sh/users/'.$player->id }}" target="_blank">osu! Profile</a>
         </div>
         <div class="uk-width-expand@m">
             <p class="uk-text-lead">Rank History</p>
             <chart
-                class="uk-card uk-card-default uk-card-hover uk-padding-small"
+                class="uk-card uk-card-default uk-card-hover uk-padding-small uk-padding-remove-horizontal"
                 posts="{{ $ranks }}"
                 name="rankHistory"
                 value-index="rank"
@@ -79,7 +79,7 @@
                             <td class="uk-padding-remove-vertical">
                                 <a href="{{ url('/post/'.$post->id) }}" class="text-body" style="text-decoration: none">
                                     {{ $post->map_artist }} - {{ $post->map_title }} [{{ $post->map_diff }}]
-                                    <a href="{{ 'https://www.reddit.com/r/osugame/comments/'.$post->id }}" class="fab fa-reddit-alien reddit" style="text-decoration: none"></a>
+                                    <a href="{{ 'https://www.reddit.com/r/osugame/comments/'.$post->id }}" class="fab fa-reddit-alien reddit" style="text-decoration: none" target="_blank"></a>
                                 </a>
                             </td>
                             <td class="uk-padding-remove-vertical">{{ round($post->score) }}</td>

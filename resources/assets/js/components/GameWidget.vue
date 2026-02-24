@@ -537,12 +537,20 @@ export default {
 
 .post-card.correct {
     border: 3px solid #32d296;
-    background-color: rgba(50, 210, 150, 0.1);
+    background-color: rgba(50, 210, 150, 0.1) !important;
+}
+
+[data-theme="dark"] .post-card.correct {
+    background-color: rgba(50, 210, 150, 0.35) !important;
 }
 
 .post-card.incorrect {
     border: 3px solid #f0506e;
-    background-color: rgba(240, 80, 110, 0.1);
+    background-color: rgba(240, 80, 110, 0.1) !important;
+}
+
+[data-theme="dark"] .post-card.incorrect {
+    background-color: rgba(240, 80, 110, 0.35) !important;
 }
 
 .reddit-title {
@@ -559,11 +567,20 @@ export default {
     border-radius: 0 4px 4px 0;
 }
 
+[data-theme="dark"] .top-comment {
+    background-color: #2a2a2a;
+    border-left-color: #444;
+}
+
 .comment-label {
     font-size: 0.75rem;
     color: #666;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+}
+
+[data-theme="dark"] .comment-label {
+    color: #a0a0a0;
 }
 
 .comment-body {
@@ -574,6 +591,10 @@ export default {
     word-wrap: break-word;
     max-height: 100px;
     overflow-y: auto;
+}
+
+[data-theme="dark"] .comment-body {
+    color: #e0e0e0;
 }
 
 .score-reveal {
@@ -639,11 +660,21 @@ export default {
     transition: background-color 0.2s, border-color 0.2s, transform 0.2s;
 }
 
+[data-theme="dark"] .post-link-button {
+    background-color: #2a2a2a;
+    border-color: #3d3d3d;
+}
+
 .post-link-button:hover {
     background-color: #fff;
     border-color: #1e87f0;
     transform: translateX(4px);
     text-decoration: none;
+}
+
+[data-theme="dark"] .post-link-button:hover {
+    background-color: #3a3a3a;
+    border-color: #5eb3ff;
 }
 
 .post-link-title {
@@ -653,6 +684,10 @@ export default {
     line-height: 1.3;
     word-wrap: break-word;
     text-align: left;
+}
+
+[data-theme="dark"] .post-link-title {
+    color: #e0e0e0;
 }
 
 .post-link-meta {
@@ -669,6 +704,10 @@ export default {
 
 .post-link-author {
     color: #999;
+}
+
+[data-theme="dark"] .post-link-author {
+    color: #a0a0a0;
 }
 
 /* Countdown timer styles */

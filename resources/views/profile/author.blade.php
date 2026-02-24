@@ -7,7 +7,7 @@
 
         <!-- Badges -->
         <p class="uk-text-meta">
-            @if ((time() - $posts_new[0]->created_utc) < 48*60*60)
+            @if (count($posts_new) > 0 && (time() - $posts_new[0]->created_utc) < 48*60*60)
                 <span class="uk-label uk-label-success">recent activity</span>
             @endif
         </p>
@@ -48,7 +48,7 @@
                 </div>
             </div>
 
-            <a class="uk-button uk-button-default uk-width-1-1 btn-reddit uk-text-nowrap uk-margin-top" href="{{ 'https://www.reddit.com/u/'.$author_stats->author }}">Reddit Profile</a>
+            <a class="uk-button uk-width-1-1 btn-reddit uk-text-nowrap uk-margin-top" href="{{ 'https://www.reddit.com/u/'.$author_stats->author }}" target="_blank">Reddit Profile</a>
         </div>
         <div class="uk-width-expand@m">
             <p class="uk-text-lead">Top posts</p>
@@ -68,7 +68,7 @@
                             <td class="uk-padding-remove-vertical">
                                 <a href="{{ url('/post/'.$post->id) }}" class="text-body" style="text-decoration: none">
                                     {{ $post->map_artist }} - {{ $post->map_title }} [{{ $post->map_diff }}]
-                                    <a href="{{ 'https://www.reddit.com/r/osugame/comments/'.$post->id }}" class="fab fa-reddit-alien reddit" style="text-decoration: none"></a>
+                                    <a href="{{ 'https://www.reddit.com/r/osugame/comments/'.$post->id }}" class="fab fa-reddit-alien reddit" style="text-decoration: none" target="_blank"></a>
                                 </a>
                             </td>
                             <td class="uk-padding-remove-vertical">{{ round($post->score) }}</td>
