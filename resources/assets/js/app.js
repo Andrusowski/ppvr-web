@@ -5,6 +5,10 @@ import VerticalChart from "./components/VerticalChart.vue";
 import Search from "./components/Search.vue";
 import GameWidget from "./components/GameWidget.vue";
 import RoundBreakdownChart from "./components/RoundBreakdownChart.vue";
+import GamePostCard from "./components/game/GamePostCard.vue";
+import GameStats from "./components/game/GameStats.vue";
+import GamePostLinks from "./components/game/GamePostLinks.vue";
+import GameCountdown from "./components/game/GameCountdown.vue";
 import DarkModeToggle from "./components/DarkModeToggle.vue";
 import axios from 'axios';
 import VueAxios from 'vue-axios';
@@ -20,6 +24,10 @@ app.use(VueAxios, axios)
     .component('search', Search)
     .component('game-widget', GameWidget)
     .component('round-breakdown-chart', RoundBreakdownChart)
+    .component('game-post-card', GamePostCard)
+    .component('game-stats', GameStats)
+    .component('game-post-links', GamePostLinks)
+    .component('game-countdown', GameCountdown)
     .component('dark-mode-toggle', DarkModeToggle)
     .mount('#app');
 
