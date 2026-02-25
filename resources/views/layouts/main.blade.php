@@ -63,7 +63,7 @@
             <!-- Navbar -->
             <nav class="uk-navbar-container uk-navbar-transparent" uk-navbar>
                 <div class="uk-navbar-left">
-                    <button class="uk-navbar-toggle uk-hidden@s" type="button" data-uk-navbar-toggle-icon></button>
+                    <button class="uk-navbar-toggle uk-hidden@m" type="button" data-uk-navbar-toggle-icon></button>
                     <div uk-dropdown>
                         <ul class="uk-nav uk-dropdown-nav">
                             <!-- menu -->
@@ -72,6 +72,7 @@
                             <li><a href="{{url('/faq')}}">FAQ</a></li>
                             <li><a href="{{url('/docs')}}">API</a></li>
                             <li><a href="https://github.com/Andrusowski/ppvr-web/blob/master/CHANGELOG.md">Changelog</a></li>
+                            <dark-mode-toggle :is-mobile="true"></dark-mode-toggle>
                         </ul>
                     </div>
 
@@ -79,7 +80,7 @@
                         PPv<span class="reddit">R</span>
                     </a>
 
-                    <ul class="uk-navbar-nav uk-visible@s">
+                    <ul class="uk-navbar-nav uk-visible@m">
                         <!-- menu -->
                         <li><a href="{{url('/stats')}}">Stats</a></li>
                         <li><a href="{{url('/game')}}">DLE</a></li>
@@ -94,7 +95,7 @@
                     <!-- search -->
                     <Search search-url="{{url('search/')}}"></Search>
                     <!-- dark mode toggle -->
-                    <dark-mode-toggle></dark-mode-toggle>
+                    <dark-mode-toggle class="uk-visible@m"></dark-mode-toggle>
                 </div>
             </nav>
 

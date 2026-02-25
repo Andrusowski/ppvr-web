@@ -4,6 +4,7 @@ import BarChart from "./components/BarChart.vue";
 import VerticalChart from "./components/VerticalChart.vue";
 import Search from "./components/Search.vue";
 import GameWidget from "./components/GameWidget.vue";
+import GameAuthSection from "./components/GameAuthSection.vue";
 import RoundBreakdownChart from "./components/RoundBreakdownChart.vue";
 import GamePostCard from "./components/game/GamePostCard.vue";
 import GameStats from "./components/game/GameStats.vue";
@@ -23,6 +24,7 @@ app.use(VueAxios, axios)
     .component('vertical-chart', VerticalChart)
     .component('search', Search)
     .component('game-widget', GameWidget)
+    .component('game-auth-section', GameAuthSection)
     .component('round-breakdown-chart', RoundBreakdownChart)
     .component('game-post-card', GamePostCard)
     .component('game-stats', GameStats)

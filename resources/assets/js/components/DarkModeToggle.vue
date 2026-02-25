@@ -1,6 +1,7 @@
 <template>
     <button
-        class="uk-navbar-item dark-mode-toggle"
+        class="dark-mode-toggle"
+        :class="{ 'uk-navbar-item': !isMobile }"
         @click="toggleDarkMode"
         :title="isDark ? 'Switch to light mode' : 'Switch to dark mode'"
         type="button"
@@ -15,6 +16,12 @@ import { ref, onMounted } from 'vue';
 
 export default {
     name: 'DarkModeToggle',
+    props: {
+        isMobile: {
+            type: Boolean,
+            default: false,
+        },
+    },
     setup() {
         const isDark = ref(false);
         const STORAGE_KEY = 'ppvr-dark-mode';

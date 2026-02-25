@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\Controller\GameControllerService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -17,7 +18,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $max_streak
  * @property array|null $round_breakdown
  * @property \Illuminate\Support\Carbon|null $last_played_date
- * @property string|null $last_played_result
  * @property int|null $last_played_round
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -48,7 +48,6 @@ class UserGameStats extends Model
         'max_streak',
         'round_breakdown',
         'last_played_date',
-        'last_played_result',
         'last_played_round',
     ];
 
@@ -94,18 +93,18 @@ class UserGameStats extends Model
         }
 
         return [
-            'result' => $this->last_played_result,
+            'won' => $this->last_played_round === GameControllerService::ROUNDS_PER_GAME,
             'round' => $this->last_played_round,
         ];
     }
 
     /**
      * Record that the user played today's game.
+     * Win/loss is derived from whether round equals ROUNDS_PER_GAME.
      */
-    public function recordGamePlayed(string $result, int $round): void
+    public function recordGamePlayed(int $round): void
     {
         $this->last_played_date = Carbon::today();
-        $this->last_played_result = $result;
         $this->last_played_round = $round;
     }
 
