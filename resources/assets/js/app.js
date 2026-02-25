@@ -4,6 +4,7 @@ import BarChart from "./components/BarChart.vue";
 import VerticalChart from "./components/VerticalChart.vue";
 import Search from "./components/Search.vue";
 import GameWidget from "./components/GameWidget.vue";
+import RoundBreakdownChart from "./components/RoundBreakdownChart.vue";
 import DarkModeToggle from "./components/DarkModeToggle.vue";
 import axios from 'axios';
 import VueAxios from 'vue-axios';
@@ -18,6 +19,7 @@ app.use(VueAxios, axios)
     .component('vertical-chart', VerticalChart)
     .component('search', Search)
     .component('game-widget', GameWidget)
+    .component('round-breakdown-chart', RoundBreakdownChart)
     .component('dark-mode-toggle', DarkModeToggle)
     .mount('#app');
 

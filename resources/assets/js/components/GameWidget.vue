@@ -146,22 +146,10 @@
                     </div>
                     <div class="breakdown-container">
                         <h4 class="breakdown-title">Round Breakdown</h4>
-                        <div class="breakdown-chart">
-                            <div
-                                v-for="(count, index) in stats.roundBreakdown"
-                                :key="index"
-                                class="breakdown-bar-container"
-                            >
-                                <div
-                                    class="breakdown-bar"
-                                    :style="{ height: (count / maxBreakdownCount * 100) + '%' }"
-                                    :class="{ 'breakdown-bar-highlight': index === totalRounds }"
-                                >
-                                    <span v-if="count > 0" class="breakdown-count">{{ count }}</span>
-                                </div>
-                                <span class="breakdown-label">{{ index }}</span>
-                            </div>
-                        </div>
+                        <round-breakdown-chart
+                            :breakdown="stats.roundBreakdown"
+                            :highlight-index="totalRounds"
+                        />
                     </div>
                 </div>
 
@@ -220,22 +208,10 @@
                     </div>
                     <div class="breakdown-container">
                         <h4 class="breakdown-title">Round Breakdown</h4>
-                        <div class="breakdown-chart">
-                            <div
-                                v-for="(count, index) in stats.roundBreakdown"
-                                :key="index"
-                                class="breakdown-bar-container"
-                            >
-                                <div
-                                    class="breakdown-bar"
-                                    :style="{ height: (count / maxBreakdownCount * 100) + '%' }"
-                                    :class="{ 'breakdown-bar-highlight': index === totalRounds }"
-                                >
-                                    <span v-if="count > 0" class="breakdown-count">{{ count }}</span>
-                                </div>
-                                <span class="breakdown-label">{{ index }}</span>
-                            </div>
-                        </div>
+                        <round-breakdown-chart
+                            :breakdown="stats.roundBreakdown"
+                            :highlight-index="totalRounds"
+                        />
                     </div>
                 </div>
 
@@ -294,22 +270,10 @@
                 </div>
                 <div class="breakdown-container">
                     <h4 class="breakdown-title">Round Breakdown</h4>
-                    <div class="breakdown-chart">
-                        <div
-                            v-for="(count, index) in stats.roundBreakdown"
-                            :key="index"
-                            class="breakdown-bar-container"
-                        >
-                            <div
-                                class="breakdown-bar"
-                                :style="{ height: (count / maxBreakdownCount * 100) + '%' }"
-                                :class="{ 'breakdown-bar-highlight': index === totalRounds }"
-                            >
-                                <span v-if="count > 0" class="breakdown-count">{{ count }}</span>
-                            </div>
-                            <span class="breakdown-label">{{ index }}</span>
-                        </div>
-                    </div>
+                    <round-breakdown-chart
+                        :breakdown="stats.roundBreakdown"
+                        :highlight-index="totalRounds"
+                    />
                 </div>
             </div>
         </div>
@@ -390,10 +354,6 @@ export default {
         const averageCorrectRounds = computed(() => {
             if (stats.value.gamesPlayed === 0) return 0;
             return (stats.value.totalCorrectRounds / stats.value.gamesPlayed).toFixed(1);
-        });
-
-        const maxBreakdownCount = computed(() => {
-            return Math.max(...stats.value.roundBreakdown, 1);
         });
 
         function loadStats() {
@@ -587,7 +547,6 @@ export default {
             countdown,
             stats,
             averageCorrectRounds,
-            maxBreakdownCount,
             formatDate,
             selectPost,
         };
@@ -994,68 +953,5 @@ export default {
 
 [data-theme="dark"] .breakdown-title {
     color: #e0e0e0;
-}
-
-.breakdown-chart {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    height: 100px;
-    gap: 4px;
-    padding: 0 0.5rem;
-}
-
-.breakdown-bar-container {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: 100%;
-}
-
-.breakdown-bar {
-    width: 100%;
-    min-height: 4px;
-    background-color: #ddd;
-    border-radius: 2px 2px 0 0;
-    position: relative;
-    margin-top: auto;
-    transition: height 0.3s ease;
-}
-
-[data-theme="dark"] .breakdown-bar {
-    background-color: #555;
-}
-
-.breakdown-bar-highlight {
-    background-color: #32d296;
-}
-
-[data-theme="dark"] .breakdown-bar-highlight {
-    background-color: #32d296;
-}
-
-.breakdown-count {
-    position: absolute;
-    top: -18px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 0.7rem;
-    font-weight: bold;
-    color: #333;
-}
-
-[data-theme="dark"] .breakdown-count {
-    color: #e0e0e0;
-}
-
-.breakdown-label {
-    font-size: 0.7rem;
-    color: #666;
-    margin-top: 4px;
-}
-
-[data-theme="dark"] .breakdown-label {
-    color: #a0a0a0;
 }
 </style>
