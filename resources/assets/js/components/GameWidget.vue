@@ -122,6 +122,49 @@
                         <p class="countdown-timer">{{ countdown }}</p>
                     </div>
                 </div>
+
+                <!-- Statistics -->
+                <div v-if="stats.gamesPlayed > 0" class="stats-container uk-margin-top">
+                    <h3 class="stats-title">Your Statistics</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-value">{{ stats.gamesPlayed }}</span>
+                            <span class="stat-label">Games Played</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">{{ averageCorrectRounds }}</span>
+                            <span class="stat-label">Avg. Correct</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">{{ stats.currentStreak }}</span>
+                            <span class="stat-label">Current Streak</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">{{ stats.maxStreak }}</span>
+                            <span class="stat-label">Max Streak</span>
+                        </div>
+                    </div>
+                    <div class="breakdown-container">
+                        <h4 class="breakdown-title">Round Breakdown</h4>
+                        <div class="breakdown-chart">
+                            <div
+                                v-for="(count, index) in stats.roundBreakdown"
+                                :key="index"
+                                class="breakdown-bar-container"
+                            >
+                                <div
+                                    class="breakdown-bar"
+                                    :style="{ height: (count / maxBreakdownCount * 100) + '%' }"
+                                    :class="{ 'breakdown-bar-highlight': index === totalRounds }"
+                                >
+                                    <span v-if="count > 0" class="breakdown-count">{{ count }}</span>
+                                </div>
+                                <span class="breakdown-label">{{ index }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="post-links uk-margin-top">
                     <p class="uk-text-muted">Posts in today's game:</p>
                     <div class="uk-flex uk-flex-column uk-flex-middle">
@@ -153,6 +196,49 @@
                         <p class="countdown-timer">{{ countdown }}</p>
                     </div>
                 </div>
+
+                <!-- Statistics -->
+                <div v-if="stats.gamesPlayed > 0" class="stats-container uk-margin-top">
+                    <h3 class="stats-title">Your Statistics</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-value">{{ stats.gamesPlayed }}</span>
+                            <span class="stat-label">Games Played</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">{{ averageCorrectRounds }}</span>
+                            <span class="stat-label">Avg. Correct</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">{{ stats.currentStreak }}</span>
+                            <span class="stat-label">Current Streak</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">{{ stats.maxStreak }}</span>
+                            <span class="stat-label">Max Streak</span>
+                        </div>
+                    </div>
+                    <div class="breakdown-container">
+                        <h4 class="breakdown-title">Round Breakdown</h4>
+                        <div class="breakdown-chart">
+                            <div
+                                v-for="(count, index) in stats.roundBreakdown"
+                                :key="index"
+                                class="breakdown-bar-container"
+                            >
+                                <div
+                                    class="breakdown-bar"
+                                    :style="{ height: (count / maxBreakdownCount * 100) + '%' }"
+                                    :class="{ 'breakdown-bar-highlight': index === totalRounds }"
+                                >
+                                    <span v-if="count > 0" class="breakdown-count">{{ count }}</span>
+                                </div>
+                                <span class="breakdown-label">{{ index }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="post-links uk-margin-top">
                     <p class="uk-text-muted">Posts you encountered:</p>
                     <div class="uk-flex uk-flex-column uk-flex-middle">
@@ -182,6 +268,48 @@
                 <div v-if="countdown" class="countdown-container">
                     <p class="uk-text-meta">Next game in:</p>
                     <p class="countdown-timer">{{ countdown }}</p>
+                </div>
+            </div>
+
+            <!-- Statistics -->
+            <div v-if="stats.gamesPlayed > 0" class="stats-container uk-margin-top">
+                <h3 class="stats-title">Your Statistics</h3>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-value">{{ stats.gamesPlayed }}</span>
+                        <span class="stat-label">Games Played</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">{{ averageCorrectRounds }}</span>
+                        <span class="stat-label">Avg. Correct</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">{{ stats.currentStreak }}</span>
+                        <span class="stat-label">Current Streak</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">{{ stats.maxStreak }}</span>
+                        <span class="stat-label">Max Streak</span>
+                    </div>
+                </div>
+                <div class="breakdown-container">
+                    <h4 class="breakdown-title">Round Breakdown</h4>
+                    <div class="breakdown-chart">
+                        <div
+                            v-for="(count, index) in stats.roundBreakdown"
+                            :key="index"
+                            class="breakdown-bar-container"
+                        >
+                            <div
+                                class="breakdown-bar"
+                                :style="{ height: (count / maxBreakdownCount * 100) + '%' }"
+                                :class="{ 'breakdown-bar-highlight': index === totalRounds }"
+                            >
+                                <span v-if="count > 0" class="breakdown-count">{{ count }}</span>
+                            </div>
+                            <span class="breakdown-label">{{ index }}</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -219,6 +347,16 @@ export default {
         const countdown = ref('');
         let countdownInterval = null;
 
+        // Statistics
+        const statsStorageKey = 'ppvr_game_stats';
+        const stats = ref({
+            gamesPlayed: 0,
+            totalCorrectRounds: 0,
+            currentStreak: 0,
+            maxStreak: 0,
+            roundBreakdown: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // Index = correct rounds (0-10)
+        });
+
         const storageKey = `ppvr_game_${props.gameData.date}`;
 
         const leftPost = computed(() => {
@@ -247,6 +385,50 @@ export default {
                 month: 'numeric',
                 day: 'numeric',
             });
+        }
+
+        const averageCorrectRounds = computed(() => {
+            if (stats.value.gamesPlayed === 0) return 0;
+            return (stats.value.totalCorrectRounds / stats.value.gamesPlayed).toFixed(1);
+        });
+
+        const maxBreakdownCount = computed(() => {
+            return Math.max(...stats.value.roundBreakdown, 1);
+        });
+
+        function loadStats() {
+            const saved = localStorage.getItem(statsStorageKey);
+            if (saved) {
+                const data = JSON.parse(saved);
+                stats.value = {
+                    gamesPlayed: data.gamesPlayed || 0,
+                    totalCorrectRounds: data.totalCorrectRounds || 0,
+                    currentStreak: data.currentStreak || 0,
+                    maxStreak: data.maxStreak || 0,
+                    roundBreakdown: data.roundBreakdown || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                };
+            }
+        }
+
+        function saveStats() {
+            localStorage.setItem(statsStorageKey, JSON.stringify(stats.value));
+        }
+
+        function updateStats(correctRounds, won) {
+            stats.value.gamesPlayed++;
+            stats.value.totalCorrectRounds += correctRounds;
+            stats.value.roundBreakdown[correctRounds]++;
+
+            if (won) {
+                stats.value.currentStreak++;
+                if (stats.value.currentStreak > stats.value.maxStreak) {
+                    stats.value.maxStreak = stats.value.currentStreak;
+                }
+            } else {
+                stats.value.currentStreak = 0;
+            }
+
+            saveStats();
         }
 
         function loadProgress() {
@@ -281,12 +463,13 @@ export default {
             localStorage.setItem(storageKey, JSON.stringify(data));
         }
 
-        function saveResult(result) {
+        function saveResult(result, correctRounds) {
             const data = {
                 round: currentRound.value,
                 result: result,
             };
             localStorage.setItem(storageKey, JSON.stringify(data));
+            updateStats(correctRounds, result === 'won');
             startCountdown();
         }
 
@@ -344,9 +527,9 @@ export default {
                     // Correct choice
                     setTimeout(() => {
                         if (currentRound.value >= totalRounds.value) {
-                            // Won the game
+                            // Won the game - all 10 rounds correct
                             gameState.value = 'won';
-                            saveResult('won');
+                            saveResult('won', totalRounds.value);
                         } else {
                             // Start transition animation
                             isTransitioning.value = true;
@@ -363,9 +546,10 @@ export default {
                     }, 1500);
                 } else {
                     // Wrong choice - game over
+                    // Correct rounds = currentRound - 1 (failed on current round)
                     setTimeout(() => {
                         gameState.value = 'lost';
-                        saveResult('lost');
+                        saveResult('lost', currentRound.value - 1);
                     }, 1500);
                 }
             } catch (error) {
@@ -374,6 +558,7 @@ export default {
         }
 
         onMounted(() => {
+            loadStats();
             const alreadyPlayed = loadProgress();
             if (alreadyPlayed) {
                 startCountdown();
@@ -400,6 +585,9 @@ export default {
             revealedPostIds,
             isTransitioning,
             countdown,
+            stats,
+            averageCorrectRounds,
+            maxBreakdownCount,
             formatDate,
             selectPost,
         };
@@ -722,5 +910,152 @@ export default {
     color: #1e87f0;
     margin: 0.5rem 0 0 0;
     letter-spacing: 2px;
+}
+
+/* Statistics styles */
+.stats-container {
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 1rem;
+    background-color: #f8f8f8;
+    border-radius: 8px;
+}
+
+[data-theme="dark"] .stats-container {
+    background-color: #2a2a2a;
+}
+
+.stats-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0 0 1rem 0;
+    color: #333;
+}
+
+[data-theme="dark"] .stats-title {
+    color: #e0e0e0;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+@media (max-width: 500px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.5rem;
+    background-color: #fff;
+    border-radius: 4px;
+}
+
+[data-theme="dark"] .stat-item {
+    background-color: #3a3a3a;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #1e87f0;
+}
+
+.stat-label {
+    font-size: 0.7rem;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 0.25rem;
+}
+
+[data-theme="dark"] .stat-label {
+    color: #a0a0a0;
+}
+
+.breakdown-container {
+    margin-top: 1rem;
+}
+
+.breakdown-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin: 0 0 0.75rem 0;
+    color: #333;
+}
+
+[data-theme="dark"] .breakdown-title {
+    color: #e0e0e0;
+}
+
+.breakdown-chart {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    height: 100px;
+    gap: 4px;
+    padding: 0 0.5rem;
+}
+
+.breakdown-bar-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+}
+
+.breakdown-bar {
+    width: 100%;
+    min-height: 4px;
+    background-color: #ddd;
+    border-radius: 2px 2px 0 0;
+    position: relative;
+    margin-top: auto;
+    transition: height 0.3s ease;
+}
+
+[data-theme="dark"] .breakdown-bar {
+    background-color: #555;
+}
+
+.breakdown-bar-highlight {
+    background-color: #32d296;
+}
+
+[data-theme="dark"] .breakdown-bar-highlight {
+    background-color: #32d296;
+}
+
+.breakdown-count {
+    position: absolute;
+    top: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.7rem;
+    font-weight: bold;
+    color: #333;
+}
+
+[data-theme="dark"] .breakdown-count {
+    color: #e0e0e0;
+}
+
+.breakdown-label {
+    font-size: 0.7rem;
+    color: #666;
+    margin-top: 4px;
+}
+
+[data-theme="dark"] .breakdown-label {
+    color: #a0a0a0;
 }
 </style>

@@ -241,6 +241,11 @@ body {
     .uk-button-primary {
         color: var(--text-color) !important;
     }
+
+    // Progress
+    .uk-progress {
+        background-color: var(--card-bg) !important;
+    }
 }
 
 .nunito {
