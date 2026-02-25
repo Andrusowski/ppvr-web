@@ -11,15 +11,16 @@
         "barryvdh/laravel-ide-helper": "^2.12",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^10.0",
+        "laravel/socialite": "*",
         "laravel/tinker": "^2.5",
         "predis/predis": "^2.2",
         "sentry/sentry-laravel": "^3.8.2",
-        "spatie/browsershot": "^3.59"
+        "spatie/browsershot": "^5.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
         "knuckleswtf/scribe": "^4.0",
-        "laravel/sail": "^1.0.1",
+        "laravel/sail": "^1.26.0",
         "mockery/mockery": "^1.4.2",
         "nunomaduro/collision": "^6.1",
         "phpstan/phpstan": "^0.12.87",
@@ -71,7 +72,8 @@
         "sort-packages": true,
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true,
-            "php-http/discovery": true
+            "php-http/discovery": true,
+            "symfony/thanks": true
         }
     },
     "minimum-stability": "stable",

@@ -28,3 +28,16 @@ Route::get('/legal/privacy', 'LegalController@getPrivacy');
 Route::get('/highlights', 'HighlightsController@getIndex');
 Route::get('/game', 'GameController@getIndex');
 Route::post('/game/validate', 'GameController@validateChoice');
+
+// osu! OAuth authentication routes
+Route::get('/auth/osu', 'Auth\OsuAuthController@redirect')->name('auth.osu');
+Route::get('/auth/osu/callback', 'Auth\OsuAuthController@callback')->name('auth.osu.callback');
+Route::post('/logout', 'Auth\OsuAuthController@logout')->name('logout');
+Route::get('/auth/me', 'Auth\OsuAuthController@me')->name('auth.me');
+
+// Game stats sync routes (authenticated)
+Route::middleware('auth')->group(function () {
+    Route::post('/game/stats/sync', 'GameStatsController@sync')->name('game.stats.sync');
+    Route::get('/game/stats', 'GameStatsController@get')->name('game.stats.get');
+    Route::post('/game/stats/initial-sync', 'GameStatsController@initialSync')->name('game.stats.initial-sync');
+});

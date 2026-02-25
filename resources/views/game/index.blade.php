@@ -20,6 +20,14 @@
         <game-widget
             :game-data='@json($gameData)'
             validate-url="{{ url('/game/validate') }}"
+            auth-me-url="{{ route('auth.me') }}"
+            login-url="{{ route('auth.osu') }}"
+            logout-url="{{ route('logout') }}"
+            sync-url="{{ route('game.stats.sync') }}"
+            initial-sync-url="{{ route('game.stats.initial-sync') }}"
+            :auth-success="{{ session('osu_auth_success') ? 'true' : 'false' }}"
+            :is-new-user="{{ session('is_new_user') ? 'true' : 'false' }}"
+            csrf-token="{{ csrf_token() }}"
         ></game-widget>
     @endif
 @endsection

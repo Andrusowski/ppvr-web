@@ -27,7 +27,7 @@ class AuthorControllerService
                     ->first();
 
         if ($result === null) {
-            return (object) [
+            return (object)[
                 'author' => $name,
                 'controversy' => 0,
                 'posts' => 0,

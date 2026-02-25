@@ -1,5 +1,26 @@
 <template>
     <div class="game-container">
+        <!-- User auth section -->
+        <div class="auth-section uk-margin-bottom">
+            <div v-if="user" class="user-info">
+                <img v-if="user.avatar_url" :src="user.avatar_url" :alt="user.name" class="user-avatar">
+                <span class="user-name">{{ user.name }}</span>
+                <span v-if="syncStatus" class="sync-status" :class="syncStatus">
+                    {{ syncStatusText }}
+                </span>
+                <form :action="logoutUrl" method="POST" class="logout-form">
+                    <input type="hidden" name="_token" :value="csrfToken">
+                    <button type="submit" class="logout-button">Logout</button>
+                </form>
+            </div>
+            <div v-else class="login-prompt">
+                <a :href="loginUrl" class="login-button btn-osu">
+                    <span>Login with osu!</span>
+                </a>
+                <span class="login-hint">to sync your stats across devices</span>
+            </div>
+        </div>
+
         <!-- Progress bar -->
         <div class="uk-margin-bottom">
             <div class="uk-text-center uk-margin-small-bottom">
@@ -134,6 +155,38 @@ export default {
             type: String,
             required: true,
         },
+        authMeUrl: {
+            type: String,
+            required: true,
+        },
+        loginUrl: {
+            type: String,
+            required: true,
+        },
+        logoutUrl: {
+            type: String,
+            required: true,
+        },
+        syncUrl: {
+            type: String,
+            required: true,
+        },
+        initialSyncUrl: {
+            type: String,
+            required: true,
+        },
+        authSuccess: {
+            type: Boolean,
+            default: false,
+        },
+        isNewUser: {
+            type: Boolean,
+            default: false,
+        },
+        csrfToken: {
+            type: String,
+            required: true,
+        },
     },
     setup(props) {
         const axios = inject('axios');
@@ -148,6 +201,10 @@ export default {
         const savedRound = ref(null);
         const revealedPostIds = ref(new Set());
         const isTransitioning = ref(false);
+
+        // User authentication state
+        const user = ref(null);
+        const syncStatus = ref(null); // 'syncing', 'synced', 'error'
 
         // Statistics
         const statsStorageKey = 'ppvr_game_stats';
@@ -179,11 +236,20 @@ export default {
             return posts.value[currentRound.value + 1] || null;
         });
 
-        function loadStats() {
+        const syncStatusText = computed(() => {
+            switch (syncStatus.value) {
+                case 'syncing': return 'Syncing...';
+                case 'synced': return 'Synced';
+                case 'error': return 'Sync failed';
+                default: return '';
+            }
+        });
+
+        function loadLocalStats() {
             const saved = localStorage.getItem(statsStorageKey);
             if (saved) {
                 const data = JSON.parse(saved);
-                stats.value = {
+                return {
                     gamesPlayed: data.gamesPlayed || 0,
                     totalCorrectRounds: data.totalCorrectRounds || 0,
                     currentStreak: data.currentStreak || 0,
@@ -191,13 +257,61 @@ export default {
                     roundBreakdown: data.roundBreakdown || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                 };
             }
+            return null;
+        }
+
+        function applyStats(newStats) {
+            stats.value = {
+                gamesPlayed: newStats.gamesPlayed || 0,
+                totalCorrectRounds: newStats.totalCorrectRounds || 0,
+                currentStreak: newStats.currentStreak || 0,
+                maxStreak: newStats.maxStreak || 0,
+                roundBreakdown: newStats.roundBreakdown || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            };
+        }
+
+        function loadStats() {
+            const localStats = loadLocalStats();
+            if (localStats) {
+                applyStats(localStats);
+            }
         }
 
         function saveStats() {
             localStorage.setItem(statsStorageKey, JSON.stringify(stats.value));
         }
 
-        function updateStats(correctRounds, won) {
+        async function syncStatsToServer(gameResult = null, gameRound = null) {
+            if (!user.value) return;
+
+            syncStatus.value = 'syncing';
+            try {
+                const payload = {
+                    ...stats.value,
+                };
+
+                // Include game result if provided (when game is completed)
+                if (gameResult) {
+                    payload.gameResult = gameResult;
+                    payload.gameRound = gameRound;
+                }
+
+                await axios.post(props.syncUrl, payload, {
+                    headers: {
+                        'X-CSRF-TOKEN': props.csrfToken,
+                    },
+                });
+                syncStatus.value = 'synced';
+                setTimeout(() => {
+                    syncStatus.value = null;
+                }, 2000);
+            } catch (error) {
+                console.error('Failed to sync stats:', error);
+                syncStatus.value = 'error';
+            }
+        }
+
+        function updateStats(correctRounds, won, round) {
             stats.value.gamesPlayed++;
             stats.value.totalCorrectRounds += correctRounds;
             stats.value.roundBreakdown[correctRounds]++;
@@ -212,6 +326,8 @@ export default {
             }
 
             saveStats();
+            // Sync with game result so server knows user played today
+            syncStatsToServer(won ? 'won' : 'lost', round);
         }
 
         function loadProgress() {
@@ -246,13 +362,13 @@ export default {
             localStorage.setItem(storageKey, JSON.stringify(data));
         }
 
-        function saveResult(result, correctRounds) {
+        function saveResult(result, correctRounds, round) {
             const data = {
                 round: currentRound.value,
                 result: result,
             };
             localStorage.setItem(storageKey, JSON.stringify(data));
-            updateStats(correctRounds, result === 'won');
+            updateStats(correctRounds, result === 'won', round);
         }
 
         async function selectPost(side) {
@@ -279,7 +395,7 @@ export default {
                         if (currentRound.value >= totalRounds.value) {
                             // Won the game - all 10 rounds correct
                             gameState.value = 'won';
-                            saveResult('won', totalRounds.value);
+                            saveResult('won', totalRounds.value, totalRounds.value);
                         } else {
                             // Start transition animation
                             isTransitioning.value = true;
@@ -299,7 +415,7 @@ export default {
                     // Correct rounds = currentRound - 1 (failed on current round)
                     setTimeout(() => {
                         gameState.value = 'lost';
-                        saveResult('lost', currentRound.value - 1);
+                        saveResult('lost', currentRound.value - 1, currentRound.value);
                     }, 1500);
                 }
             } catch (error) {
@@ -307,9 +423,95 @@ export default {
             }
         }
 
-        onMounted(() => {
+        async function checkAuth() {
+            try {
+                const response = await axios.get(props.authMeUrl);
+                if (response.data.authenticated) {
+                    user.value = response.data.user;
+                    return response.data;
+                }
+            } catch (error) {
+                console.error('Failed to check auth:', error);
+            }
+            return null;
+        }
+
+        async function performInitialSync() {
+            if (!user.value) return;
+
+            syncStatus.value = 'syncing';
+            const localStats = loadLocalStats();
+
+            try {
+                const response = await axios.post(props.initialSyncUrl, {
+                    localStats: localStats,
+                }, {
+                    headers: {
+                        'X-CSRF-TOKEN': props.csrfToken,
+                    },
+                });
+
+                const { action, stats: serverStats, playedToday } = response.data;
+
+                if (action === 'use_server') {
+                    // Server has existing stats - use them
+                    applyStats(serverStats);
+                    saveStats(); // Save to local storage too
+                } else if (action === 'uploaded') {
+                    // Local stats were uploaded
+                    applyStats(serverStats);
+                }
+                // For 'none', we keep the current (empty) stats
+
+                // Check if user already played today on another device
+                if (playedToday && gameState.value === 'playing') {
+                    savedResult.value = playedToday.result;
+                    savedRound.value = playedToday.round;
+                    gameState.value = 'already_played';
+                    // Also save to local storage so subsequent page loads show this
+                    localStorage.setItem(storageKey, JSON.stringify({
+                        round: playedToday.round,
+                        result: playedToday.result,
+                    }));
+                }
+
+                syncStatus.value = 'synced';
+                setTimeout(() => {
+                    syncStatus.value = null;
+                }, 2000);
+            } catch (error) {
+                console.error('Failed to perform initial sync:', error);
+                syncStatus.value = 'error';
+            }
+        }
+
+        onMounted(async () => {
+            // Load local stats first
             loadStats();
-            loadProgress();
+            const alreadyPlayedLocally = loadProgress();
+
+            const authData = await checkAuth();
+
+            if (authData && props.authSuccess) {
+                await performInitialSync();
+            } else if (authData) {
+                if (authData.stats && authData.stats.gamesPlayed > 0) {
+                    applyStats(authData.stats);
+                    saveStats();
+                }
+
+                // Check if user played today on server but not locally
+                if (!alreadyPlayedLocally && authData.playedToday && gameState.value === 'playing') {
+                    savedResult.value = authData.playedToday.result;
+                    savedRound.value = authData.playedToday.round;
+                    gameState.value = 'already_played';
+                    // Save to local storage
+                    localStorage.setItem(storageKey, JSON.stringify({
+                        round: authData.playedToday.round,
+                        result: authData.playedToday.result,
+                    }));
+                }
+            }
         });
 
         return {
@@ -328,6 +530,9 @@ export default {
             revealedPostIds,
             isTransitioning,
             stats,
+            user,
+            syncStatus,
+            syncStatusText,
             selectPost,
         };
     },
@@ -338,6 +543,124 @@ export default {
 .game-container {
     max-width: 900px;
     margin: 0 auto;
+}
+
+/* Auth section styles */
+.auth-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background-color: #f8f8f8;
+    border-radius: 8px;
+}
+
+[data-theme="dark"] .user-info {
+    background-color: #2a2a2a;
+}
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+}
+
+.user-name {
+    font-weight: 500;
+    color: #333;
+}
+
+[data-theme="dark"] .user-name {
+    color: #e0e0e0;
+}
+
+.sync-status {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+}
+
+.sync-status.syncing {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.sync-status.synced {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.sync-status.error {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.logout-form {
+    margin: 0;
+}
+
+.logout-button {
+    background: none;
+    border: 1px solid #ddd;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    color: #666;
+    transition: all 0.2s;
+}
+
+.logout-button:hover {
+    background-color: #f0f0f0;
+    border-color: #ccc;
+}
+
+[data-theme="dark"] .logout-button {
+    border-color: #444;
+    color: #a0a0a0;
+}
+
+[data-theme="dark"] .logout-button:hover {
+    background-color: #3a3a3a;
+    border-color: #555;
+}
+
+.login-prompt {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.login-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background-color: #ff66ab;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.login-button:hover {
+    background-color: #ff4499;
+    text-decoration: none;
+    color: white;
+}
+
+.login-hint {
+    font-size: 0.8rem;
+    color: #999;
+}
+
+[data-theme="dark"] .login-hint {
+    color: #777;
 }
 
 .game-area {
@@ -358,6 +681,11 @@ export default {
 @media (max-width: 639px) {
     .posts-grid {
         grid-template-columns: 1fr;
+    }
+
+    .login-prompt {
+        flex-direction: column;
+        gap: 0.25rem;
     }
 }
 
