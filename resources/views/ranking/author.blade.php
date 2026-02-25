@@ -9,7 +9,7 @@
     <br><br>
 
     <div class="uk-overflow-auto">
-        <table class="uk-table uk-table-small uk-table-divider uk-table-justify">
+        <table class="uk-table uk-table-small uk-table-striped uk-table-justify">
             <thead>
                 <tr>
                     <th></th>
