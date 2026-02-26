@@ -269,13 +269,9 @@ export default {
             stats.value.totalCorrectRounds += correctRounds;
             stats.value.roundBreakdown[correctRounds]++;
 
-            if (won) {
-                stats.value.currentStreak++;
-                if (stats.value.currentStreak > stats.value.maxStreak) {
-                    stats.value.maxStreak = stats.value.currentStreak;
-                }
-            } else {
-                stats.value.currentStreak = 0;
+            stats.value.currentStreak++;
+            if (stats.value.currentStreak > stats.value.maxStreak) {
+                stats.value.maxStreak = stats.value.currentStreak;
             }
 
             saveStats();
