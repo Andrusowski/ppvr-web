@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2026-02-26
+**A big one after a while!**
+### Added
+- Added [/r/osugamedle)](https://ppvr.andrus.io/game)
+    - A Worlde and more/less inspired game that offers 10 rounds
+    - Each round you need to decide which of the two scoreposts have a higher reddit score
+    - The game is over when you guess all rounds correctly or fail in any round
+    - Includes a sync function using the osu! Oauth client
+    - Links to it are hidden for now during the testing phase (please refrain from sharing the link too much for now)
+- Dark mode
+
+### Changed
+- The score-badge on the highlights page has now a fixed width so the 3- and 4- digit scores have the same width
+- Minor styling changes (besides the dark mode)
+
+### Fixed
+- Fixed profile pages throwing an error when the user has no posts
+- The fucking discord link that has expired ages ago without me nowing arghhhttfhsdjkfgns...
+
+### Misc.
+- Updated to Laravel 12 incl. some other composer and node dependencies
+
 ## 2024-06-30
 ### Added
 - Added a basic trend indicator for the general stats on the highlights page
