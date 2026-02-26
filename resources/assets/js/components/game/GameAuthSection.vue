@@ -270,10 +270,6 @@ export default {
                         stats: pendingServerStats.value,
                     });
                 }
-                if (pendingPlayedToday.value) {
-                    savePlayedTodayToLocal(pendingPlayedToday.value);
-                    emit('played-today', pendingPlayedToday.value);
-                }
             } else if (choice === 'local') {
                 if (pendingLocalStats.value) {
                     await uploadStatsToServer(pendingLocalStats.value);
@@ -295,6 +291,13 @@ export default {
                         roundBreakdown: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                     },
                 });
+            }
+
+            // Always check if user has played today on the server (authoritative source)
+            // This prevents playing multiple times across devices
+            if (pendingPlayedToday.value) {
+                savePlayedTodayToLocal(pendingPlayedToday.value);
+                emit('played-today', pendingPlayedToday.value);
             }
 
             pendingLocalStats.value = null;

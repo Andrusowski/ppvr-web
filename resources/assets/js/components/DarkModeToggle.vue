@@ -1,7 +1,7 @@
 <template>
     <button
-        class="dark-mode-toggle"
-        :class="{ 'uk-navbar-item': !isMobile }"
+        class="dark-mode-toggle uk-navbar-item"
+        :class="{ 'uk-padding-remove': !isMobile }"
         @click="toggleDarkMode"
         :title="isDark ? 'Switch to light mode' : 'Switch to dark mode'"
         type="button"
