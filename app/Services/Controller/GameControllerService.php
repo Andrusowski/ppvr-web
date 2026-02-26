@@ -87,6 +87,7 @@ class GameControllerService
      * Create a new daily game with randomly selected posts.
      * Posts are selected with bias towards higher scores.
      * Reddit data (titles, top comments) is fetched and persisted.
+     * Deleted posts are automatically replaced with new random posts.
      *
      * @param string $date
      *
@@ -95,7 +96,7 @@ class GameControllerService
     private function createDailyGame(string $date): DailyGame
     {
         $postIds = $this->selectRandomPosts();
-        $redditData = $this->fetchRedditData($postIds);
+        [$postIds, $redditData] = $this->fetchRedditDataWithReplacements($postIds);
 
         $game = new DailyGame();
         $game->game_date = $date;
@@ -180,6 +181,94 @@ class GameControllerService
             'posts' => $posts,
             'total_rounds' => static::ROUNDS_PER_GAME,
         ];
+    }
+
+    /**
+     * Fetch Reddit data (title and top comment) for a list of post IDs.
+     * Replaces any deleted posts with new random posts.
+     *
+     * @param array $postIds
+     *
+     * @return array [postIds, redditData] - Updated post IDs and their Reddit data
+     */
+    private function fetchRedditDataWithReplacements(array $postIds): array
+    {
+        $redditData = [];
+        $usedPostIds = collect($postIds);
+        $maxReplacementAttempts = 5;
+
+        foreach ($postIds as $index => $postId) {
+            $data = $this->fetchPostRedditData($postId);
+
+            if ($this->isDeletedPost($data)) {
+                $replacement = $this->findReplacementPost($usedPostIds->toArray(), $maxReplacementAttempts);
+
+                if ($replacement !== null) {
+                    $postIds[$index] = $replacement['id'];
+                    $redditData[$replacement['id']] = $replacement['data'];
+                    $usedPostIds->push($replacement['id']);
+                } else {
+                    // No replacement found, use the original post anyway
+                    $redditData[$postId] = $data;
+                }
+            } else {
+                $redditData[$postId] = $data;
+            }
+        }
+
+        return [$postIds, $redditData];
+    }
+
+    /**
+     * Check if a post's Reddit data indicates it was deleted.
+     *
+     * @param array $redditData
+     *
+     * @return bool
+     */
+    private function isDeletedPost(array $redditData): bool
+    {
+        $title = $redditData['title'] ?? '';
+
+        return $title === '[deleted by user]'
+            || $title === '[removed]'
+            || $title === '[deleted]'
+            || $title === '';
+    }
+
+    /**
+     * Find a replacement post that hasn't been used yet.
+     *
+     * @param array $excludePostIds Post IDs to exclude
+     * @param int $maxAttempts Maximum number of attempts to find a valid post
+     *
+     * @return array|null ['id' => postId, 'data' => redditData] or null if no valid replacement found
+     */
+    private function findReplacementPost(array $excludePostIds, int $maxAttempts): ?array
+    {
+        for ($attempt = 0; $attempt < $maxAttempts; $attempt++) {
+            $post = Post::where('score', '>=', static::MIN_SCORE)
+                ->whereNotIn('id', $excludePostIds)
+                ->inRandomOrder()
+                ->first();
+
+            if ($post === null) {
+                return null;
+            }
+
+            $data = $this->fetchPostRedditData($post->id);
+
+            if (!$this->isDeletedPost($data)) {
+                return [
+                    'id' => $post->id,
+                    'data' => $data,
+                ];
+            }
+
+            $excludePostIds[] = $post->id;
+        }
+
+        return null;
     }
 
     /**
