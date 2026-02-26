@@ -82,6 +82,11 @@ export default {
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s, border-color 0.3s, background-color 0.3s;
     height: 100%;
+    overflow: hidden; /* Prevent content overflow */
+}
+
+.post-card .uk-card-body {
+    overflow: hidden;
 }
 
 .post-card:hover {
@@ -130,7 +135,9 @@ export default {
     margin: 0.25rem 0 0 0;
     white-space: pre-wrap;
     word-wrap: break-word;
-    max-height: 100px;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    max-height: 200px;
     overflow-y: auto;
 }
 

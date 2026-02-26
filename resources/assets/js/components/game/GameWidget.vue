@@ -446,6 +446,13 @@ export default {
     gap: 1rem;
 }
 
+.post-slot {
+    position: relative;
+    min-height: 200px;
+    min-width: 0; /* Allow grid items to shrink below content size */
+    overflow: hidden;
+}
+
 .transitioning {
     pointer-events: none;
 }
@@ -455,11 +462,6 @@ export default {
     .posts-grid {
         grid-template-columns: 1fr;
     }
-}
-
-.post-slot {
-    position: relative;
-    min-height: 200px;
 }
 
 .post-wrapper {
