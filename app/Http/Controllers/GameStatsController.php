@@ -130,4 +130,34 @@ class GameStatsController extends Controller
             'playedToday' => null,
         ]);
     }
+
+    /**
+     * Delete all user data for the authenticated user.
+     * This deletes game stats, the user account, and logs them out.
+     * This supports the user's right to erasure under GDPR.
+     */
+    public function delete(Request $request): JsonResponse
+    {
+        $user = Auth::user();
+
+        if ($user === null) {
+            return response()->json(['error' => 'Not authenticated'], 401);
+        }
+
+        $stats = $user->gameStats;
+        if ($stats !== null) {
+            $stats->delete();
+        }
+
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        $user->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Your account and all associated data have been deleted.',
+        ]);
+    }
 }

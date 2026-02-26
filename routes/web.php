@@ -23,8 +23,8 @@ Route::post('/search', 'SearchController@postSearch');
 Route::get('/changelog', 'ChangelogController@getIndex');
 Route::get('/faq', 'FaqController@getIndex');
 Route::get('/stats', 'StatsController@getIndex');
-Route::get('/legal/notice', 'LegalController@getNotice');
-Route::get('/legal/privacy', 'LegalController@getPrivacy');
+Route::get('/legal/notice', 'LegalController@getNotice')->name('legal.notice');
+Route::get('/legal/privacy', 'LegalController@getPrivacy')->name('legal.privacy');
 Route::get('/highlights', 'HighlightsController@getIndex');
 Route::get('/game', 'GameController@getIndex');
 Route::post('/game/validate', 'GameController@validateChoice');
@@ -40,4 +40,5 @@ Route::middleware('auth')->group(function () {
     Route::post('/game/stats/sync', 'GameStatsController@sync')->name('game.stats.sync');
     Route::get('/game/stats', 'GameStatsController@get')->name('game.stats.get');
     Route::post('/game/stats/initial-sync', 'GameStatsController@initialSync')->name('game.stats.initial-sync');
+    Route::delete('/game/stats', 'GameStatsController@delete')->name('game.stats.delete');
 });

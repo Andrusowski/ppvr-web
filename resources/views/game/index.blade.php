@@ -25,6 +25,8 @@
             logout-url="{{ route('logout') }}"
             sync-url="{{ route('game.stats.sync') }}"
             initial-sync-url="{{ route('game.stats.initial-sync') }}"
+            delete-url="{{ route('game.stats.delete') }}"
+            privacy-url="{{ route('legal.privacy') }}"
             :auth-success="{{ session('osu_auth_success') ? 'true' : 'false' }}"
             :is-new-user="{{ session('is_new_user') ? 'true' : 'false' }}"
             csrf-token="{{ csrf_token() }}"

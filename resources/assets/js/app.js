@@ -5,6 +5,7 @@ import VerticalChart from "./components/VerticalChart.vue";
 import Search from "./components/Search.vue";
 import GameWidget from "./components/game/GameWidget.vue";
 import GameAuthSection from "./components/game/GameAuthSection.vue";
+import SyncConsentModal from "./components/game/SyncConsentModal.vue";
 import RoundBreakdownChart from "./components/RoundBreakdownChart.vue";
 import GamePostCard from "./components/game/GamePostCard.vue";
 import GameStats from "./components/game/GameStats.vue";
@@ -25,6 +26,7 @@ app.use(VueAxios, axios)
     .component('search', Search)
     .component('game-widget', GameWidget)
     .component('game-auth-section', GameAuthSection)
+    .component('sync-consent-modal', SyncConsentModal)
     .component('round-breakdown-chart', RoundBreakdownChart)
     .component('game-post-card', GamePostCard)
     .component('game-stats', GameStats)

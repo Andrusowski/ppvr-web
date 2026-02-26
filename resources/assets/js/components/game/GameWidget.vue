@@ -8,6 +8,8 @@
             :logout-url="logoutUrl"
             :sync-url="syncUrl"
             :initial-sync-url="initialSyncUrl"
+            :delete-url="deleteUrl"
+            :privacy-url="privacyUrl"
             :auth-success="authSuccess"
             :csrf-token="csrfToken"
             :game-date="gameData.date"
@@ -15,6 +17,7 @@
             @auth-loaded="onAuthLoaded"
             @stats-synced="onStatsSynced"
             @played-today="onPlayedToday"
+            @stats-deleted="onStatsDeleted"
         />
 
         <!-- Progress bar -->
@@ -168,6 +171,14 @@ export default {
             required: true,
         },
         initialSyncUrl: {
+            type: String,
+            required: true,
+        },
+        deleteUrl: {
+            type: String,
+            required: true,
+        },
+        privacyUrl: {
             type: String,
             required: true,
         },
@@ -381,6 +392,12 @@ export default {
             }
         }
 
+        function onStatsDeleted() {
+            // Server stats were deleted, but local stats are kept
+            // No need to reset stats - they remain in localStorage and in memory
+            // The user can continue playing with their local stats
+        }
+
         onMounted(() => {
             loadStats();
             loadProgress();
@@ -407,6 +424,7 @@ export default {
             onAuthLoaded,
             onStatsSynced,
             onPlayedToday,
+            onStatsDeleted,
         };
     },
 };
