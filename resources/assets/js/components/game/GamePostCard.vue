@@ -66,6 +66,7 @@ export default {
                 year: 'numeric',
                 month: 'numeric',
                 day: 'numeric',
+                timeZone: 'UTC',
             });
         }
 

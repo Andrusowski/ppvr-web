@@ -78,7 +78,7 @@ class UserGameStats extends Model
             return false;
         }
 
-        return $this->last_played_date->isToday();
+        return $this->last_played_date->isSameDay(Carbon::today('UTC'));
     }
 
     /**
@@ -104,7 +104,7 @@ class UserGameStats extends Model
      */
     public function recordGamePlayed(int $round): void
     {
-        $this->last_played_date = Carbon::today();
+        $this->last_played_date = Carbon::today('UTC');
         $this->last_played_round = $round;
     }
 

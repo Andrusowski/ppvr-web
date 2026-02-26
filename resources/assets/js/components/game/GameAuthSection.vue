@@ -11,7 +11,7 @@
                 <button type="submit" class="logout-button">Logout</button>
             </form>
         </div>
-        <div v-else class="login-prompt">
+        <div v-else-if="!loading" class="login-prompt">
             <a :href="loginUrl" class="login-button btn-osu">
                 <span>Login with osu!</span>
             </a>
@@ -63,6 +63,7 @@ export default {
     setup(props, { emit }) {
         const axios = inject('axios');
 
+        const loading = ref(true);
         const user = ref(null);
         const syncStatus = ref(null); // 'syncing', 'synced', 'error'
 
@@ -205,9 +206,12 @@ export default {
                 user: user.value,
                 authenticated: !!user.value,
             });
+
+            loading.value = false;
         });
 
         return {
+            loading,
             user,
             syncStatus,
             syncStatusText,

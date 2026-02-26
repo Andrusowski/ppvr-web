@@ -1,9 +1,10 @@
 <template>
-    <Bar
-        :chart-options="chartOptions"
-        :chart-data="chartData"
-        :height="height"
-    />
+    <div :style="{ height: height + 'px', position: 'relative' }">
+        <Bar
+            :options="chartOptions"
+            :data="chartData"
+        />
+    </div>
 </template>
 
 <script>

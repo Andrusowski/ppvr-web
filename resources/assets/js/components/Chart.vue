@@ -1,7 +1,7 @@
 <template>
     <Line
-        :chart-options="chartOptions"
-        :chart-data="chartData"
+        :options="chartOptions"
+        :data="chartData"
         :height="100"
     />
 </template>
