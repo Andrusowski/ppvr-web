@@ -84,6 +84,33 @@
 
 
     <p>Your data processed when using our website will be deleted or blocked as soon as the purpose for its storage ceases to apply, provided the deletion of the same is not in breach of any statutory storage obligations or unless otherwise stipulated below.</p>
+
+    <h4 class="jet-listing-dynamic-field__content">osu! Account Login</h4>
+    <p>Our website offers the option to log in using your osu! account via OAuth 2.0 authentication. This is a service provided by ppy Pty Ltd, hereinafter referred to as "osu!".</p>
+    <p>When you choose to log in with your osu! account, you will be redirected to osu!'s website where you can authorize our application to access certain information from your osu! profile. We request access to the following data:</p>
+    <ul>
+        <li>Your osu! user ID</li>
+        <li>Your osu! username</li>
+        <li>Your osu! profile avatar URL</li>
+    </ul>
+    <p>This data is stored in our database and is used solely for the purpose of identifying you across sessions and displaying your profile information on our website. We do not access any other information from your osu! account, such as your gameplay statistics, scores, or private messages.</p>
+    <p>The legal basis for this processing is Art. 6 para. 1 lit. a) GDPR (consent). By clicking the "Login with osu!" button and authorizing our application on osu!'s website, you consent to the processing of your data as described above.</p>
+    <p>You can revoke this consent at any time by logging out of our website and revoking our application's access in your osu! account settings at <a href="https://osu.ppy.sh/home/account/edit" target="_blank" rel="noopener">https://osu.ppy.sh/home/account/edit</a> under "OAuth".</p>
+    <p>At <a href="https://osu.ppy.sh/legal/en/Privacy" target="_blank" rel="noopener nofollow">https://osu.ppy.sh/legal/en/Privacy</a> osu! offers further data protection information.</p>
+
+    <h4 class="jet-listing-dynamic-field__content">Game Statistics Storage</h4>
+    <p>Our website features a Higher/Lower minigame. Game statistics (such as games played, win streaks, and round performance) are stored locally in your browser's local storage by default.</p>
+    <p>If you choose to log in with your osu! account, your game statistics will be synchronized with our database. This allows you to access your statistics across multiple devices and browsers. The following game-related data is stored:</p>
+    <ul>
+        <li>Total number of games played</li>
+        <li>Total correct rounds across all games</li>
+        <li>Current and maximum win streaks</li>
+        <li>Performance breakdown by round</li>
+        <li>Date of last game played and the round reached</li>
+    </ul>
+    <p>This data is associated with your osu! user ID and is used solely for the purpose of providing a persistent gaming experience across devices. The legal basis for this processing is Art. 6 para. 1 lit. a) GDPR (consent), given when you log in and your statistics are synchronized.</p>
+    <p>You can request deletion of your game statistics at any time by contacting us at the email address provided above. Upon account deletion or consent withdrawal, all associated game statistics will be permanently deleted from our database.</p>
+
     <h4 class="jet-listing-dynamic-field__content">Ackee</h4><p>Our website uses Ackee. This is open-source software with which we can analyze the use of our site. Data such as your IP address, the pages you visit, the website from which you came (referrer URL) and the duration of your visit is processed.</p>
     <p>No personally identifyable information is stored in Ackee and no cookies are used to track you between sessions.</p>
     <h4 class="jet-listing-dynamic-field__content">cdnjs</h4><p>We use the service cdnjs, a content delivery network (“CDN”), on our website to optimise the speed of retrieval, the design and presentation of the contents of our website on different devices.&nbsp; This is a service of Cloudflare, Inc. 101 Townsend St, San Francisco, CA 94107 USA, hereinafter simply referred to as „cdnjs“.</p>
