@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 ## 2026-02-26
 **A big one after a while!**
 ### Added
-- Added [/r/osugamedle)](https://ppvr.andrus.io/game)
+- Added [/r/osugamedle](https://ppvr.andrus.io/game)
     - A Worlde and more/less inspired game that offers 10 rounds
     - Each round you need to decide which of the two scoreposts have a higher reddit score
     - The game is over when you guess all rounds correctly or fail in any round
