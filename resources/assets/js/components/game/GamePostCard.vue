@@ -90,25 +90,17 @@ export default {
 }
 
 .post-card.selected {
-    border: 3px solid #1e87f0;
+    border: 3px solid var(--accent-primary);
 }
 
 .post-card.correct {
-    border: 3px solid #32d296;
-    background-color: rgba(50, 210, 150, 0.1) !important;
-}
-
-[data-theme="dark"] .post-card.correct {
-    background-color: rgba(50, 210, 150, 0.35) !important;
+    border: 3px solid var(--color-success);
+    background-color: var(--color-success-bg) !important;
 }
 
 .post-card.incorrect {
-    border: 3px solid #f0506e;
-    background-color: rgba(240, 80, 110, 0.1) !important;
-}
-
-[data-theme="dark"] .post-card.incorrect {
-    background-color: rgba(240, 80, 110, 0.35) !important;
+    border: 3px solid var(--color-error);
+    background-color: var(--color-error-bg) !important;
 }
 
 .reddit-title {
@@ -119,31 +111,22 @@ export default {
 }
 
 .top-comment {
-    background-color: #f8f8f8;
-    border-left: 3px solid #ddd;
+    background-color: var(--panel-bg);
+    border-left: 3px solid var(--card-border);
     padding: 0.5rem 0.75rem;
     border-radius: 0 4px 4px 0;
 }
 
-[data-theme="dark"] .top-comment {
-    background-color: #2a2a2a;
-    border-left-color: #444;
-}
-
 .comment-label {
     font-size: 0.75rem;
-    color: #666;
+    color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
-[data-theme="dark"] .comment-label {
-    color: #a0a0a0;
-}
-
 .comment-body {
     font-size: 0.875rem;
-    color: #333;
+    color: var(--text-color);
     margin: 0.25rem 0 0 0;
     white-space: pre-wrap;
     word-wrap: break-word;
@@ -151,13 +134,9 @@ export default {
     overflow-y: auto;
 }
 
-[data-theme="dark"] .comment-body {
-    color: #e0e0e0;
-}
-
 .score-reveal {
     font-size: 1.2em;
-    color: #ff4500;
+    color: var(--color-reddit);
     margin-top: 0.5rem;
 }
 

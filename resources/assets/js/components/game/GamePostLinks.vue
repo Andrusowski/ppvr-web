@@ -52,42 +52,28 @@ export default {
     width: 100%;
     padding: 0.75rem 1rem;
     margin-bottom: 0.5rem;
-    background-color: #f8f8f8;
-    border: 1px solid #e5e5e5;
+    background-color: var(--panel-bg);
+    border: 1px solid var(--card-border);
     border-radius: 4px;
     text-decoration: none;
     color: inherit;
     transition: background-color 0.2s, border-color 0.2s, transform 0.2s;
 }
 
-[data-theme="dark"] .post-link-button {
-    background-color: #2a2a2a;
-    border-color: #3d3d3d;
-}
-
 .post-link-button:hover {
-    background-color: #fff;
-    border-color: #1e87f0;
+    background-color: var(--surface-bg);
+    border-color: var(--accent-primary);
     transform: translateX(4px);
     text-decoration: none;
 }
 
-[data-theme="dark"] .post-link-button:hover {
-    background-color: #3a3a3a;
-    border-color: #5eb3ff;
-}
-
 .post-link-title {
     font-size: 0.9rem;
-    color: #333;
+    color: var(--text-color);
     font-weight: 500;
     line-height: 1.3;
     word-wrap: break-word;
     text-align: left;
-}
-
-[data-theme="dark"] .post-link-title {
-    color: #e0e0e0;
 }
 
 .post-link-meta {
@@ -98,15 +84,11 @@ export default {
 }
 
 .post-link-score {
-    color: #ff4500;
+    color: var(--color-reddit);
     font-weight: 500;
 }
 
 .post-link-author {
-    color: #999;
-}
-
-[data-theme="dark"] .post-link-author {
-    color: #a0a0a0;
+    color: var(--text-muted);
 }
 </style>

@@ -233,12 +233,8 @@ export default {
     align-items: center;
     gap: 0.5rem;
     padding: 0.5rem 1rem;
-    background-color: #f8f8f8;
+    background-color: var(--panel-bg);
     border-radius: 8px;
-}
-
-[data-theme="dark"] .user-info {
-    background-color: #2a2a2a;
 }
 
 .user-avatar {
@@ -249,11 +245,7 @@ export default {
 
 .user-name {
     font-weight: 500;
-    color: #333;
-}
-
-[data-theme="dark"] .user-name {
-    color: #e0e0e0;
+    color: var(--text-color);
 }
 
 .sync-status {
@@ -263,18 +255,18 @@ export default {
 }
 
 .sync-status.syncing {
-    background-color: #fff3cd;
-    color: #856404;
+    background-color: var(--status-syncing-bg);
+    color: var(--status-syncing-text);
 }
 
 .sync-status.synced {
-    background-color: #d4edda;
-    color: #155724;
+    background-color: var(--status-synced-bg);
+    color: var(--status-synced-text);
 }
 
 .sync-status.error {
-    background-color: #f8d7da;
-    color: #721c24;
+    background-color: var(--status-error-bg);
+    color: var(--status-error-text);
 }
 
 .logout-form {
@@ -283,28 +275,18 @@ export default {
 
 .logout-button {
     background: none;
-    border: 1px solid #ddd;
+    border: 1px solid var(--card-border);
     padding: 0.25rem 0.5rem;
     border-radius: 4px;
     cursor: pointer;
     font-size: 0.8rem;
-    color: #666;
+    color: var(--text-muted);
     transition: all 0.2s;
 }
 
 .logout-button:hover {
-    background-color: #f0f0f0;
-    border-color: #ccc;
-}
-
-[data-theme="dark"] .logout-button {
-    border-color: #444;
-    color: #a0a0a0;
-}
-
-[data-theme="dark"] .logout-button:hover {
-    background-color: #3a3a3a;
-    border-color: #555;
+    background-color: var(--surface-hover);
+    border-color: var(--card-border);
 }
 
 .login-prompt {
@@ -318,25 +300,21 @@ export default {
     align-items: center;
     gap: 0.5rem;
     padding: 0.5rem 1rem;
-    background-color: #ff66ab;
+    background-color: var(--color-osu);
     border-radius: 8px;
     text-decoration: none;
     transition: all 0.2s;
 }
 
 .login-button:hover {
-    background-color: #ff4499;
+    background-color: var(--color-osu-hover);
     text-decoration: none;
     color: white;
 }
 
 .login-hint {
     font-size: 0.8rem;
-    color: #999;
-}
-
-[data-theme="dark"] .login-hint {
-    color: #777;
+    color: var(--text-subtle);
 }
 
 /* Mobile: stack vertically */

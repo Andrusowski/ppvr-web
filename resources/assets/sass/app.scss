@@ -21,6 +21,7 @@
     --text-color: #333;
     --text-muted: #666;
     --text-secondary: #222;
+    --text-subtle: #999;
     --card-bg: #{$white};
     --card-border: #e5e5e5;
     --navbar-bg: transparent;
@@ -30,6 +31,27 @@
     --footer-text: #999;
     --link-color: #1e87f0;
     --table-stripe: rgba(0, 0, 0, 0.03);
+
+    // Game-specific colors
+    --panel-bg: #f8f8f8;
+    --surface-bg: #{$white};
+    --surface-hover: #f0f0f0;
+    --accent-primary: #1e87f0;
+    --color-success: #32d296;
+    --color-success-bg: rgba(50, 210, 150, 0.1);
+    --color-error: #f0506e;
+    --color-error-bg: rgba(240, 80, 110, 0.1);
+    --color-reddit: #{$reddit};
+    --color-osu: #{$osu};
+    --color-osu-hover: #ff4499;
+
+    // Status colors
+    --status-syncing-bg: #fff3cd;
+    --status-syncing-text: #856404;
+    --status-synced-bg: #d4edda;
+    --status-synced-text: #155724;
+    --status-error-bg: #f8d7da;
+    --status-error-text: #721c24;
 }
 
 // Dark mode styles
@@ -38,6 +60,7 @@
     --text-color: #{$dark-text};
     --text-muted: #{$dark-text-muted};
     --text-secondary: #{$dark-text-secondary};
+    --text-subtle: #777;
     --card-bg: #{$dark-card};
     --card-border: #{$dark-border};
     --navbar-bg: transparent;
@@ -47,6 +70,14 @@
     --footer-text: #{$dark-text-muted};
     --link-color: #5eb3ff;
     --table-stripe: rgba(255, 255, 255, 0.03);
+
+    // Game-specific colors (dark mode)
+    --panel-bg: #2a2a2a;
+    --surface-bg: #3a3a3a;
+    --surface-hover: #3a3a3a;
+    --accent-primary: #5eb3ff;
+    --color-success-bg: rgba(50, 210, 150, 0.35);
+    --color-error-bg: rgba(240, 80, 110, 0.35);
 }
 
 html {

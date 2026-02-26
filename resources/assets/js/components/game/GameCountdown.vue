@@ -78,7 +78,7 @@ export default {
     font-size: 2rem;
     font-weight: bold;
     font-family: 'Courier New', Courier, monospace;
-    color: #1e87f0;
+    color: var(--accent-primary);
     margin: 0.5rem 0 0 0;
     letter-spacing: 2px;
 }

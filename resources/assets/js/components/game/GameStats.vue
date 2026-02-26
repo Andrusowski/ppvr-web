@@ -63,23 +63,15 @@ export default {
     margin-left: auto;
     margin-right: auto;
     padding: 1rem;
-    background-color: #f8f8f8;
+    background-color: var(--panel-bg);
     border-radius: 8px;
-}
-
-[data-theme="dark"] .stats-container {
-    background-color: #2a2a2a;
 }
 
 .stats-title {
     font-size: 1.1rem;
     font-weight: 600;
     margin: 0 0 1rem 0;
-    color: #333;
-}
-
-[data-theme="dark"] .stats-title {
-    color: #e0e0e0;
+    color: var(--text-color);
 }
 
 .stats-grid {
@@ -100,30 +92,22 @@ export default {
     flex-direction: column;
     align-items: center;
     padding: 0.5rem;
-    background-color: #fff;
+    background-color: var(--surface-bg);
     border-radius: 4px;
-}
-
-[data-theme="dark"] .stat-item {
-    background-color: #3a3a3a;
 }
 
 .stat-value {
     font-size: 1.5rem;
     font-weight: bold;
-    color: #1e87f0;
+    color: var(--accent-primary);
 }
 
 .stat-label {
     font-size: 0.7rem;
-    color: #666;
+    color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin-top: 0.25rem;
-}
-
-[data-theme="dark"] .stat-label {
-    color: #a0a0a0;
 }
 
 .breakdown-container {
@@ -134,10 +118,6 @@ export default {
     font-size: 0.9rem;
     font-weight: 600;
     margin: 0 0 0.75rem 0;
-    color: #333;
-}
-
-[data-theme="dark"] .breakdown-title {
-    color: #e0e0e0;
+    color: var(--text-color);
 }
 </style>
