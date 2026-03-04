@@ -192,10 +192,6 @@ export default {
             try {
                 const response = await axios.post(props.initialSyncUrl, {
                     localStats: null, // Don't send local stats yet, just fetch server state
-                }, {
-                    headers: {
-                        'X-CSRF-TOKEN': props.csrfToken,
-                    },
                 });
                 return response.data;
             } catch (error) {
@@ -207,11 +203,7 @@ export default {
         async function uploadStatsToServer(stats) {
             syncStatus.value = 'syncing';
             try {
-                const response = await axios.post(props.syncUrl, stats, {
-                    headers: {
-                        'X-CSRF-TOKEN': props.csrfToken,
-                    },
-                });
+                const response = await axios.post(props.syncUrl, stats);
                 syncStatus.value = 'synced';
                 setTimeout(() => {
                     syncStatus.value = null;
@@ -235,11 +227,7 @@ export default {
                     payload.gameRound = gameRound;
                 }
 
-                await axios.post(props.syncUrl, payload, {
-                    headers: {
-                        'X-CSRF-TOKEN': props.csrfToken,
-                    },
-                });
+                await axios.post(props.syncUrl, payload);
                 syncStatus.value = 'synced';
                 setTimeout(() => {
                     syncStatus.value = null;
@@ -315,11 +303,7 @@ export default {
         async function deleteData() {
             deleting.value = true;
             try {
-                await axios.delete(props.deleteUrl, {
-                    headers: {
-                        'X-CSRF-TOKEN': props.csrfToken,
-                    },
-                });
+                await axios.delete(props.deleteUrl);
 
                 // Note: We intentionally keep local stats - only server data is deleted
                 // This respects the user's right to erasure while preserving their local experience

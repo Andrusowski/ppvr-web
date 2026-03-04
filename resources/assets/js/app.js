@@ -17,6 +17,26 @@ import VueAxios from 'vue-axios';
 
 const eva = require('eva-icons');
 
+// Configure axios to use Laravel's XSRF-TOKEN cookie for CSRF protection.
+// This ensures the token stays fresh even if the page is left open overnight.
+axios.defaults.withCredentials = true;
+axios.defaults.withXSRFToken = true;
+axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+
+// Handle 419 CSRF token mismatch errors by reloading the page.
+// This can happen if the session expires while the page is open.
+axios.interceptors.response.use(
+    response => response,
+    error => {
+        if (error.response && error.response.status === 419) {
+            // CSRF token mismatch - reload page to get fresh token
+            window.location.reload();
+            return new Promise(() => {}); // Never resolve to prevent further error handling
+        }
+        return Promise.reject(error);
+    }
+);
+
 const app = createApp({})
 app.use(VueAxios, axios)
     .provide('axios', app.config.globalProperties.axios)
