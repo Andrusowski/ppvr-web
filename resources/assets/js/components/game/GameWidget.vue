@@ -39,7 +39,7 @@
                             :selected="selectedPost === 'left'"
                             :show-result="showResult"
                             :is-correct="leftPost.score >= rightPost.score"
-                            :show-score="showResult || revealedPostIds.has(leftPost.id)"
+                            :show-score="true"
                             @select="selectPost('left')"
                         />
                     </div>
