@@ -101,10 +101,35 @@ class UserGameStats extends Model
     /**
      * Record that the user played today's game.
      * Win/loss is derived from whether round equals ROUNDS_PER_GAME.
+     * Also updates the streak based on whether the user played yesterday.
      */
     public function recordGamePlayed(int $round): void
     {
-        $this->last_played_date = Carbon::today('UTC');
+        $today = Carbon::today('UTC');
+        $lastPlayed = $this->last_played_date;
+
+        if ($lastPlayed !== null) {
+            $diffDays = $lastPlayed->diffInDays($today);
+
+            if ($diffDays === 1) {
+                $this->current_streak++;
+            } elseif ($diffDays === 0) {
+                // Same day - don't change streak (shouldn't happen as we check hasPlayedToday)
+            } else {
+                // Missed a day - reset streak to 1
+                $this->current_streak = 1;
+            }
+        } else {
+            // First time playing - start streak at 1
+            $this->current_streak = 1;
+        }
+
+        // Update max streak if needed
+        if ($this->current_streak > $this->max_streak) {
+            $this->max_streak = $this->current_streak;
+        }
+
+        $this->last_played_date = $today;
         $this->last_played_round = $round;
     }
 
@@ -121,6 +146,7 @@ class UserGameStats extends Model
             'currentStreak' => 0,
             'maxStreak' => 0,
             'roundBreakdown' => [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            'lastPlayedDate' => null,
         ];
     }
 
@@ -137,11 +163,14 @@ class UserGameStats extends Model
             'currentStreak' => $this->current_streak,
             'maxStreak' => $this->max_streak,
             'roundBreakdown' => $this->round_breakdown ?? [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            'lastPlayedDate' => $this->last_played_date?->format('Y-m-d'),
         ];
     }
 
     /**
      * Update stats from frontend format.
+     * Note: Streak values are NOT taken from frontend - they are calculated
+     * server-side in recordGamePlayed() based on last_played_date.
      *
      * @param array<string, mixed> $frontendStats
      */
@@ -149,6 +178,8 @@ class UserGameStats extends Model
     {
         $this->games_played = $frontendStats['gamesPlayed'] ?? 0;
         $this->total_correct_rounds = $frontendStats['totalCorrectRounds'] ?? 0;
+        // Streaks are calculated server-side, but we accept them for initial sync
+        // when a user uploads local stats for the first time
         $this->current_streak = $frontendStats['currentStreak'] ?? 0;
         $this->max_streak = $frontendStats['maxStreak'] ?? 0;
         $this->round_breakdown = $frontendStats['roundBreakdown'] ?? [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];

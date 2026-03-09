@@ -222,6 +222,7 @@ export default {
             currentStreak: 0,
             maxStreak: 0,
             roundBreakdown: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            lastPlayedDate: null,
         });
 
         const storageKey = `ppvr_game_${props.gameData.date}`;
@@ -249,6 +250,7 @@ export default {
                 currentStreak: newStats.currentStreak || 0,
                 maxStreak: newStats.maxStreak || 0,
                 roundBreakdown: newStats.roundBreakdown || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                lastPlayedDate: newStats.lastPlayedDate || null,
             };
         }
 
@@ -269,7 +271,32 @@ export default {
             stats.value.totalCorrectRounds += correctRounds;
             stats.value.roundBreakdown[correctRounds]++;
 
-            stats.value.currentStreak++;
+            // Check if the user played yesterday to maintain streak
+            const today = props.gameData.date; // Format: YYYY-MM-DD
+            const lastPlayed = stats.value.lastPlayedDate;
+
+            if (lastPlayed) {
+                const lastDate = new Date(lastPlayed);
+                const todayDate = new Date(today);
+                const diffTime = todayDate.getTime() - lastDate.getTime();
+                const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+
+                if (diffDays === 1) {
+                    // Played yesterday - continue streak
+                    stats.value.currentStreak++;
+                } else if (diffDays === 0) {
+                    // Same day - shouldn't happen but don't change streak
+                } else {
+                    // Missed a day - reset streak to 1
+                    stats.value.currentStreak = 1;
+                }
+            } else {
+                // First time playing - start streak at 1
+                stats.value.currentStreak = 1;
+            }
+
+            stats.value.lastPlayedDate = today;
+
             if (stats.value.currentStreak > stats.value.maxStreak) {
                 stats.value.maxStreak = stats.value.currentStreak;
             }

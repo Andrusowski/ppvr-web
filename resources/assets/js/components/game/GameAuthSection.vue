@@ -160,6 +160,7 @@ export default {
                     currentStreak: data.currentStreak || 0,
                     maxStreak: data.maxStreak || 0,
                     roundBreakdown: data.roundBreakdown || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    lastPlayedDate: data.lastPlayedDate || null,
                 };
             }
             return null;
@@ -277,6 +278,7 @@ export default {
                         currentStreak: 0,
                         maxStreak: 0,
                         roundBreakdown: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                        lastPlayedDate: null,
                     },
                 });
             }
@@ -351,6 +353,7 @@ export default {
                             currentStreak: 0,
                             maxStreak: 0,
                             roundBreakdown: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                            lastPlayedDate: null,
                         },
                     });
                     loading.value = false;
