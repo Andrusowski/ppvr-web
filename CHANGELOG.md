@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2026-03-09
+### Fixed
+- Fixed CSRF token not being valid occasionaly
+- Fixed game streak not resetting after skipping a day
+
 ## 2026-02-26
 **A big one after a while!**
 ### Added
