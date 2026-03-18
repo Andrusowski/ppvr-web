@@ -46,6 +46,13 @@
                 <p>However, the scores on the ranking page are weighted just like they are in osu. The same also applies for author rankings.</p>
             </div>
         </li>
+        <li>
+            <a class="uk-accordion-title" href="#">How do I request my scoreposts to be deleted?</a>
+            <div class="uk-accordion-content">
+                <p>If you don't want your scoreposts to be included in the ranking, you can request their deletion.</p>
+                <p>Please do so through a direct message on Reddit to my account <a href="https://www.reddit.com/user/Andruz/" target="_blank">Andruz</a> so that I can verify the ownership of the scoreposts.</p>
+            </div>
+        </li>
     </ul>
 
 
