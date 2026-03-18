@@ -473,7 +473,6 @@ export default {
     position: relative;
     min-height: 200px;
     min-width: 0; /* Allow grid items to shrink below content size */
-    overflow: hidden;
 }
 
 .transitioning {

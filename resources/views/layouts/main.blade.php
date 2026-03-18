@@ -68,7 +68,7 @@
                         <ul class="uk-nav uk-dropdown-nav">
                             <!-- menu -->
                             <li><a href="{{url('/stats')}}">Stats</a></li>
-                            <!--<li><a href="{{url('/game')}}">DLE</a></li>-->
+                            <li><a href="{{url('/game')}}">DLE</a></li>
                             <li><a href="{{url('/faq')}}">FAQ</a></li>
                             <li><a href="{{url('/docs')}}">API</a></li>
                             <li><a href="https://github.com/Andrusowski/ppvr-web/blob/master/CHANGELOG.md">Changelog</a></li>
@@ -83,7 +83,7 @@
                     <ul class="uk-navbar-nav uk-visible@m">
                         <!-- menu -->
                         <li><a href="{{url('/stats')}}">Stats</a></li>
-                        <!--<li><a href="{{url('/game')}}">DLE</a></li>-->
+                        <li><a href="{{url('/game')}}">DLE</a></li>
                         <li><a href="{{url('/faq')}}">FAQ</a></li>
                         <li><a href="{{url('/docs')}}">API</a></li>
                         <li><a href="https://github.com/Andrusowski/ppvr-web/blob/master/CHANGELOG.md">Changelog</a></li>
