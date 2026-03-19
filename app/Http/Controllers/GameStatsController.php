@@ -29,6 +29,9 @@ class GameStatsController extends Controller
             'roundBreakdown' => 'required|array|size:11',
             'roundBreakdown.*' => 'integer|min:0',
             'gameRound' => 'nullable|integer|min:1|max:10',
+            'gameCorrectCount' => 'nullable|integer|min:0|max:10',
+            'gameRoundResults' => 'nullable|array',
+            'gameRoundResults.*' => 'nullable|boolean',
         ]);
 
         $stats = $user->gameStats;
@@ -42,7 +45,11 @@ class GameStatsController extends Controller
 
         // If game round is provided, record that the user played today
         if (isset($validated['gameRound'])) {
-            $stats->recordGamePlayed($validated['gameRound']);
+            $stats->recordGamePlayed(
+                $validated['gameRound'],
+                $validated['gameCorrectCount'] ?? null,
+                $validated['gameRoundResults'] ?? null
+            );
         }
 
         $stats->save();

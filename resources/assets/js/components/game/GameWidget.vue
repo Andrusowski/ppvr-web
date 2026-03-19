@@ -23,7 +23,7 @@
         <!-- Progress bar -->
         <div class="uk-margin-bottom">
             <div class="uk-text-center uk-margin-small-bottom">
-                Round {{ currentRound }} / {{ totalRounds }}
+                Round {{ gameState === 'already_played' || gameState === 'finished' ? totalRounds : currentRound }} / {{ totalRounds }}
             </div>
             <div class="round-indicators uk-flex uk-flex-center">
                 <div 
@@ -111,9 +111,9 @@
 
         <!-- Already played today -->
         <div v-if="gameState === 'already_played'" class="uk-text-center uk-margin-large-top">
-            <div class="uk-card uk-card-default uk-card-body">
-                <h2 class="uk-card-title">Already Played Today</h2>
-                <p v-if="savedWon">You won today's game with a perfect score!</p>
+            <div class="uk-card uk-card-body" :class="savedCorrect === totalRounds ? 'uk-card-primary' : 'uk-card-secondary'">
+                <h2 class="uk-card-title">{{ savedCorrect === totalRounds ? 'Perfect!' : 'Already Played Today' }}</h2>
+                <p v-if="savedCorrect === totalRounds">You won today's game with a perfect score, here is your unemployment certificate!</p>
                 <p v-else>You got {{ savedCorrect }} out of {{ totalRounds }} rounds correct today.</p>
                 <game-countdown :active="true" />
             </div>
@@ -208,7 +208,7 @@ export default {
         const isAuthenticated = ref(false);
 
         // Statistics
-        const statsStorageKey = 'ppvr_game_stats';
+        const statsStorageKey = 'ppvr_game_stats_v2';
         const stats = ref({
             gamesPlayed: 0,
             totalCorrectRounds: 0,
@@ -218,7 +218,7 @@ export default {
             lastPlayedDate: null,
         });
 
-        const storageKey = `ppvr_game_${props.gameData.date}`;
+        const storageKey = `ppvr_game_v2_${props.gameData.date}`;
 
         const leftPost = computed(() => {
             return posts.value[currentRound.value - 1] || {};
@@ -296,9 +296,9 @@ export default {
 
             saveStats();
 
-            // Sync with server if authenticated (only pass round - won is derived from round === totalRounds)
+            // Sync with server if authenticated
             if (authSection.value && isAuthenticated.value) {
-                authSection.value.syncStatsToServer(stats.value, round);
+                authSection.value.syncStatsToServer(stats.value, round, correctRounds, roundResults.value);
             }
         }
 
@@ -312,18 +312,20 @@ export default {
                     savedRound.value = data.round;
                     savedCorrect.value = data.correctCount !== undefined ? data.correctCount : data.round - 1; // Fallback for old data
                     gameState.value = 'already_played';
-                    return true;
                 } else if (data.round) {
                     // Game in progress - restore round
                     currentRound.value = data.round;
-                    if (data.roundResults) {
-                        roundResults.value = data.roundResults;
-                    }
+                    
                     for (let i = 0; i < currentRound.value; i++) {
                         if (posts.value[i]) {
                             revealedPostIds.value.add(posts.value[i].id);
                         }
                     }
+                }
+
+                console.log('Loaded progress:', data);
+                if (data.roundResults) {
+                    roundResults.value = data.roundResults;
                 }
             }
             return false;
@@ -408,6 +410,10 @@ export default {
             if (gameState.value === 'playing' && playedTodayData) {
                 savedWon.value = playedTodayData.won;
                 savedRound.value = playedTodayData.round;
+                savedCorrect.value = playedTodayData.correctCount !== undefined ? playedTodayData.correctCount : playedTodayData.round - 1;
+                if (playedTodayData.roundResults) {
+                    roundResults.value = playedTodayData.roundResults;
+                }
                 gameState.value = 'already_played';
             }
         }

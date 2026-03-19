@@ -217,7 +217,7 @@ export default {
             }
         }
 
-        async function syncStatsToServer(stats, gameRound = null) {
+        async function syncStatsToServer(stats, gameRound = null, gameCorrectCount = null, gameRoundResults = null) {
             if (!user.value) return;
 
             syncStatus.value = 'syncing';
@@ -226,6 +226,14 @@ export default {
 
                 if (gameRound !== null) {
                     payload.gameRound = gameRound;
+                }
+                
+                if (gameCorrectCount !== null) {
+                    payload.gameCorrectCount = gameCorrectCount;
+                }
+                
+                if (gameRoundResults !== null) {
+                    payload.gameRoundResults = gameRoundResults;
                 }
 
                 await axios.post(props.syncUrl, payload);
@@ -243,7 +251,9 @@ export default {
             if (playedToday) {
                 localStorage.setItem(storageKey, JSON.stringify({
                     round: playedToday.round,
-                    result: playedToday.won ? 'won' : 'lost',
+                    result: playedToday.won ? 'finished' : 'lost',
+                    correctCount: playedToday.correctCount,
+                    roundResults: playedToday.roundResults
                 }));
             }
         }

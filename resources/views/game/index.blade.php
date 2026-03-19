@@ -1,6 +1,11 @@
 @extends('layouts.main')
 
 @section('content')
+    <div class="uk-alert-danger" uk-alert>
+        <a href class="uk-alert-close" uk-close></a>
+        <p>Progress from the first 2 days has been wiped due to a major change to the game over condition. Sorry for that! Failing a round does not result in a game over now.</p>
+    </div>
+
     <p class="uk-text-lead uk-text-center">
         <span class="reddit">/r/osugame</span>dle
     </p>

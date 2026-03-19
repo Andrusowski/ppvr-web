@@ -49,6 +49,8 @@ class UserGameStats extends Model
         'round_breakdown',
         'last_played_date',
         'last_played_round',
+        'last_played_correct_count',
+        'last_played_round_results',
     ];
 
     /**
@@ -58,6 +60,7 @@ class UserGameStats extends Model
      */
     protected $casts = [
         'round_breakdown' => 'array',
+        'last_played_round_results' => 'array',
         'last_played_date' => 'date',
     ];
 
@@ -93,17 +96,22 @@ class UserGameStats extends Model
         }
 
         return [
-            'won' => $this->last_played_round === GameControllerService::ROUNDS_PER_GAME,
+            'won' => $this->last_played_round === GameControllerService::ROUNDS_PER_GAME && $this->last_played_correct_count === GameControllerService::ROUNDS_PER_GAME,
             'round' => $this->last_played_round,
+            'correctCount' => $this->last_played_correct_count,
+            'roundResults' => $this->last_played_round_results,
         ];
     }
 
     /**
      * Record that the user played today's game.
-     * Win/loss is derived from whether round equals ROUNDS_PER_GAME.
      * Also updates the streak based on whether the user played yesterday.
+     *
+     * @param int $round
+     * @param int|null $correctCount
+     * @param array<int, bool|null>|null $roundResults
      */
-    public function recordGamePlayed(int $round): void
+    public function recordGamePlayed(int $round, ?int $correctCount = null, ?array $roundResults = null): void
     {
         $today = Carbon::today('UTC');
         $lastPlayed = $this->last_played_date;
@@ -131,6 +139,8 @@ class UserGameStats extends Model
 
         $this->last_played_date = $today;
         $this->last_played_round = $round;
+        $this->last_played_correct_count = $correctCount;
+        $this->last_played_round_results = $roundResults;
     }
 
     /**
