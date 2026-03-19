@@ -129,6 +129,7 @@
 
 <script>
 import { ref, computed, onMounted, inject } from 'vue';
+import { useGameState } from '../../composables/useGameState';
 
 export default {
     name: 'GameWidget',
@@ -207,17 +208,7 @@ export default {
         const isAuthenticated = ref(false);
 
         // Statistics
-        const statsStorageKey = 'ppvr_game_stats_v2';
-        const stats = ref({
-            gamesPlayed: 0,
-            totalCorrectRounds: 0,
-            currentStreak: 0,
-            maxStreak: 0,
-            roundBreakdown: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            lastPlayedDate: null,
-        });
-
-        const storageKey = `ppvr_game_v2_${props.gameData.date}`;
+        const { stats, loadStats, saveStats, applyStats, storageKey } = useGameState(props.gameData.date);
 
         const leftPost = computed(() => {
             return posts.value[currentRound.value - 1] || {};
@@ -234,29 +225,6 @@ export default {
         const incomingPost = computed(() => {
             return posts.value[currentRound.value + 1] || null;
         });
-
-        function applyStats(newStats) {
-            stats.value = {
-                gamesPlayed: newStats.gamesPlayed || 0,
-                totalCorrectRounds: newStats.totalCorrectRounds || 0,
-                currentStreak: newStats.currentStreak || 0,
-                maxStreak: newStats.maxStreak || 0,
-                roundBreakdown: newStats.roundBreakdown || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                lastPlayedDate: newStats.lastPlayedDate || null,
-            };
-        }
-
-        function loadStats() {
-            const saved = localStorage.getItem(statsStorageKey);
-            if (saved) {
-                const data = JSON.parse(saved);
-                applyStats(data);
-            }
-        }
-
-        function saveStats() {
-            localStorage.setItem(statsStorageKey, JSON.stringify(stats.value));
-        }
 
         function updateStats(correctRounds) {
             stats.value.gamesPlayed++;

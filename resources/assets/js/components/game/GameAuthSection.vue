@@ -75,6 +75,8 @@
 
 <script>
 import { ref, computed, inject, onMounted } from 'vue';
+import { useGameState } from '../../composables/useGameState';
+import { DEFAULT_STATS } from '../../constants/game';
 
 export default {
     name: 'GameAuthSection',
@@ -138,8 +140,7 @@ export default {
         const showDeleteConfirm = ref(false);
         const deleting = ref(false);
 
-        const statsStorageKey = 'ppvr_game_stats_v2';
-        const storageKey = `ppvr_game_v2_${props.gameDate}`;
+        const { loadStats: loadLocalStats, saveStats: saveLocalStatsObj, clearLocalStats, storageKey } = useGameState(props.gameDate);
 
         const syncStatusText = computed(() => {
             switch (syncStatus.value) {
@@ -150,30 +151,8 @@ export default {
             }
         });
 
-        function loadLocalStats() {
-            const saved = localStorage.getItem(statsStorageKey);
-            if (saved) {
-                const data = JSON.parse(saved);
-                return {
-                    gamesPlayed: data.gamesPlayed || 0,
-                    totalCorrectRounds: data.totalCorrectRounds || 0,
-                    currentStreak: data.currentStreak || 0,
-                    maxStreak: data.maxStreak || 0,
-                    roundBreakdown: data.roundBreakdown || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                    lastPlayedDate: data.lastPlayedDate || null,
-                };
-            }
-            return null;
-        }
-
         function saveLocalStats(stats) {
-            localStorage.setItem(statsStorageKey, JSON.stringify(stats));
-        }
-
-        function clearLocalStats() {
-            localStorage.removeItem(statsStorageKey);
-            // Also clear today's game progress
-            localStorage.removeItem(storageKey);
+            localStorage.setItem('ppvr_game_stats_v2', JSON.stringify(stats));
         }
 
         async function checkAuth() {
@@ -274,14 +253,7 @@ export default {
                 // For new users, this just means we won't sync until they play
                 emit('stats-synced', {
                     action: 'none',
-                    stats: pendingLocalStats.value || pendingServerStats.value || {
-                        gamesPlayed: 0,
-                        totalCorrectRounds: 0,
-                        currentStreak: 0,
-                        maxStreak: 0,
-                        roundBreakdown: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                        lastPlayedDate: null,
-                    },
+                    stats: pendingLocalStats.value || pendingServerStats.value || { ...DEFAULT_STATS },
                 });
             }
 
@@ -349,14 +321,7 @@ export default {
                     // Neither has stats - no need for consent, just proceed
                     emit('stats-synced', {
                         action: 'none',
-                        stats: {
-                            gamesPlayed: 0,
-                            totalCorrectRounds: 0,
-                            currentStreak: 0,
-                            maxStreak: 0,
-                            roundBreakdown: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                            lastPlayedDate: null,
-                        },
+                        stats: { ...DEFAULT_STATS },
                     });
                     loading.value = false;
                 }
