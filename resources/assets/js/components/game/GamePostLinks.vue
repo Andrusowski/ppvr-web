@@ -50,6 +50,9 @@ export default {
     flex-direction: column;
     align-items: flex-start;
     width: 100%;
+    width: -moz-available;
+    width: -webkit-fill-available;
+    width: fill-available;
     padding: 0.75rem 1rem;
     margin-bottom: 0.5rem;
     background-color: var(--panel-bg);

@@ -25,7 +25,18 @@
             <div class="uk-text-center uk-margin-small-bottom">
                 Round {{ currentRound }} / {{ totalRounds }}
             </div>
-            <progress class="uk-progress" :value="gameState === 'won' ? totalRounds : currentRound - 1" :max="totalRounds"></progress>
+            <div class="round-indicators uk-flex uk-flex-center">
+                <div 
+                    v-for="i in totalRounds" 
+                    :key="i"
+                    class="round-indicator"
+                    :class="{
+                        'active': currentRound === i && gameState === 'playing',
+                        'correct': roundResults[i - 1] === true,
+                        'wrong': roundResults[i - 1] === false
+                    }"
+                ></div>
+            </div>
         </div>
 
         <!-- Game area -->
@@ -74,36 +85,12 @@
             </div>
         </div>
 
-        <!-- Victory modal -->
+        <!-- Game Over modal -->
         <Transition name="fade">
-            <div v-if="gameState === 'won'" class="uk-text-center uk-margin-large-top">
-                <div class="uk-card uk-card-primary uk-card-body result-card">
-                    <h2 class="uk-card-title">Victory!</h2>
-                    <p>You got all {{ totalRounds }} rounds correct!</p>
-                    <game-countdown :active="true" />
-                </div>
-
-                <game-stats
-                    :stats="stats"
-                    :total-rounds="totalRounds"
-                    class="uk-margin-top"
-                />
-
-                <game-post-links
-                    :posts="posts"
-                    title="Posts in today's game:"
-                    author-prefix="by "
-                    class="uk-margin-top"
-                />
-            </div>
-        </Transition>
-
-        <!-- Loss modal -->
-        <Transition name="fade">
-            <div v-if="gameState === 'lost'" class="uk-text-center uk-margin-large-top">
-                <div class="uk-card uk-card-secondary uk-card-body result-card">
-                    <h2 class="uk-card-title">Game Over</h2>
-                    <p>You made it to round {{ currentRound }} of {{ totalRounds }}.</p>
+            <div v-if="gameState === 'finished'" class="uk-text-center uk-margin-large-top">
+                <div class="uk-card uk-card-body result-card" :class="correctRoundsCount === totalRounds ? 'uk-card-primary' : 'uk-card-secondary'">
+                    <h2 class="uk-card-title">{{ correctRoundsCount === totalRounds ? 'Perfect!' : 'Game Over' }}</h2>
+                    <p>You got {{ correctRoundsCount }} out of {{ totalRounds }} rounds correct!</p>
                     <game-countdown :active="true" />
                 </div>
 
@@ -115,7 +102,7 @@
 
                 <game-post-links
                     :posts="playedPosts"
-                    title="Posts you encountered:"
+                    title="Posts in today's game:"
                     author-prefix="posted by "
                     class="uk-margin-top"
                 />
@@ -126,8 +113,8 @@
         <div v-if="gameState === 'already_played'" class="uk-text-center uk-margin-large-top">
             <div class="uk-card uk-card-default uk-card-body">
                 <h2 class="uk-card-title">Already Played Today</h2>
-                <p v-if="savedWon">You won today's game!</p>
-                <p v-else>You reached round {{ savedRound }} of {{ totalRounds }}.</p>
+                <p v-if="savedWon">You won today's game with a perfect score!</p>
+                <p v-else>You got {{ savedCorrect }} out of {{ totalRounds }} rounds correct today.</p>
                 <game-countdown :active="true" />
             </div>
 
@@ -203,13 +190,19 @@ export default {
         const currentRound = ref(1);
         const totalRounds = ref(props.gameData.total_rounds);
         const posts = ref(props.gameData.posts);
-        const gameState = ref('playing'); // 'playing', 'won', 'lost', 'already_played'
+        const gameState = ref('playing'); // 'playing', 'finished', 'already_played'
         const selectedPost = ref(null);
         const showResult = ref(false);
         const savedWon = ref(null);
         const savedRound = ref(null);
+        const savedCorrect = ref(null);
         const revealedPostIds = ref(new Set());
         const isTransitioning = ref(false);
+        const roundResults = ref(Array(props.gameData.total_rounds).fill(null));
+
+        const correctRoundsCount = computed(() => {
+            return roundResults.value.filter(r => r === true).length;
+        });
 
         // User state (set by auth section)
         const isAuthenticated = ref(false);
@@ -315,13 +308,17 @@ export default {
                 const data = JSON.parse(saved);
                 if (data.result) {
                     // Game was already completed today
-                    savedWon.value = data.result === 'won';
+                    savedWon.value = data.result === 'won' || data.result === 'finished'; // legacy 'won' or new 'finished'
                     savedRound.value = data.round;
+                    savedCorrect.value = data.correctCount !== undefined ? data.correctCount : data.round - 1; // Fallback for old data
                     gameState.value = 'already_played';
                     return true;
                 } else if (data.round) {
                     // Game in progress - restore round
                     currentRound.value = data.round;
+                    if (data.roundResults) {
+                        roundResults.value = data.roundResults;
+                    }
                     for (let i = 0; i < currentRound.value; i++) {
                         if (posts.value[i]) {
                             revealedPostIds.value.add(posts.value[i].id);
@@ -335,6 +332,7 @@ export default {
         function saveProgress() {
             const data = {
                 round: currentRound.value,
+                roundResults: roundResults.value,
                 result: null,
             };
             localStorage.setItem(storageKey, JSON.stringify(data));
@@ -343,7 +341,9 @@ export default {
         function saveResult(won, correctRounds, round) {
             const data = {
                 round: round,
-                result: won ? 'won' : 'lost',
+                correctCount: correctRounds,
+                roundResults: roundResults.value,
+                result: 'finished',
             };
             localStorage.setItem(storageKey, JSON.stringify(data));
             updateStats(correctRounds, won, round);
@@ -366,30 +366,27 @@ export default {
                 showResult.value = true;
                 revealedPostIds.value.add(leftPost.value.id);
                 revealedPostIds.value.add(rightPost.value.id);
+                
+                const isCorrect = response.data.correct;
+                roundResults.value[currentRound.value - 1] = isCorrect;
 
-                if (response.data.correct) {
-                    setTimeout(() => {
-                        if (currentRound.value >= totalRounds.value) {
-                            gameState.value = 'won';
-                            saveResult(true, totalRounds.value, totalRounds.value);
-                        } else {
-                            isTransitioning.value = true;
+                setTimeout(() => {
+                    if (currentRound.value >= totalRounds.value) {
+                        gameState.value = 'finished';
+                        const won = correctRoundsCount.value === totalRounds.value;
+                        saveResult(won, correctRoundsCount.value, totalRounds.value);
+                    } else {
+                        isTransitioning.value = true;
 
-                            setTimeout(() => {
-                                currentRound.value++;
-                                selectedPost.value = null;
-                                showResult.value = false;
-                                isTransitioning.value = false;
-                                saveProgress();
-                            }, 500);
-                        }
-                    }, 1500);
-                } else {
-                    setTimeout(() => {
-                        gameState.value = 'lost';
-                        saveResult(false, currentRound.value - 1, currentRound.value);
-                    }, 1500);
-                }
+                        setTimeout(() => {
+                            currentRound.value++;
+                            selectedPost.value = null;
+                            showResult.value = false;
+                            isTransitioning.value = false;
+                            saveProgress();
+                        }, 500);
+                    }
+                }, 1500);
             } catch (error) {
                 console.error('Error validating choice:', error);
             }
@@ -440,6 +437,9 @@ export default {
             showResult,
             savedWon,
             savedRound,
+            savedCorrect,
+            correctRoundsCount,
+            roundResults,
             revealedPostIds,
             isTransitioning,
             stats,
@@ -457,6 +457,34 @@ export default {
 .game-container {
     max-width: 900px;
     margin: 0 auto;
+}
+
+.round-indicators {
+    gap: 0.5rem;
+}
+
+.round-indicator {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #e5e5e5;
+    border: 2px solid #ccc;
+    transition: all 0.3s ease;
+}
+
+.round-indicator.active {
+    border-color: #1e87f0;
+    transform: scale(1.2);
+}
+
+.round-indicator.correct {
+    background-color: #32d296;
+    border-color: #32d296;
+}
+
+.round-indicator.wrong {
+    background-color: #f0506e;
+    border-color: #f0506e;
 }
 
 .game-area {
