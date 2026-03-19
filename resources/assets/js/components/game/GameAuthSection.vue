@@ -138,8 +138,8 @@ export default {
         const showDeleteConfirm = ref(false);
         const deleting = ref(false);
 
-        const statsStorageKey = 'ppvr_game_stats';
-        const storageKey = `ppvr_game_${props.gameDate}`;
+        const statsStorageKey = 'ppvr_game_stats_v2';
+        const storageKey = `ppvr_game_v2_${props.gameDate}`;
 
         const syncStatusText = computed(() => {
             switch (syncStatus.value) {
@@ -217,20 +217,12 @@ export default {
             }
         }
 
-        async function syncStatsToServer(stats, gameRound = null, gameCorrectCount = null, gameRoundResults = null) {
+        async function syncStatsToServer(stats, gameRoundResults = null) {
             if (!user.value) return;
 
             syncStatus.value = 'syncing';
             try {
                 const payload = { ...stats };
-
-                if (gameRound !== null) {
-                    payload.gameRound = gameRound;
-                }
-                
-                if (gameCorrectCount !== null) {
-                    payload.gameCorrectCount = gameCorrectCount;
-                }
                 
                 if (gameRoundResults !== null) {
                     payload.gameRoundResults = gameRoundResults;
@@ -295,7 +287,7 @@ export default {
 
             // Always check if user has played today on the server (authoritative source)
             // This prevents playing multiple times across devices
-            if (pendingPlayedToday.value) {
+            if (pendingPlayedToday.value && choice !== 'none') {
                 savePlayedTodayToLocal(pendingPlayedToday.value);
                 emit('played-today', pendingPlayedToday.value);
             }

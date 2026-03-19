@@ -193,7 +193,6 @@ export default {
         const gameState = ref('playing'); // 'playing', 'finished', 'already_played'
         const selectedPost = ref(null);
         const showResult = ref(false);
-        const savedWon = ref(null);
         const savedRound = ref(null);
         const savedCorrect = ref(null);
         const revealedPostIds = ref(new Set());
@@ -259,7 +258,7 @@ export default {
             localStorage.setItem(statsStorageKey, JSON.stringify(stats.value));
         }
 
-        function updateStats(correctRounds, won, round) {
+        function updateStats(correctRounds) {
             stats.value.gamesPlayed++;
             stats.value.totalCorrectRounds += correctRounds;
             stats.value.roundBreakdown[correctRounds]++;
@@ -298,7 +297,7 @@ export default {
 
             // Sync with server if authenticated
             if (authSection.value && isAuthenticated.value) {
-                authSection.value.syncStatsToServer(stats.value, round, correctRounds, roundResults.value);
+                authSection.value.syncStatsToServer(stats.value, roundResults.value);
             }
         }
 
@@ -306,11 +305,10 @@ export default {
             const saved = localStorage.getItem(storageKey);
             if (saved) {
                 const data = JSON.parse(saved);
-                if (data.result) {
+                if (data.result === 'finished') {
                     // Game was already completed today
-                    savedWon.value = data.result === 'won' || data.result === 'finished'; // legacy 'won' or new 'finished'
                     savedRound.value = data.round;
-                    savedCorrect.value = data.correctCount !== undefined ? data.correctCount : data.round - 1; // Fallback for old data
+                    savedCorrect.value = data.correctCount;
                     gameState.value = 'already_played';
                 } else if (data.round) {
                     // Game in progress - restore round
@@ -323,7 +321,6 @@ export default {
                     }
                 }
 
-                console.log('Loaded progress:', data);
                 if (data.roundResults) {
                     roundResults.value = data.roundResults;
                 }
@@ -340,15 +337,15 @@ export default {
             localStorage.setItem(storageKey, JSON.stringify(data));
         }
 
-        function saveResult(won, correctRounds, round) {
+        function saveResult(correctRounds) {
             const data = {
-                round: round,
+                round: totalRounds.value,
                 correctCount: correctRounds,
                 roundResults: roundResults.value,
                 result: 'finished',
             };
             localStorage.setItem(storageKey, JSON.stringify(data));
-            updateStats(correctRounds, won, round);
+            updateStats(correctRounds);
         }
 
         async function selectPost(side) {
@@ -375,8 +372,7 @@ export default {
                 setTimeout(() => {
                     if (currentRound.value >= totalRounds.value) {
                         gameState.value = 'finished';
-                        const won = correctRoundsCount.value === totalRounds.value;
-                        saveResult(won, correctRoundsCount.value, totalRounds.value);
+                        saveResult(correctRoundsCount.value);
                     } else {
                         isTransitioning.value = true;
 
@@ -408,9 +404,8 @@ export default {
 
         function onPlayedToday(playedTodayData) {
             if (gameState.value === 'playing' && playedTodayData) {
-                savedWon.value = playedTodayData.won;
                 savedRound.value = playedTodayData.round;
-                savedCorrect.value = playedTodayData.correctCount !== undefined ? playedTodayData.correctCount : playedTodayData.round - 1;
+                savedCorrect.value = playedTodayData.correctCount;
                 if (playedTodayData.roundResults) {
                     roundResults.value = playedTodayData.roundResults;
                 }
@@ -441,7 +436,6 @@ export default {
             gameState,
             selectedPost,
             showResult,
-            savedWon,
             savedRound,
             savedCorrect,
             correctRoundsCount,

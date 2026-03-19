@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Services\Controller\GameControllerService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -48,8 +47,6 @@ class UserGameStats extends Model
         'max_streak',
         'round_breakdown',
         'last_played_date',
-        'last_played_round',
-        'last_played_correct_count',
         'last_played_round_results',
     ];
 
@@ -95,11 +92,15 @@ class UserGameStats extends Model
             return null;
         }
 
+        $results = $this->last_played_round_results ?? [];
+        $correctCount = count(array_filter($results, function ($r) {
+            return $r === true;
+        }));
+
         return [
-            'won' => $this->last_played_round === GameControllerService::ROUNDS_PER_GAME && $this->last_played_correct_count === GameControllerService::ROUNDS_PER_GAME,
-            'round' => $this->last_played_round,
-            'correctCount' => $this->last_played_correct_count,
-            'roundResults' => $this->last_played_round_results,
+            'round' => count($results),
+            'correctCount' => $correctCount,
+            'roundResults' => $results,
         ];
     }
 
@@ -107,11 +108,9 @@ class UserGameStats extends Model
      * Record that the user played today's game.
      * Also updates the streak based on whether the user played yesterday.
      *
-     * @param int $round
-     * @param int|null $correctCount
-     * @param array<int, bool|null>|null $roundResults
+     * @param array<int, bool|null> $roundResults
      */
-    public function recordGamePlayed(int $round, ?int $correctCount = null, ?array $roundResults = null): void
+    public function recordGamePlayed(array $roundResults): void
     {
         $today = Carbon::today('UTC');
         $lastPlayed = $this->last_played_date;
@@ -138,8 +137,6 @@ class UserGameStats extends Model
         }
 
         $this->last_played_date = $today;
-        $this->last_played_round = $round;
-        $this->last_played_correct_count = $correctCount;
         $this->last_played_round_results = $roundResults;
     }
 

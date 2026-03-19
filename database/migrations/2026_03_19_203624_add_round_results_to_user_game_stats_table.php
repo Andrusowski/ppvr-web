@@ -11,8 +11,8 @@ return new class () extends Migration {
     public function up(): void
     {
         Schema::table('user_game_stats', function (Blueprint $table) {
-            $table->unsignedInteger('last_played_correct_count')->nullable()->after('last_played_round');
-            $table->json('last_played_round_results')->nullable()->after('last_played_correct_count');
+            $table->dropColumn('last_played_round');
+            $table->json('last_played_round_results')->nullable()->after('last_played_date');
         });
     }
 
@@ -22,7 +22,8 @@ return new class () extends Migration {
     public function down(): void
     {
         Schema::table('user_game_stats', function (Blueprint $table) {
-            $table->dropColumn(['last_played_correct_count', 'last_played_round_results']);
+            $table->unsignedInteger('last_played_round')->nullable()->after('last_played_date');
+            $table->dropColumn('last_played_round_results');
         });
     }
 };
