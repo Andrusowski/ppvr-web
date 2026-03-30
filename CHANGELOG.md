@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2026-03-30
+### Fixed
+- Fixed error during streak calculation
+
 ## 2026-03-19
 ### Changed
 - Changed the game over condition for the DLE. The game is now always 10 rounds long, counting the wrong guesses until the end.

@@ -28,6 +28,7 @@ class GameStatsController extends Controller
             'maxStreak' => 'required|integer|min:0',
             'roundBreakdown' => 'required|array|size:11',
             'roundBreakdown.*' => 'integer|min:0',
+            'lastPlayedDate' => 'nullable|date_format:Y-m-d',
             'gameRoundResults' => 'nullable|array',
             'gameRoundResults.*' => 'nullable|boolean',
         ]);
@@ -96,6 +97,7 @@ class GameStatsController extends Controller
             'localStats.maxStreak' => 'integer|min:0',
             'localStats.roundBreakdown' => 'array|size:11',
             'localStats.roundBreakdown.*' => 'integer|min:0',
+            'localStats.lastPlayedDate' => 'nullable|date_format:Y-m-d',
         ]);
 
         $existingStats = $user->gameStats;
